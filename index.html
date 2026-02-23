@@ -5,20 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LUCKY 6 LOTTERY</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#060919;--card:rgba(12,17,50,.92);--card2:rgba(20,26,60,.85);
-  --gold:#ffd700;--goldd:#c9a200;
-  --txt:#eef;--sub:#6a73a0;--bdr:rgba(255,215,0,.1);
-  --ok:#00e676;--gc:#007aff;--err:#ff3b3b;--warn:#ff9100;
-  --r:12px
-}
+:root{--bg:#060919;--card:rgba(12,17,50,.92);--card2:rgba(20,26,60,.85);--gold:#ffd700;--goldd:#c9a200;--txt:#eef;--sub:#6a73a0;--bdr:rgba(255,215,0,.1);--ok:#00e676;--gc:#007aff;--err:#ff3b3b;--warn:#ff9100;--r:12px}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% -10%,rgba(255,215,0,.06),transparent 60%),radial-gradient(ellipse at 70% 110%,rgba(0,122,255,.04),transparent 55%);pointer-events:none}
-
 .w{max-width:860px;margin:0 auto;padding:14px;position:relative;z-index:1}
 header{text-align:center;padding:30px 0 8px}
 .logo{font-size:clamp(2rem,7vw,3.3rem);font-weight:900;background:linear-gradient(135deg,var(--goldd),var(--gold),#fff8c4,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px}
@@ -26,23 +18,16 @@ header{text-align:center;padding:30px 0 8px}
 .tag{color:var(--sub);font-size:.85rem;margin-top:4px;letter-spacing:1px}
 .pill{display:inline-block;margin-top:12px;padding:7px 24px;background:linear-gradient(135deg,var(--goldd),var(--gold));color:#000;border-radius:50px;font-weight:800;font-size:.95rem}
 .range{margin-top:6px;color:var(--sub);font-size:.75rem;font-family:'JetBrains Mono',monospace;letter-spacing:2px}
-
-/* ── Draw date banner ── */
 .draw-banner{background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,215,0,.03));border:1px solid rgba(255,215,0,.15);border-radius:var(--r);padding:12px 18px;margin:14px 0;text-align:center;display:none}
 .draw-banner .db-label{font-size:.65rem;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:2px}
 .draw-banner .db-date{font-size:1.1rem;font-weight:800;color:var(--gold);font-family:'JetBrains Mono',monospace}
-
-/* ── Announcement banner ── */
 .announce-banner{background:linear-gradient(135deg,rgba(0,122,255,.1),rgba(0,122,255,.03));border:1px solid rgba(0,122,255,.18);border-radius:var(--r);padding:14px 18px;margin:14px 0;display:none;line-height:1.7;font-size:.88rem}
 .announce-banner .ab-icon{font-size:1.2rem;margin-right:6px}
-
-/* ── Maintenance overlay ── */
 .maint-overlay{display:none;position:fixed;inset:0;background:rgba(6,9,25,.97);z-index:9998;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px}
 .maint-overlay.on{display:flex}
 .maint-overlay .mi{font-size:4rem;margin-bottom:16px}
 .maint-overlay h2{color:var(--gold);font-size:1.5rem;margin-bottom:8px}
 .maint-overlay p{color:var(--sub);font-size:.92rem;max-width:400px;line-height:1.8}
-
 .info-bar{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:20px 24px;backdrop-filter:blur(10px);margin:22px 0}
 .info-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .date-box{display:flex;align-items:center;gap:10px}
@@ -54,7 +39,7 @@ header{text-align:center;padding:30px 0 8px}
 .avail-status.high{color:var(--ok)}.avail-status.mid{color:var(--warn)}.avail-status.low{color:var(--err)}
 .progress-wrap{position:relative}
 .progress-track{width:100%;height:14px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
-.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--ok),#69f0ae);transition:width 1.5s cubic-bezier(.4,0,.2,1);position:relative;min-width:0}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--ok),#69f0ae);transition:width 1.5s;position:relative;min-width:0}
 .progress-fill.mid{background:linear-gradient(90deg,var(--warn),#ffcc02)}
 .progress-fill.low{background:linear-gradient(90deg,var(--err),#ff6b6b)}
 .progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 2s infinite}
@@ -121,7 +106,7 @@ header{text-align:center;padding:30px 0 8px}
 .ov-s{color:var(--sub);font-size:.78rem;margin-top:6px;line-height:1.6}
 .rb{width:240px;height:4px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:14px;overflow:hidden;display:none}
 .rb .fl{height:100%;background:var(--gold);border-radius:3px}
-.toast{position:fixed;top:14px;right:14px;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.85rem;z-index:10001;transform:translateX(150%);transition:transform .3s ease;max-width:400px;line-height:1.5}
+.toast{position:fixed;top:14px;right:14px;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.85rem;z-index:10001;transform:translateX(150%);transition:transform .3s;max-width:400px;line-height:1.5}
 .toast.on{transform:translateX(0)}
 .toast.err{background:var(--err);color:#fff}
 .toast.suc{background:var(--ok);color:#000}
@@ -136,7 +121,7 @@ header{text-align:center;padding:30px 0 8px}
 .err-panel .retry-btn{display:inline-block;margin-top:10px;padding:8px 20px;background:var(--err);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82rem}
 footer{text-align:center;padding:24px 0;color:var(--sub);font-size:.68rem;line-height:2}
 
-/* ═══ ADMIN STYLES ═══ */
+/* ADMIN */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .login-box{background:var(--card);border:1px solid var(--bdr);border-radius:20px;padding:40px 32px;width:100%;max-width:420px;backdrop-filter:blur(10px);text-align:center}
 .login-box h1{font-size:1.6rem;margin-bottom:4px;background:linear-gradient(135deg,var(--goldd),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -214,29 +199,14 @@ tr:hover td{background:rgba(255,215,0,.02)}
 .confirm-box code{background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;color:var(--gold)}
 .confirm-btns{display:flex;gap:10px;justify-content:center}
 .confirm-btns .btn-sm{padding:10px 24px;font-size:.8rem}
+/* Fade-out animation for deleted rows */
+.row-deleting{opacity:0;transform:translateX(40px);transition:all .4s ease}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
 ::-webkit-scrollbar-thumb{background:rgba(255,215,0,.15);border-radius:3px}
 
-@media(max-width:640px){
-  .w{padding:10px}.info-bar{padding:16px}
-  .info-top{flex-direction:column;align-items:flex-start;gap:12px}
-  .avail-label,.avail-status{text-align:left}
-  .fr{grid-template-columns:1fr}.card{padding:16px}
-  .ngrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}
-  .acts{grid-template-columns:1fr}.rd{grid-template-columns:1fr}
-  .stp .stx{display:none}.stp{padding:7px 6px}
-}
-@media(max-width:768px){
-  .sidebar{display:none}.admain{flex-direction:column}.content{padding:14px}
-  .stats{grid-template-columns:repeat(2,1fr)}.settings-grid{grid-template-columns:1fr}
-  .tbl-head{flex-direction:column;align-items:stretch}
-  .tool-row{flex-direction:column}.tool-row .fg{min-width:100%}
-  table{font-size:.75rem}th,td{padding:8px 10px}
-  .mob-nav{display:flex!important;overflow-x:auto;gap:4px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bdr)}
-  .mob-nav .nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap;padding:8px 12px;font-size:.72rem}
-  .mob-nav .nav-item.active{border-bottom-color:var(--gold);border-left:none}
-}
+@media(max-width:640px){.w{padding:10px}.info-bar{padding:16px}.info-top{flex-direction:column;align-items:flex-start;gap:12px}.avail-label,.avail-status{text-align:left}.fr{grid-template-columns:1fr}.card{padding:16px}.ngrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}.acts{grid-template-columns:1fr}.rd{grid-template-columns:1fr}.stp .stx{display:none}.stp{padding:7px 6px}}
+@media(max-width:768px){.sidebar{display:none}.admain{flex-direction:column}.content{padding:14px}.stats{grid-template-columns:repeat(2,1fr)}.settings-grid{grid-template-columns:1fr}.tbl-head{flex-direction:column;align-items:stretch}.tool-row{flex-direction:column}.tool-row .fg{min-width:100%}table{font-size:.75rem}th,td{padding:8px 10px}.mob-nav{display:flex!important;overflow-x:auto;gap:4px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bdr)}.mob-nav .nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap;padding:8px 12px;font-size:.72rem}.mob-nav .nav-item.active{border-bottom-color:var(--gold);border-left:none}}
 @media(min-width:769px){.mob-nav{display:none!important}}
 </style>
 </head>
@@ -244,16 +214,10 @@ tr:hover td{background:rgba(255,215,0,.02)}
 
 <div class="ov" id="ov"><div class="sp"></div><div class="ov-t" id="ovT">Processing...</div><div class="ov-s" id="ovS">Please wait</div><div class="rb" id="rb"><div class="fl" id="rf"></div></div></div>
 <div class="toast" id="toast"></div>
-<div class="confirm-modal" id="confirmModal"><div class="confirm-box"><h3 id="confirmTitle">Confirm</h3><p id="confirmMsg"></p><div class="confirm-btns"><button class="btn-sm btn-red" id="confirmYes">Yes, Delete</button><button class="btn-sm btn-blue" onclick="closeConfirm()">Cancel</button></div></div></div>
+<div class="confirm-modal" id="confirmModal"><div class="confirm-box"><h3 id="confirmTitle">Confirm</h3><p id="confirmMsg"></p><div class="confirm-btns"><button class="btn-sm btn-red" id="confirmYes">Yes</button><button class="btn-sm btn-blue" onclick="closeConfirm()">Cancel</button></div></div></div>
+<div class="maint-overlay" id="maintOverlay"><div class="mi">🔧</div><h2>Under Maintenance</h2><p>Purchases are temporarily paused. Please check back soon!</p></div>
 
-<!-- ★ MAINTENANCE OVERLAY ★ -->
-<div class="maint-overlay" id="maintOverlay">
-  <div class="mi">🔧</div>
-  <h2>Under Maintenance</h2>
-  <p>We're currently updating the system. Purchases are temporarily paused. Please check back soon!</p>
-</div>
-
-<!-- ═══ PUBLIC PAGE ═══ -->
+<!-- ═══ PUBLIC ═══ -->
 <div id="publicPage">
 <div class="w">
 <header>
@@ -262,454 +226,229 @@ tr:hover td{background:rgba(255,215,0,.02)}
   <div class="pill" id="priceTag">₱1.00 PER NUMBER</div>
   <div class="range">000000 — 999999</div>
 </header>
-
-<!-- ★ DRAW DATE BANNER ★ -->
-<div class="draw-banner" id="drawBanner">
-  <div class="db-label">🎯 Draw Date</div>
-  <div class="db-date" id="drawDateText"></div>
-</div>
-
-<!-- ★ ANNOUNCEMENT BANNER ★ -->
-<div class="announce-banner" id="announceBanner">
-  <span class="ab-icon">📢</span>
-  <span id="announceText"></span>
-</div>
-
-<div class="conn checking" id="connBar"><div class="dot"></div><span id="connTxt">Checking server connection...</span></div>
+<div class="draw-banner" id="drawBanner"><div class="db-label">🎯 Draw Date</div><div class="db-date" id="drawDateText"></div></div>
+<div class="announce-banner" id="announceBanner"><span class="ab-icon">📢</span><span id="announceText"></span></div>
+<div class="conn checking" id="connBar"><div class="dot"></div><span id="connTxt">Checking server...</span></div>
 <div id="errPanel" class="err-panel hide"><h3>⚠️ Connection Failed</h3><div id="errDetail"></div></div>
+<div class="info-bar"><div class="info-top"><div class="date-box"><div class="date-icon">📅</div><div><div class="date-label">Today's Date</div><div class="date-value" id="dateToday">—</div></div></div><div><div class="avail-label">Availability</div><div class="avail-status high" id="availTxt">Loading...</div></div></div><div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:100%"></div></div><div class="progress-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
+<div id="secB"><div class="card"><div class="steps"><div class="stp on" id="i1"><div class="n">1</div><span class="stx">Details</span></div><div class="sln" id="l1"></div><div class="stp" id="i2"><div class="n">2</div><span class="stx">Payment</span></div><div class="sln" id="l2"></div><div class="stp" id="i3"><div class="n">3</div><span class="stx">Complete</span></div></div>
+<div id="p1"><div class="ct">📝 Your Details</div><div class="fr"><div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div><div class="fg"><label>Phone Number <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="e.g. 09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div></div><div class="fg"><label id="qtyLabel">How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">(50 – 10,000)</span></label><input id="fQ" type="number" min="50" max="10000" placeholder="Minimum 50 numbers"><small id="qtyHelp">Each = unique random 6-digit code. Min 50, max 10,000.</small></div><div class="tot"><div class="tl">Total Amount</div><div class="tv" id="dT">₱ 0.00</div></div><button class="btn b1" onclick="go2()">Continue to Payment →</button></div>
+<div id="p2" class="hide"><div class="ct">💳 GCash Payment</div><div class="gc"><div class="gc-h"><div class="gc-b">GCash</div> Send Payment To:</div><div style="line-height:2.2"><strong>Name:</strong> <span id="dN"></span><br><strong>Number:</strong><br><div class="gc-num" id="dP" onclick="cpGC()" title="Click to copy"></div><br><strong>Amount:</strong> <span style="color:var(--gold);font-weight:800;font-size:1.1rem" id="dA"></span></div></div><div class="fg"><label>GCash Reference Number</label><input id="fR" placeholder="Enter ref # from your GCash receipt" autocomplete="off"><small>The reference number shown after sending payment.</small></div><button class="btn b1" id="buyBtn" onclick="submitPurchase()">✓ Confirm Purchase</button><button class="btn b2" onclick="go1()">← Go Back</button></div></div></div>
+<div id="secR" class="hide"><div class="receipt"><div class="rh"><div class="ic">✓</div><h2 style="font-size:1.3rem;margin-bottom:3px">Purchase Successful!</h2><p style="color:var(--sub);font-size:.83rem">Your unique 6-digit lottery numbers are ready.</p><div class="ubadge">🔒 Verified unique — zero duplicates</div></div><div class="rd"><div class="ri"><div class="rl">Transaction ID</div><div class="rv" id="rI"></div></div><div class="ri"><div class="rl">Date & Time</div><div class="rv" id="rD"></div></div><div class="ri"><div class="rl">Name</div><div class="rv" id="rN"></div></div><div class="ri"><div class="rl">Phone</div><div class="rv" id="rP"></div></div><div class="ri"><div class="rl">Quantity</div><div class="rv" id="rQ"></div></div><div class="ri"><div class="rl">Amount Paid</div><div class="rv" style="color:var(--gold)" id="rA"></div></div><div class="ri"><div class="rl">GCash Ref</div><div class="rv" id="rR"></div></div></div><div class="nt">🎰 Your Numbers (<span id="rC">0</span>)</div><div class="nbox"><div class="ngrid" id="nG"></div></div><div class="acts"><button class="btn b2" onclick="cpA()">📋 Copy</button><button class="btn b2" onclick="dlA()">⬇ Download</button><button class="btn b2" onclick="prA()">🖨 Print</button></div><button class="btn b1" style="margin-top:16px" onclick="again()">🎰 Buy More Numbers</button></div></div>
+<footer>© 2024 Lucky 6 Lottery &bull; 000000–999999 &bull; GCash only</footer>
+</div></div>
 
-<div class="info-bar">
-  <div class="info-top">
-    <div class="date-box"><div class="date-icon">📅</div><div><div class="date-label">Today's Date</div><div class="date-value" id="dateToday">—</div></div></div>
-    <div><div class="avail-label">Availability</div><div class="avail-status high" id="availTxt">Loading...</div></div>
-  </div>
-  <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:100%"></div></div><div class="progress-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
-</div>
-
-<div id="secB">
-<div class="card">
-  <div class="steps">
-    <div class="stp on" id="i1"><div class="n">1</div><span class="stx">Details</span></div><div class="sln" id="l1"></div>
-    <div class="stp" id="i2"><div class="n">2</div><span class="stx">Payment</span></div><div class="sln" id="l2"></div>
-    <div class="stp" id="i3"><div class="n">3</div><span class="stx">Complete</span></div>
-  </div>
-  <div id="p1">
-    <div class="ct">📝 Your Details</div>
-    <div class="fr">
-      <div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div>
-      <div class="fg"><label>Phone Number <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="e.g. 09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div>
-    </div>
-    <div class="fg"><label id="qtyLabel">How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">(50 – 10,000)</span></label><input id="fQ" type="number" min="50" max="10000" placeholder="Minimum 50 numbers"><small id="qtyHelp">Each = unique random 6-digit code (000000–999999). Min 50, max 10,000 per transaction.</small></div>
-    <div class="tot"><div class="tl">Total Amount</div><div class="tv" id="dT">₱ 0.00</div></div>
-    <button class="btn b1" onclick="go2()">Continue to Payment →</button>
-  </div>
-  <div id="p2" class="hide">
-    <div class="ct">💳 GCash Payment</div>
-    <div class="gc">
-      <div class="gc-h"><div class="gc-b">GCash</div> Send Payment To:</div>
-      <div style="line-height:2.2"><strong>Name:</strong> <span id="dN"></span><br><strong>Number:</strong><br><div class="gc-num" id="dP" onclick="cpGC()" title="Click to copy"></div><br><strong>Amount:</strong> <span style="color:var(--gold);font-weight:800;font-size:1.1rem" id="dA"></span></div>
-    </div>
-    <div class="fg"><label>GCash Reference Number</label><input id="fR" placeholder="Enter ref # from your GCash receipt" autocomplete="off"><small>The reference/transaction number shown after sending payment.</small></div>
-    <button class="btn b1" id="buyBtn" onclick="submitPurchase()">✓ Confirm Purchase</button>
-    <button class="btn b2" onclick="go1()">← Go Back</button>
-  </div>
-</div>
-</div>
-
-<div id="secR" class="hide">
-<div class="receipt">
-  <div class="rh"><div class="ic">✓</div><h2 style="font-size:1.3rem;margin-bottom:3px">Purchase Successful!</h2><p style="color:var(--sub);font-size:.83rem">Your unique 6-digit lottery numbers are ready.</p><div class="ubadge">🔒 Verified unique — zero duplicates — full 6 digits</div></div>
-  <div class="rd">
-    <div class="ri"><div class="rl">Transaction ID</div><div class="rv" id="rI"></div></div>
-    <div class="ri"><div class="rl">Date & Time</div><div class="rv" id="rD"></div></div>
-    <div class="ri"><div class="rl">Name</div><div class="rv" id="rN"></div></div>
-    <div class="ri"><div class="rl">Phone</div><div class="rv" id="rP"></div></div>
-    <div class="ri"><div class="rl">Quantity</div><div class="rv" id="rQ"></div></div>
-    <div class="ri"><div class="rl">Amount Paid</div><div class="rv" style="color:var(--gold)" id="rA"></div></div>
-    <div class="ri"><div class="rl">GCash Ref</div><div class="rv" id="rR"></div></div>
-  </div>
-  <div class="nt">🎰 Your Numbers (<span id="rC">0</span>)</div>
-  <div class="nbox"><div class="ngrid" id="nG"></div></div>
-  <div class="acts"><button class="btn b2" onclick="cpA()">📋 Copy</button><button class="btn b2" onclick="dlA()">⬇ Download</button><button class="btn b2" onclick="prA()">🖨 Print</button></div>
-  <button class="btn b1" style="margin-top:16px" onclick="again()">🎰 Buy More Numbers</button>
-</div>
-</div>
-<footer>© 2024 Lucky 6 Lottery &bull; 000000–999999 &bull; GCash only<br>All numbers guaranteed unique with full 6 digits including leading zeros.</footer>
-</div>
-</div>
-
-<!-- ═══ ADMIN PAGE ═══ -->
+<!-- ═══ ADMIN ═══ -->
 <div id="adminPage" style="display:none">
-<div id="adminLogin" class="login-wrap">
-  <div class="login-box"><h1>🔐 LUCKY 6</h1><div class="lsub">Admin Panel — Authorized Access Only</div><div class="fg"><label>Username</label><input id="loginUser" placeholder="Enter username" autocomplete="username"></div><div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password"></div><button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button></div>
-</div>
+<div id="adminLogin" class="login-wrap"><div class="login-box"><h1>🔐 LUCKY 6</h1><div class="lsub">Admin Panel</div><div class="fg"><label>Username</label><input id="loginUser" placeholder="Username" autocomplete="username"></div><div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Password" autocomplete="current-password"></div><button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button></div></div>
 <div class="admin" id="adminPanel">
 <div class="topbar"><h1>🎰 LUCKY 6 — Admin</h1><div class="user"><span id="adminUser">admin</span><button class="logout" onclick="doLogout()">Logout</button></div></div>
 <div class="mob-nav"><div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div><div class="nav-item" onclick="goPage('transactions')">📋 TX</div><div class="nav-item" onclick="goPage('numbers')">🔢 Numbers</div><div class="nav-item" onclick="goPage('search')">🔍 Search</div><div class="nav-item" onclick="goPage('tools')">🔧 Tools</div><div class="nav-item" onclick="goPage('settings')">⚙️ Settings</div></div>
 <div class="admain">
-<div class="sidebar">
-  <div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')">📊 <span>Dashboard</span></div>
-  <div class="nav-item" data-page="transactions" onclick="goPage('transactions')">📋 <span>Transactions</span></div>
-  <div class="nav-item" data-page="numbers" onclick="goPage('numbers')">🔢 <span>Sold Numbers</span></div>
-  <div class="nav-sep"></div>
-  <div class="nav-item" data-page="search" onclick="goPage('search')">🔍 <span>Search</span></div>
-  <div class="nav-item" data-page="tools" onclick="goPage('tools')">🔧 <span>Tools</span></div>
-  <div class="nav-sep"></div>
-  <div class="nav-item" data-page="settings" onclick="goPage('settings')">⚙️ <span>Settings</span></div>
-</div>
+<div class="sidebar"><div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')">📊 <span>Dashboard</span></div><div class="nav-item" data-page="transactions" onclick="goPage('transactions')">📋 <span>Transactions</span></div><div class="nav-item" data-page="numbers" onclick="goPage('numbers')">🔢 <span>Sold Numbers</span></div><div class="nav-sep"></div><div class="nav-item" data-page="search" onclick="goPage('search')">🔍 <span>Search</span></div><div class="nav-item" data-page="tools" onclick="goPage('tools')">🔧 <span>Tools</span></div><div class="nav-sep"></div><div class="nav-item" data-page="settings" onclick="goPage('settings')">⚙️ <span>Settings</span></div></div>
 <div class="content">
-<div class="page active" id="pg-dashboard"><div class="page-title">Dashboard</div><div class="page-sub">Real-time overview</div><div class="stats"><div class="stat gold"><div class="sl">Total Sold</div><div class="sv" id="dsSold">—</div><div class="bar-track"><div class="bar-fill" id="dsBar" style="width:0"></div></div></div><div class="stat green"><div class="sl">Remaining</div><div class="sv" id="dsRemain">—</div><div class="sc" id="dsPct" style="color:var(--ok)">—</div></div><div class="stat blue"><div class="sl">Total Revenue</div><div class="sv" id="dsRevenue">—</div><div class="sc" style="color:var(--gc)">PHP</div></div><div class="stat gold"><div class="sl">Total Transactions</div><div class="sv" id="dsTx">—</div></div><div class="stat green"><div class="sl">Successful</div><div class="sv" id="dsSuccess">—</div></div><div class="stat red"><div class="sl">Failed</div><div class="sv" id="dsFailed">—</div></div><div class="stat blue"><div class="sl">Unique Buyers</div><div class="sv" id="dsBuyers">—</div></div><div class="stat gold"><div class="sl">Today Sales</div><div class="sv" id="dsToday">—</div><div class="sc" id="dsTodayRev" style="color:var(--gold)">—</div></div></div><div class="tbl-wrap"><div class="tbl-head"><h3>📡 Recent Activity</h3><button class="btn-sm btn-blue" onclick="loadDashboard()">↻ Refresh</button></div><ul class="feed" id="feedList"><li class="tbl-empty">Loading...</li></ul></div></div>
-<div class="page" id="pg-transactions"><div class="page-title">Transactions</div><div class="page-sub">All purchase records</div><div class="tbl-wrap"><div class="tbl-head"><h3>📋 Transaction Log</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('transactions')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadTransactions()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash Ref</th><th>Qty</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="txBody"><tr><td colspan="9" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="txPagination"></div></div></div>
-<div class="page" id="pg-numbers"><div class="page-title">Sold Numbers</div><div class="page-sub">All assigned numbers</div><div class="tbl-wrap"><div class="tbl-head"><h3>🔢 Number Registry</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadNumbers()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash Ref</th><th>Date</th></tr></thead><tbody id="numBody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="numPagination"></div></div></div>
-<div class="page" id="pg-search"><div class="page-title">Search</div><div class="page-sub">Find numbers, buyers, or transactions</div><div class="tool-card"><h3>🔍 Search by Number</h3><div class="tool-row"><div class="fg"><label>6-Digit Number</label><input id="searchNum" maxlength="6" placeholder="e.g. 042069"></div><button class="btn-sm btn-gold" onclick="searchNumber()" style="height:42px">Search</button></div></div><div class="tool-card"><h3>👤 Search by Buyer</h3><div class="tool-row"><div class="fg"><label>Name, Phone, TX ID, or GCash Ref</label><input id="searchBuyer" placeholder="e.g. Juan or 09171234567"></div><button class="btn-sm btn-gold" onclick="searchBuyerFn()" style="height:42px">Search</button></div></div><div class="tbl-wrap" id="searchResults" style="display:none"><div class="tbl-head"><h3 id="searchTitle">Results</h3></div><div style="overflow-x:auto"><table><thead id="searchThead"></thead><tbody id="searchTbody"></tbody></table></div></div></div>
-<div class="page" id="pg-tools"><div class="page-title">Tools</div><div class="page-sub">Manual operations</div><div class="tool-card"><h3>➕ Add Number Manually</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="addNum" maxlength="6" placeholder="e.g. 123456"></div><div class="fg"><label>Owner Name</label><input id="addName" placeholder="Optional"></div><div class="fg"><label>Phone</label><input id="addPhone" maxlength="11" placeholder="Optional"></div><button class="btn-sm btn-green" onclick="addNumber()" style="height:42px">Add</button></div></div><div class="tool-card"><h3>➖ Remove Number</h3><div class="tool-row"><div class="fg"><label>Number to Remove</label><input id="removeNum" maxlength="6" placeholder="e.g. 123456"></div><button class="btn-sm btn-red" onclick="removeNumber()" style="height:42px">Remove</button></div></div><div class="tool-card"><h3>📥 Export Data</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Sold Numbers CSV</button><button class="btn-sm btn-blue" onclick="exportData('transactions')">⬇ Transactions CSV</button></div></div></div>
-<div class="page" id="pg-settings"><div class="page-title">Settings</div><div class="page-sub">Configure lottery — saved to Admin sheet, applied live to public page</div><div class="settings-grid"><div class="setting-group"><h3>💳 GCash Settings</h3><div class="fg"><label>GCash Name</label><input id="setGcashName" placeholder="Account name"></div><div class="fg"><label>GCash Number</label><input id="setGcashNum" placeholder="09XX-XXX-XXXX"></div></div><div class="setting-group"><h3>🎰 Lottery Settings</h3><div class="fg"><label>Lottery Name</label><input id="setLotteryName" placeholder="LUCKY 6 LOTTERY"></div><div class="fg"><label>Draw Date</label><input id="setDrawDate" type="date"></div></div><div class="setting-group"><h3>🔢 Purchase Limits</h3><div class="fg"><label>Price per Number (₱)</label><input id="setPrice" type="number" min="1"></div><div class="fg"><label>Min Quantity</label><input id="setMinQty" type="number" min="1"></div><div class="fg"><label>Max Quantity</label><input id="setMaxQty" type="number" min="1"></div></div><div class="setting-group"><h3>📢 Announcement</h3><div class="fg"><label>Message (shown on public page)</label><textarea id="setAnnouncement" placeholder="Leave blank to hide"></textarea><small>This message appears as a blue banner on the public lottery page.</small></div><div class="fg"><label>Maintenance Mode</label><select id="setMaintenance"><option value="false">Disabled</option><option value="true">Enabled — Blocks all purchases</option></select><small>When enabled, a full-screen maintenance overlay blocks the public page and the server rejects all purchase requests.</small></div></div></div><div class="setting-group"><h3>🔐 Change Password</h3><div class="settings-grid"><div class="fg"><label>New Password</label><input id="setNewPass" type="password" placeholder="Min 6 characters"><small>Leave blank to keep current.</small></div><div class="fg"><label>Confirm Password</label><input id="setNewPass2" type="password" placeholder="Repeat"></div></div></div><button class="btn b1" onclick="saveSettings()" style="max-width:300px">💾 Save All Settings</button></div>
-</div></div></div>
-</div>
+<div class="page active" id="pg-dashboard"><div class="page-title">Dashboard</div><div class="page-sub">Real-time overview</div><div class="stats"><div class="stat gold"><div class="sl">Total Sold</div><div class="sv" id="dsSold">—</div><div class="bar-track"><div class="bar-fill" id="dsBar" style="width:0"></div></div></div><div class="stat green"><div class="sl">Remaining</div><div class="sv" id="dsRemain">—</div><div class="sc" id="dsPct" style="color:var(--ok)">—</div></div><div class="stat blue"><div class="sl">Revenue</div><div class="sv" id="dsRevenue">—</div></div><div class="stat gold"><div class="sl">Transactions</div><div class="sv" id="dsTx">—</div></div><div class="stat green"><div class="sl">Successful</div><div class="sv" id="dsSuccess">—</div></div><div class="stat red"><div class="sl">Failed</div><div class="sv" id="dsFailed">—</div></div><div class="stat blue"><div class="sl">Unique Buyers</div><div class="sv" id="dsBuyers">—</div></div><div class="stat gold"><div class="sl">Today</div><div class="sv" id="dsToday">—</div><div class="sc" id="dsTodayRev" style="color:var(--gold)">—</div></div></div><div class="tbl-wrap"><div class="tbl-head"><h3>📡 Recent Activity</h3><button class="btn-sm btn-blue" onclick="loadDashboard()">↻ Refresh</button></div><ul class="feed" id="feedList"><li class="tbl-empty">Loading...</li></ul></div></div>
+<div class="page" id="pg-transactions"><div class="page-title">Transactions</div><div class="page-sub">All records</div><div class="tbl-wrap"><div class="tbl-head"><h3>📋 Log</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('transactions')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadTransactions()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amt</th><th>Status</th><th>Action</th></tr></thead><tbody id="txBody"><tr><td colspan="9" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="txPagination"></div></div></div>
+<div class="page" id="pg-numbers"><div class="page-title">Sold Numbers</div><div class="page-sub">All assigned</div><div class="tbl-wrap"><div class="tbl-head"><h3>🔢 Registry</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadNumbers()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr></thead><tbody id="numBody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="numPagination"></div></div></div>
+<div class="page" id="pg-search"><div class="page-title">Search</div><div class="page-sub">Find anything</div><div class="tool-card"><h3>🔍 By Number</h3><div class="tool-row"><div class="fg"><label>6-Digit</label><input id="searchNum" maxlength="6" placeholder="042069"></div><button class="btn-sm btn-gold" onclick="searchNumber()" style="height:42px">Search</button></div></div><div class="tool-card"><h3>👤 By Buyer</h3><div class="tool-row"><div class="fg"><label>Name / Phone / TX / GCash</label><input id="searchBuyer" placeholder="Juan"></div><button class="btn-sm btn-gold" onclick="searchBuyerFn()" style="height:42px">Search</button></div></div><div class="tbl-wrap" id="searchResults" style="display:none"><div class="tbl-head"><h3 id="searchTitle">Results</h3></div><div style="overflow-x:auto"><table><thead id="searchThead"></thead><tbody id="searchTbody"></tbody></table></div></div></div>
+<div class="page" id="pg-tools"><div class="page-title">Tools</div><div class="page-sub">Manual ops</div><div class="tool-card"><h3>➕ Add Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="addNum" maxlength="6" placeholder="123456"></div><div class="fg"><label>Name</label><input id="addName" placeholder="Optional"></div><div class="fg"><label>Phone</label><input id="addPhone" maxlength="11" placeholder="Optional"></div><button class="btn-sm btn-green" onclick="addNumber()" style="height:42px">Add</button></div></div><div class="tool-card"><h3>➖ Remove Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="removeNum" maxlength="6" placeholder="123456"></div><button class="btn-sm btn-red" onclick="removeNumber()" style="height:42px">Remove</button></div></div><div class="tool-card"><h3>📥 Export</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Sold CSV</button><button class="btn-sm btn-blue" onclick="exportData('transactions')">⬇ TX CSV</button></div></div></div>
+<div class="page" id="pg-settings"><div class="page-title">Settings</div><div class="page-sub">Live config — changes apply instantly to public page</div><div class="settings-grid"><div class="setting-group"><h3>💳 GCash</h3><div class="fg"><label>GCash Name</label><input id="setGcashName"></div><div class="fg"><label>GCash Number</label><input id="setGcashNum"></div></div><div class="setting-group"><h3>🎰 Lottery</h3><div class="fg"><label>Name</label><input id="setLotteryName"></div><div class="fg"><label>Draw Date</label><input id="setDrawDate" type="date"></div></div><div class="setting-group"><h3>🔢 Limits</h3><div class="fg"><label>Price (₱)</label><input id="setPrice" type="number" min="1"></div><div class="fg"><label>Min Qty</label><input id="setMinQty" type="number" min="1"></div><div class="fg"><label>Max Qty</label><input id="setMaxQty" type="number" min="1"></div></div><div class="setting-group"><h3>📢 Announcement</h3><div class="fg"><label>Message</label><textarea id="setAnnouncement" placeholder="Leave blank to hide"></textarea><small>Blue banner on public page</small></div><div class="fg"><label>Maintenance</label><select id="setMaintenance"><option value="false">Off</option><option value="true">On — Blocks purchases</option></select><small>Full-screen overlay + server rejects purchases</small></div></div></div><div class="setting-group"><h3>🔐 Password</h3><div class="settings-grid"><div class="fg"><label>New Password</label><input id="setNewPass" type="password" placeholder="Min 6 chars"><small>Blank = keep current</small></div><div class="fg"><label>Confirm</label><input id="setNewPass2" type="password" placeholder="Repeat"></div></div></div><button class="btn b1" onclick="saveSettings()" style="max-width:300px">💾 Save All</button></div>
+</div></div></div></div>
 
 <script>
-// ╔════════════════════════════════════════════════════════════════╗
-// ║  ★★★  CONFIGURE  ★★★                                         ║
-// ╚════════════════════════════════════════════════════════════════╝
-const SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbyz50Tur3onf7b6C5VCHlqhpDW0Oao8muDbwQilJT_fCSL7GiNZ22CVKYQz_9YZ2RKPFw/exec';
-const ADMIN_SECRET  = 'admin2025';
-// Access admin: yourpage.html?access=admin2025
-// ═════════════════════════════════════════════════════════════════
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyz50Tur3onf7b6C5VCHlqhpDW0Oao8muDbwQilJT_fCSL7GiNZ22CVKYQz_9YZ2RKPFw/exec';
+const ADMIN_SECRET='admin2025';
 
-// ★ These are defaults — they get OVERWRITTEN by server settings
-let GCASH_NUMBER  = '0917-123-4567';
-let GCASH_NAME    = 'Juan Dela Cruz';
-let PRICE_PER     = 1;
-let MIN_QTY       = 50;
-let MAX_QTY       = 10000;
-let LOTTERY_NAME  = 'LUCKY 6 LOTTERY';
-
+let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
 let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 
-function pad6(n){return String(n).padStart(6,'0').substring(0,6);}
+// ★ DATA CACHE — prevents re-fetching when switching tabs
+let cache={dashboard:null,dashboardTime:0,txData:null,txTime:0,numData:null,numTime:0,settingsData:null,settingsTime:0};
+const CACHE_MS=10000; // 10 second cache
 
-/* ═══ MODE DETECTION ═══ */
-function detectMode(){
-  const p=new URLSearchParams(window.location.search);
-  if(p.get('access')===ADMIN_SECRET){
-    IS_ADMIN_MODE=true;
-    document.getElementById('publicPage').style.display='none';
-    document.getElementById('adminPage').style.display='block';
-    document.title='Lucky 6 — Admin Panel';
-  } else {
-    IS_ADMIN_MODE=false;
-    document.getElementById('publicPage').style.display='block';
-    document.getElementById('adminPage').style.display='none';
-  }
-}
+function pad6(n){return String(n).padStart(6,'0').substring(0,6)}
+function detectMode(){const p=new URLSearchParams(location.search);if(p.get('access')===ADMIN_SECRET){IS_ADMIN_MODE=true;document.getElementById('publicPage').style.display='none';document.getElementById('adminPage').style.display='block';document.title='Lucky 6 — Admin';}else{document.getElementById('publicPage').style.display='block';document.getElementById('adminPage').style.display='none';}}
+function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast '+t+' on';clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),4000)}
+function showOv(t,s){document.getElementById('ovT').textContent=t||'';document.getElementById('ovS').textContent=s||'';document.getElementById('ov').classList.add('on')}
+function hideOv(){document.getElementById('ov').classList.remove('on')}
+function closeConfirm(){document.getElementById('confirmModal').classList.remove('on')}
+function show(id){document.getElementById(id).classList.remove('hide')}
+function hide(id){document.getElementById(id).classList.add('hide')}
 
-/* ═══ SHARED HELPERS ═══ */
-function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast '+t+' on';clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),5000);}
-function showOv(t,s){document.getElementById('ovT').textContent=t||'Processing...';document.getElementById('ovS').textContent=s||'Please wait';document.getElementById('ov').classList.add('on');}
-function hideOv(){document.getElementById('ov').classList.remove('on');}
-function closeConfirm(){document.getElementById('confirmModal').classList.remove('on');}
-function show(id){document.getElementById(id).classList.remove('hide');}
-function hide(id){document.getElementById(id).classList.add('hide');}
+async function safeFetch(url,ms){const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||FETCH_TIMEOUT);try{const r=await fetch(url,{redirect:'follow',signal:c.signal});clearTimeout(t);const txt=await r.text();if(txt.trim().startsWith('<!DOCTYPE')||txt.trim().startsWith('<html')){if(txt.includes('accounts.google.com'))throw new Error('AUTH_ERROR');throw new Error('HTML_RESPONSE');}try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('PARSE_ERROR')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('TIMEOUT');throw err}}
 
-async function safeFetch(url,timeoutMs){
-  const c=new AbortController();const t=setTimeout(()=>c.abort(),timeoutMs||FETCH_TIMEOUT);
-  try{const r=await fetch(url,{method:'GET',redirect:'follow',signal:c.signal});clearTimeout(t);const txt=await r.text();
-    if(txt.trim().startsWith('<!DOCTYPE')||txt.trim().startsWith('<html')||txt.trim().startsWith('<HTML')){if(txt.includes('accounts.google.com'))throw new Error('AUTH_ERROR');throw new Error('HTML_RESPONSE');}
-    try{return JSON.parse(txt);}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('PARSE_ERROR');}
-  }catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('TIMEOUT');throw err;}
-}
+function getFriendlyError(err){const m=err.message||'';if(m==='AUTH_ERROR')return{short:'Not deployed as "Anyone"',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};if(m==='TIMEOUT')return{short:'Server timed out',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};return{short:m,detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'}}
 
-function getFriendlyError(err){
-  const m=err.message||String(err);
-  if(m==='AUTH_ERROR')return{short:'Script not deployed as "Anyone".',detail:'<p>Set "Who has access" to <code>Anyone</code>.</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-  if(m==='HTML_RESPONSE')return{short:'Wrong URL or script error.',detail:'<p>URL must end with <code>/exec</code>.</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-  if(m==='PARSE_ERROR')return{short:'Invalid response.',detail:'<p>Re-deploy.</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-  if(m==='TIMEOUT')return{short:'Server timed out.',detail:'<p>Try again.</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-  if(m.includes('Failed to fetch')||m.includes('NetworkError'))return{short:'Cannot reach server.',detail:'<p>Check internet.</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-  return{short:m,detail:'<p>'+m+'</p><button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};
-}
-
-/* ══════════════════════════════════════════════════════════════
-   ★★★ APPLY SETTINGS TO PUBLIC PAGE ★★★
-   ══════════════════════════════════════════════════════════════ */
-function applyPublicSettings(s){
-  // Lottery name
-  if(s.lottery_name){
-    LOTTERY_NAME=s.lottery_name;
-    document.title=s.lottery_name;
-    // Split name for logo: e.g. "LUCKY 6 LOTTERY" → "LUCKY 6" + "LOTTERY"
-    const parts=s.lottery_name.split(' ');
-    if(parts.length>=2){
-      const last=parts.pop();
-      document.getElementById('logoText').innerHTML='🎰 '+parts.join(' ')+'<span>'+last+'</span>';
+/* ═══ ★ FIXED DRAW DATE PARSER ═══ */
+function parseDrawDate(dateStr){
+  if(!dateStr||!dateStr.trim())return null;
+  // Handle YYYY-MM-DD format safely across all browsers
+  var parts=dateStr.trim().split('-');
+  if(parts.length===3){
+    var y=parseInt(parts[0]),m=parseInt(parts[1])-1,d=parseInt(parts[2]);
+    if(!isNaN(y)&&!isNaN(m)&&!isNaN(d)){
+      return new Date(y,m,d);
     }
   }
+  // Fallback: try other formats
+  var fallback=new Date(dateStr);
+  if(!isNaN(fallback.getTime()))return fallback;
+  return null;
+}
 
-  // GCash
-  if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name;}
-  if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number;}
+function formatDrawDate(dateStr){
+  var d=parseDrawDate(dateStr);
+  if(!d)return null;
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  return days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+}
 
-  // Price
-  if(s.price_per_number && s.price_per_number>0){
-    PRICE_PER=s.price_per_number;
-    document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';
-    document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!';
-  }
-
-  // Quantity limits
-  if(s.min_quantity && s.min_quantity>0){
-    MIN_QTY=s.min_quantity;
-    document.getElementById('fQ').min=MIN_QTY;
-    document.getElementById('fQ').placeholder='Minimum '+MIN_QTY+' numbers';
-  }
-  if(s.max_quantity && s.max_quantity>0){
-    MAX_QTY=s.max_quantity;
-    document.getElementById('fQ').max=MAX_QTY;
-  }
+/* ═══ APPLY SETTINGS ═══ */
+function applyPublicSettings(s){
+  if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var last=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+last+'</span>';}}
+  if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}
+  if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}
+  if(s.price_per_number&&s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!'}
+  if(s.min_quantity&&s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('fQ').placeholder='Minimum '+MIN_QTY}
+  if(s.max_quantity&&s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}
   document.getElementById('qtyLabel').innerHTML='How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">('+MIN_QTY.toLocaleString()+' – '+MAX_QTY.toLocaleString()+')</span>';
-  document.getElementById('qtyHelp').textContent='Each = unique random 6-digit code (000000–999999). Min '+MIN_QTY.toLocaleString()+', max '+MAX_QTY.toLocaleString()+' per transaction.';
+  document.getElementById('qtyHelp').textContent='Each = unique 6-digit code. Min '+MIN_QTY.toLocaleString()+', max '+MAX_QTY.toLocaleString()+'.';
 
-  // Draw date
-  if(s.draw_date){
-    const db=document.getElementById('drawBanner');
-    const dt=document.getElementById('drawDateText');
-    try{
-      const d=new Date(s.draw_date+'T00:00:00');
-      dt.textContent=d.toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-      db.style.display='block';
-    }catch(e){db.style.display='none';}
-  } else {
-    document.getElementById('drawBanner').style.display='none';
-  }
+  // ★ FIXED DRAW DATE
+  var formatted=formatDrawDate(s.draw_date);
+  if(formatted){document.getElementById('drawDateText').textContent=formatted;document.getElementById('drawBanner').style.display='block';}
+  else{document.getElementById('drawBanner').style.display='none';}
 
-  // Announcement
-  if(s.announcement && s.announcement.trim()){
-    document.getElementById('announceText').textContent=s.announcement;
-    document.getElementById('announceBanner').style.display='block';
-  } else {
-    document.getElementById('announceBanner').style.display='none';
-  }
-
-  // Maintenance mode
-  if(s.maintenance_mode){
-    document.getElementById('maintOverlay').classList.add('on');
-  } else {
-    document.getElementById('maintOverlay').classList.remove('on');
-  }
-
-  // Recalculate total if qty already entered
+  if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}
+  if(s.maintenance_mode){document.getElementById('maintOverlay').classList.add('on')}else{document.getElementById('maintOverlay').classList.remove('on')}
   calc();
 }
 
-/* ═══ PUBLIC PAGE FUNCTIONS ═══ */
-function titleCase(s){return s.replace(/\b\w/g,c=>c.toUpperCase());}
-function getDigitsOnly(s){return s.replace(/\D/g,'');}
-function isValidPhone(s){return getDigitsOnly(s).length===11;}
+/* ═══ PUBLIC FUNCTIONS ═══ */
+function titleCase(s){return s.replace(/\b\w/g,c=>c.toUpperCase())}
+function getDigitsOnly(s){return s.replace(/\D/g,'')}
+function isValidPhone(s){return getDigitsOnly(s).length===11}
+function updatePhoneStatus(){const raw=document.getElementById('fP').value,d=getDigitsOnly(raw),err=document.getElementById('phoneErr'),inp=document.getElementById('fP');if(!raw){err.style.display='none';inp.style.borderColor='rgba(255,255,255,.1)';return}if(d.length===11){err.style.display='none';inp.style.borderColor='var(--ok)'}else{err.style.display='block';err.textContent='Phone must be 11 digits ('+d.length+'/11)';inp.style.borderColor='var(--err)'}}
+function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+function updateProgress(sold,rem){const pct=Math.max(0,Math.min(100,(rem/TOTAL_POOL)*100));const f=document.getElementById('progressFill'),t=document.getElementById('availTxt');f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');if(pct>60){t.textContent='Plenty available';t.classList.add('high')}else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid')}else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low')}else if(pct>0){t.textContent='Almost sold out!';t.classList.add('low');f.classList.add('low')}else{t.textContent='Sold out';t.classList.add('low');f.classList.add('low')}}
 
-function updatePhoneStatus(){
-  const raw=document.getElementById('fP').value;const d=getDigitsOnly(raw);
-  const err=document.getElementById('phoneErr'),inp=document.getElementById('fP');
-  if(raw===''){err.style.display='none';inp.style.borderColor='rgba(255,255,255,.1)';return;}
-  if(d.length===11){err.style.display='none';inp.style.borderColor='var(--ok)';}
-  else{err.style.display='block';err.textContent='Phone must be 11 digits ('+d.length+'/11)';inp.style.borderColor=d.length>0?'var(--err)':'rgba(255,255,255,.1)';}
+async function checkConnection(){const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');bar.className='conn checking';txt.textContent='Checking...';errP.classList.add('hide');if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}try{const[health,settings,stats]=await Promise.all([safeFetch(SCRIPT_URL+'?action=health',12000),safeFetch(SCRIPT_URL+'?action=publicSettings',12000),safeFetch(SCRIPT_URL+'?action=stats',12000)]);if(health.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}if(settings.success)applyPublicSettings(settings);if(stats.success)updateProgress(stats.sold,stats.remaining)}catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide')}}
+
+function calc(){const v=Math.min(MAX_QTY,Math.max(0,parseInt(document.getElementById('fQ').value)||0));document.getElementById('dT').textContent='₱ '+(v*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function go2(){const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);if(!nm)return toast('Enter your name.','err');if(!isValidPhone(ph))return toast('Phone must be 11 digits.','err');if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Minimum '+MIN_QTY+'.','err')}if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Maximum '+MAX_QTY.toLocaleString()+'.','err')}hide('p1');show('p2');document.getElementById('dA').textContent=' ₱ '+(qt*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});stpSet(2)}
+function go1(){hide('p2');show('p1');stpSet(1)}
+function stpSet(n){const c=(id,cl)=>document.getElementById(id).className=cl;c('i1',n===1?'stp on':'stp ok');c('i2',n===2?'stp on':n>2?'stp ok':'stp');c('i3',n===3?'stp on':'stp');c('l1',n>=2?'sln on':'sln');c('l2',n>=3?'sln on':'sln')}
+
+function submitPurchase(){const ref=document.getElementById('fR').value.trim();if(!ref)return toast('Enter GCash ref.','err');if(!serverOnline){toast('Offline.','err');checkConnection();return}const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);document.getElementById('buyBtn').disabled=true;attemptPurchase(nm,ph,qt,ref,0)}
+async function attemptPurchase(nm,ph,qt,ref,tryN){const rb=document.getElementById('rb'),rf=document.getElementById('rf');if(tryN===0){showOv('Generating '+qt.toLocaleString()+' numbers...','');rb.style.display='none'}else{showOv('Retry '+tryN+'/'+MAX_RETRY,'');rb.style.display='block';rf.style.transition='none';rf.style.width='0%';setTimeout(()=>{rf.style.transition='width '+(RETRY_MS[tryN-1]/1000)+'s linear';rf.style.width='100%'},50)}if(tryN>0)await new Promise(r=>setTimeout(r,RETRY_MS[tryN-1]));try{const d=await safeFetch(SCRIPT_URL+'?'+new URLSearchParams({action:'purchase',quantity:qt,name:nm,phone:ph,gcashRef:ref}),FETCH_TIMEOUT);if(d.success){hideOv();document.getElementById('buyBtn').disabled=false;myNums=d.numbers.map(n=>pad6(n));showResult(d,nm,ph,qt,ref);toast('🎉 '+d.quantity.toLocaleString()+' numbers!','suc')}else if(d.retryable&&tryN<MAX_RETRY){toast('Retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1)}else{hideOv();document.getElementById('buyBtn').disabled=false;toast(d.error||'Failed.','err')}}catch(err){if(tryN<MAX_RETRY){toast('Retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1)}else{hideOv();document.getElementById('buyBtn').disabled=false;toast(getFriendlyError(err).short,'err')}}}
+
+function showResult(d,nm,ph,qt,ref){hide('secB');show('secR');stpSet(3);document.getElementById('rI').textContent=d.transactionId;document.getElementById('rD').textContent=d.timestamp||new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'});document.getElementById('rN').textContent=nm;document.getElementById('rP').textContent=ph;document.getElementById('rQ').textContent=d.quantity.toLocaleString()+' numbers';document.getElementById('rA').textContent='₱ '+Number(d.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('rR').textContent=ref;document.getElementById('rC').textContent=myNums.length.toLocaleString();let h='';for(let i=0;i<myNums.length;i++)h+='<div class="ni">'+myNums[i]+'</div>';document.getElementById('nG').innerHTML=h;scrollTo({top:0,behavior:'smooth'})}
+function cpA(){navigator.clipboard.writeText(myNums.join('\n')).then(()=>toast('Copied!','suc')).catch(()=>{const a=document.createElement('textarea');a.value=myNums.join('\n');document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);toast('Copied!','suc')})}
+function dlA(){const tx=document.getElementById('rI').textContent,L=['═══ '+LOTTERY_NAME+' ═══','','TX: '+tx,'Date: '+document.getElementById('rD').textContent,'Name: '+document.getElementById('rN').textContent,'Phone: '+document.getElementById('rP').textContent,'Qty: '+myNums.length,'Amount: '+document.getElementById('rA').textContent,'GCash: '+document.getElementById('rR').textContent,'','── NUMBERS ──',''];for(let i=0;i<myNums.length;i++)L.push(myNums[i]);const b=new Blob([L.join('\n')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+tx+'.txt';a.click();URL.revokeObjectURL(a.href);toast('Downloaded!','suc')}
+function prA(){const w=window.open('');w.document.write('<!DOCTYPE html><html><head><title>'+LOTTERY_NAME+'</title><style>body{font-family:monospace;padding:20px;font-size:12px}h1{text-align:center}.g{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}.n{border:1px solid #ddd;padding:5px;text-align:center;font-weight:bold;letter-spacing:2px}.i{border:1px solid #ccc;padding:10px;border-radius:6px;margin-bottom:14px;line-height:2}</style></head><body><h1>🎰 '+LOTTERY_NAME+'</h1><div class="i"><b>TX:</b> '+document.getElementById('rI').textContent+' | <b>Date:</b> '+document.getElementById('rD').textContent+'<br><b>Name:</b> '+document.getElementById('rN').textContent+' | <b>Phone:</b> '+document.getElementById('rP').textContent+'<br><b>Qty:</b> '+myNums.length+' | <b>Amt:</b> '+document.getElementById('rA').textContent+'</div><div class="g">'+myNums.map(n=>'<div class="n">'+n+'</div>').join('')+'</div></body></html>');w.document.close();setTimeout(()=>w.print(),300)}
+function cpGC(){navigator.clipboard.writeText(GCASH_NUMBER.replace(/\D/g,'')).then(()=>toast('GCash # copied!','suc')).catch(()=>{})}
+function again(){hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>document.getElementById(id).value='');document.getElementById('dT').textContent='₱ 0.00';document.getElementById('phoneErr').style.display='none';document.getElementById('fP').style.borderColor='rgba(255,255,255,.1)';hide('p2');show('p1');stpSet(1);document.getElementById('errPanel').classList.add('hide');myNums=[];scrollTo({top:0,behavior:'smooth'})}
+
+/* ═══ ADMIN ═══ */
+async function adminApi(action,params){params=params||{};params.action=action;params.token=TOKEN;const url=SCRIPT_URL+'?'+new URLSearchParams(params);const c=new AbortController();const t=setTimeout(()=>c.abort(),60000);try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);const txt=await r.text();try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}}
+
+async function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{const d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;localStorage.setItem('lk6_token',TOKEN);localStorage.setItem('lk6_user',u);document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();toast('Welcome!','suc')}else toast(d.error,'err')}catch(e){toast('Error: '+e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
+function doLogout(){TOKEN='';localStorage.removeItem('lk6_token');localStorage.removeItem('lk6_user');cache={dashboard:null,dashboardTime:0,txData:null,txTime:0,numData:null,numTime:0,settingsData:null,settingsTime:0};document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginPass').value='';toast('Logged out.','warn')}
+
+function goPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+name).classList.add('active');document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active')});if(name==='dashboard')loadDashboard();if(name==='transactions')loadTransactions();if(name==='numbers')loadNumbers();if(name==='settings')loadSettingsFn()}
+
+// ★ FAST DASHBOARD — use cache if fresh
+async function loadDashboard(force){
+  var now=Date.now();
+  if(!force&&cache.dashboard&&now-cache.dashboardTime<CACHE_MS){populateDashboard(cache.dashboard);return}
+  try{const[d,a]=await Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]);if(d.success){cache.dashboard=d;cache.dashboardTime=Date.now();populateDashboard(d)}if(a.success)populateFeed(a.activities)}catch(e){toast('Error','err')}
 }
+function populateDashboard(d){document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsPct').textContent=d.percentSold+'% sold';document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsTx').textContent=d.totalTransactions.toLocaleString();document.getElementById('dsSuccess').textContent=d.successTransactions.toLocaleString();document.getElementById('dsFailed').textContent=d.failedTransactions.toLocaleString();document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();document.getElementById('dsToday').textContent=d.todayTransactions.toLocaleString();document.getElementById('dsTodayRev').textContent='₱'+d.todayRevenue.toLocaleString();const pct=d.totalSold/d.totalPool*100;const bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid')}
+function populateFeed(acts){const list=document.getElementById('feedList');if(!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}let h='';acts.forEach(a=>{const dc=a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail';h+='<li><div class="dot '+dc+'"></div><div style="flex:1"><strong>'+a.name+'</strong> — '+a.quantity+' (₱'+Number(a.amount).toLocaleString()+')<br><span class="time">'+a.timestamp+' • '+a.transactionId+'</span></div><span class="badge '+(a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail')+'">'+a.status+'</span></li>'});list.innerHTML=h}
 
-function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
-
-function updateProgress(sold,remaining){
-  const pct=Math.max(0,Math.min(100,(remaining/TOTAL_POOL)*100));
-  const f=document.getElementById('progressFill'),t=document.getElementById('availTxt');
-  f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');
-  if(pct>60){t.textContent='Plenty available';t.classList.add('high');}
-  else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid');}
-  else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low');}
-  else if(pct>0){t.textContent='Almost sold out!';t.classList.add('low');f.classList.add('low');}
-  else{t.textContent='Sold out';t.classList.add('low');f.classList.add('low');}
+// ★ FAST TRANSACTIONS — cached
+async function loadTransactions(page){
+  currentPage.tx=page||currentPage.tx||1;
+  var now=Date.now();
+  var cacheKey='tx_'+currentPage.tx;
+  if(cache[cacheKey]&&now-cache[cacheKey+'_t']<CACHE_MS){renderTx(cache[cacheKey]);return}
+  showOv('Loading...','');
+  try{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});hideOv();if(d.success){cache[cacheKey]=d;cache[cacheKey+'_t']=Date.now();renderTx(d)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
 }
+function renderTx(d){const body=document.getElementById('txBody');if(!d.transactions.length){body.innerHTML='<tr><td colspan="9" class="tbl-empty">No transactions.</td></tr>';document.getElementById('txPagination').innerHTML='';return}let h='';d.transactions.forEach(t=>{const sc=t.status==='SUCCESS'?'ok':t.status==='DELETED'?'del':'fail';h+='<tr data-tx="'+t.transactionId+'"><td>'+t.timestamp+'</td><td class="mono" style="font-size:.75rem">'+t.transactionId+'</td><td>'+t.name+'</td><td>'+t.phone+'</td><td>'+t.gcashRef+'</td><td>'+t.quantity+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+t.status+'</span></td><td>'+(t.status==='SUCCESS'?'<button class="btn-sm btn-red" onclick="confirmDelete(\''+t.transactionId+'\')">Delete</button>':'—')+'</td></tr>'});body.innerHTML=h;renderPagination('txPagination',d.page,d.totalPages,'loadTransactions')}
 
-async function checkConnection(){
-  const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');
-  bar.className='conn checking';txt.textContent='Checking server connection...';errP.classList.add('hide');
-  if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Not configured — set SCRIPT_URL';document.getElementById('errDetail').innerHTML='<p>Set <code>SCRIPT_URL</code>.</p>';errP.classList.remove('hide');return;}
-  try{const d=await safeFetch(SCRIPT_URL+'?action=health',15000);if(d.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected — ready';loadPublicStats();loadPublicSettingsFromServer();}else throw new Error(d.error||'Health check failed');}
-  catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide');}
+// ★ FAST NUMBERS — cached
+async function loadNumbers(page){
+  currentPage.num=page||currentPage.num||1;
+  var now=Date.now();
+  var ck='num_'+currentPage.num;
+  if(cache[ck]&&now-cache[ck+'_t']<CACHE_MS){renderNums(cache[ck]);return}
+  showOv('Loading...','');
+  try{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});hideOv();if(d.success){cache[ck]=d;cache[ck+'_t']=Date.now();renderNums(d)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
 }
+function renderNums(d){const body=document.getElementById('numBody');if(!d.numbers.length){body.innerHTML='<tr><td colspan="6" class="tbl-empty">No numbers.</td></tr>';document.getElementById('numPagination').innerHTML='';return}let h='';d.numbers.forEach(n=>{h+='<tr><td class="mono">'+n.number+'</td><td style="font-size:.75rem">'+n.transactionId+'</td><td>'+n.name+'</td><td>'+n.phone+'</td><td>'+n.gcashRef+'</td><td>'+n.timestamp+'</td></tr>'});body.innerHTML=h;renderPagination('numPagination',d.page,d.totalPages,'loadNumbers')}
 
-async function loadPublicStats(){try{const d=await safeFetch(SCRIPT_URL+'?action=stats',15000);if(d.success)updateProgress(d.sold,d.remaining);}catch(e){}}
+function renderPagination(cid,cur,total,fn){const c=document.getElementById(cid);if(total<=1){c.innerHTML='';return}let h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>←</button>';const s=Math.max(1,cur-2),e=Math.min(total,cur+2);if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';if(s>2)h+='<span class="pg-info">…</span>';for(let i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';if(e<total-1)h+='<span class="pg-info">…</span>';if(e<total)h+='<button class="pg-btn" onclick="'+fn+'('+total+')">'+total+'</button>';h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=total?'disabled':'')+'>→</button> <span class="pg-info">'+cur+'/'+total+'</span>';c.innerHTML=h}
 
-/* ★ Load settings from Admin sheet and apply to public page */
-async function loadPublicSettingsFromServer(){
+// ★ INSTANT DELETE — optimistic UI, then server confirm
+function confirmDelete(txId){document.getElementById('confirmTitle').textContent='⚠️ Delete?';document.getElementById('confirmMsg').innerHTML='Delete <code>'+txId+'</code> and all numbers?<br><strong>Cannot be undone.</strong>';document.getElementById('confirmYes').textContent='Delete';document.getElementById('confirmYes').onclick=()=>doDeleteTx(txId);document.getElementById('confirmModal').classList.add('on')}
+
+async function doDeleteTx(txId){
+  closeConfirm();
+
+  // ★ OPTIMISTIC: instantly remove row from UI
+  const row=document.querySelector('tr[data-tx="'+txId+'"]');
+  if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}
+  toast('Deleting...','warn');
+
+  // ★ Invalidate caches
+  cache.dashboard=null;Object.keys(cache).forEach(k=>{if(k.startsWith('tx_')||k.startsWith('num_'))delete cache[k]});
+
   try{
-    const d=await safeFetch(SCRIPT_URL+'?action=publicSettings',15000);
-    if(d.success) applyPublicSettings(d);
-  }catch(e){
-    // Settings failed to load — use defaults from HTML
-    console.log('Could not load settings, using defaults.');
-  }
+    const d=await adminApi('adminDeleteTransaction',{transactionId:txId});
+    if(d.success){toast('✅ '+d.message,'suc');loadDashboard(true)}
+    else{toast(d.error,'err');loadTransactions(currentPage.tx)} // reload if failed
+  }catch(e){toast('Failed: '+e.message,'err');loadTransactions(currentPage.tx)}
 }
 
-function calc(){
-  const v=Math.min(MAX_QTY,Math.max(0,parseInt(document.getElementById('fQ').value)||0));
-  const total=v*PRICE_PER;
-  document.getElementById('dT').textContent='₱ '+total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+async function searchNumber(){const q=document.getElementById('searchNum').value.trim();if(!q)return toast('Enter number.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchNumber',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.found?'✅ '+d.query+' found':'❌ Not found';if(d.found){document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr>';let h='';d.results.forEach(r=>{h+='<tr><td class="mono">'+r.number+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.timestamp+'</td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">Not sold.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
+
+async function searchBuyerFn(){const q=document.getElementById('searchBuyer').value.trim();if(!q)return toast('Enter term.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchBuyer',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.total+' result(s)';if(d.total>0){document.getElementById('searchThead').innerHTML='<tr><th>Date</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amt</th><th>Status</th></tr>';let h='';d.results.forEach(r=>{const sc=r.status==='SUCCESS'?'ok':r.status==='DELETED'?'del':'fail';h+='<tr><td>'+r.timestamp+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.quantity+'</td><td>₱'+Number(r.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">None found.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
+
+async function addNumber(){const num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{const d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cache.dashboard=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
+
+async function removeNumber(){const num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{const d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cache.dashboard=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
+
+// ★ FAST SETTINGS — cached
+async function loadSettingsFn(){
+  var now=Date.now();
+  if(cache.settingsData&&now-cache.settingsTime<CACHE_MS*3){fillSettings(cache.settingsData);return}
+  showOv('Loading...','');
+  try{const d=await adminApi('adminGetSettings');hideOv();if(d.success){cache.settingsData=d.settings;cache.settingsTime=Date.now();fillSettings(d.settings)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
 }
+function fillSettings(s){document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNum').value=s.gcash_number||'';document.getElementById('setLotteryName').value=s.lottery_name||'';document.getElementById('setDrawDate').value=s.draw_date||'';document.getElementById('setPrice').value=s.price_per_number||'1';document.getElementById('setMinQty').value=s.min_quantity||'50';document.getElementById('setMaxQty').value=s.max_quantity||'10000';document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setMaintenance').value=s.maintenance_mode||'false'}
 
-function go2(){
-  const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);
-  if(!nm)return toast('Please enter your full name.','err');
-  if(!isValidPhone(ph))return toast('Phone must be exactly 11 digits ('+getDigitsOnly(ph).length+'/11).','err');
-  if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Minimum quantity is '+MIN_QTY+'.','err');}
-  if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Maximum '+MAX_QTY.toLocaleString()+' per transaction.','err');}
-  hide('p1');show('p2');
-  const amt=qt*PRICE_PER;
-  document.getElementById('dA').textContent=' ₱ '+amt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  stpSet(2);
-}
-function go1(){hide('p2');show('p1');stpSet(1);}
-function stpSet(n){const c=(id,cl)=>document.getElementById(id).className=cl;c('i1',n===1?'stp on':'stp ok');c('i2',n===2?'stp on':n>2?'stp ok':'stp');c('i3',n===3?'stp on':'stp');c('l1',n>=2?'sln on':'sln');c('l2',n>=3?'sln on':'sln');}
+async function saveSettings(){const np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;if(np&&np.length<6)return toast('Min 6 chars.','err');if(np&&np!==np2)return toast('No match.','err');showOv('Saving...','');const p={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};if(np)p.new_password=np;try{const d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cache.settingsData=null;document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed. Re-login.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
 
-function submitPurchase(){
-  const ref=document.getElementById('fR').value.trim();if(!ref)return toast('Enter your GCash reference number.','err');
-  if(!serverOnline){toast('Server offline.','err');checkConnection();return;}
-  const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);
-  document.getElementById('buyBtn').disabled=true;attemptPurchase(nm,ph,qt,ref,0);
-}
-
-async function attemptPurchase(nm,ph,qt,ref,tryN){
-  const rb=document.getElementById('rb'),rf=document.getElementById('rf');
-  if(tryN===0){showOv('Generating '+qt.toLocaleString()+' unique numbers...','Verifying uniqueness and saving');rb.style.display='none';}
-  else{showOv('⏳ Retry '+tryN+' of '+MAX_RETRY,'Server busy. Retrying...');rb.style.display='block';rf.style.transition='none';rf.style.width='0%';setTimeout(()=>{rf.style.transition='width '+(RETRY_MS[tryN-1]/1000)+'s linear';rf.style.width='100%';},50);}
-  if(tryN>0)await new Promise(r=>setTimeout(r,RETRY_MS[tryN-1]));
-  const params=new URLSearchParams({action:'purchase',quantity:qt,name:nm,phone:ph,gcashRef:ref});
-  try{
-    const d=await safeFetch(SCRIPT_URL+'?'+params.toString(),FETCH_TIMEOUT);
-    if(d.success){hideOv();document.getElementById('buyBtn').disabled=false;myNums=d.numbers.map(n=>pad6(n));showResult(d,nm,ph,qt,ref);loadPublicStats();toast('🎉 '+d.quantity.toLocaleString()+' unique numbers generated!','suc');}
-    else if(d.retryable&&tryN<MAX_RETRY){toast('⏳ Busy — retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1);}
-    else{hideOv();document.getElementById('buyBtn').disabled=false;toast(d.error||'Purchase failed.','err');}
-  }catch(err){
-    if(tryN<MAX_RETRY){toast('⚠️ Retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1);}
-    else{hideOv();document.getElementById('buyBtn').disabled=false;toast(getFriendlyError(err).short,'err');}
-  }
-}
-
-function showResult(d,nm,ph,qt,ref){
-  hide('secB');show('secR');stpSet(3);
-  document.getElementById('rI').textContent=d.transactionId;document.getElementById('rD').textContent=d.timestamp||new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'});
-  document.getElementById('rN').textContent=nm;document.getElementById('rP').textContent=ph;
-  document.getElementById('rQ').textContent=d.quantity.toLocaleString()+' numbers';
-  document.getElementById('rA').textContent='₱ '+Number(d.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('rR').textContent=ref;document.getElementById('rC').textContent=myNums.length.toLocaleString();
-  const g=document.getElementById('nG');let h='';for(let i=0;i<myNums.length;i++)h+='<div class="ni">'+myNums[i]+'</div>';g.innerHTML=h;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function cpA(){const t=myNums.join('\n');navigator.clipboard.writeText(t).then(()=>toast('Copied!','suc')).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);toast('Copied!','suc');});}
-function dlA(){
-  const tx=document.getElementById('rI').textContent;const amt=document.getElementById('rA').textContent;
-  const L=['══════════════════════════════════════','   '+LOTTERY_NAME+' — YOUR NUMBERS','══════════════════════════════════════','','Transaction : '+tx,'Date        : '+document.getElementById('rD').textContent,'Name        : '+document.getElementById('rN').textContent,'Phone       : '+document.getElementById('rP').textContent,'Quantity    : '+myNums.length.toLocaleString(),'Amount      : '+amt,'GCash Ref   : '+document.getElementById('rR').textContent,'','── 6-DIGIT NUMBERS ──',''];
-  for(let i=0;i<myNums.length;i++)L.push(myNums[i]);const b=new Blob([L.join('\n')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+tx+'.txt';a.click();URL.revokeObjectURL(a.href);toast('Download started!','suc');
-}
-function prA(){const w=window.open('','_blank');const amt=document.getElementById('rA').textContent;w.document.write('<!DOCTYPE html><html><head><title>'+LOTTERY_NAME+'</title><style>body{font-family:monospace;padding:20px;font-size:12px}h1{text-align:center;font-size:20px}.s{text-align:center;color:#666;margin-bottom:14px;font-size:11px}.i{border:1px solid #ccc;padding:10px;border-radius:6px;margin-bottom:14px;line-height:2}.g{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}.n{border:1px solid #ddd;padding:5px;text-align:center;font-weight:bold;letter-spacing:2px;font-size:12px}</style></head><body><h1>🎰 '+LOTTERY_NAME+'</h1><div class="s">000000–999999 • ₱'+PRICE_PER.toFixed(2)+'/number</div><div class="i"><b>TX:</b> '+document.getElementById('rI').textContent+' <b>Date:</b> '+document.getElementById('rD').textContent+'<br><b>Name:</b> '+document.getElementById('rN').textContent+' <b>Phone:</b> '+document.getElementById('rP').textContent+'<br><b>Qty:</b> '+myNums.length.toLocaleString()+' <b>Amt:</b> '+amt+'</div><div class="g">'+myNums.map(n=>'<div class="n">'+n+'</div>').join('')+'</div></body></html>');w.document.close();setTimeout(()=>w.print(),300);}
-function cpGC(){navigator.clipboard.writeText(GCASH_NUMBER.replace(/\D/g,'')).then(()=>toast('GCash # copied!','suc')).catch(()=>{});}
-
-function again(){
-  hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('dT').textContent='₱ 0.00';document.getElementById('phoneErr').style.display='none';
-  document.getElementById('fP').style.borderColor='rgba(255,255,255,.1)';hide('p2');show('p1');stpSet(1);
-  document.getElementById('errPanel').classList.add('hide');myNums=[];window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* ══════════════════════════════════════════════════════════════
-   ADMIN FUNCTIONS
-   ══════════════════════════════════════════════════════════════ */
-async function adminApi(action,params){
-  params=params||{};params.action=action;params.token=TOKEN;
-  const url=SCRIPT_URL+'?'+new URLSearchParams(params).toString();
-  const c=new AbortController();const t=setTimeout(()=>c.abort(),60000);
-  try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);const txt=await r.text();try{return JSON.parse(txt);}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error');}}
-  catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err;}
-}
-
-async function doLogin(){
-  const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
-  if(!u||!p)return toast('Enter username and password.','err');
-  document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');
-  try{const d=await adminApi('adminLogin',{username:u,password:p});
-    if(d.success){TOKEN=d.token;localStorage.setItem('lk6_token',TOKEN);localStorage.setItem('lk6_user',u);document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();toast('Welcome, '+u+'!','suc');}
-    else toast(d.error||'Login failed.','err');
-  }catch(e){toast('Connection error: '+e.message,'err');}
-  hideOv();document.getElementById('loginBtn').disabled=false;
-}
-function doLogout(){TOKEN='';localStorage.removeItem('lk6_token');localStorage.removeItem('lk6_user');document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginPass').value='';toast('Logged out.','warn');}
-
-function goPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+name).classList.add('active');
-  document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.sidebar .nav-item[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));
-  document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active');});
-  if(name==='dashboard')loadDashboard();if(name==='transactions')loadTransactions();if(name==='numbers')loadNumbers();if(name==='settings')loadSettingsFn();
-}
-
-async function loadDashboard(){try{const d=await adminApi('adminDashboard');if(d.success)populateDashboard(d);else toast(d.error,'err');}catch(e){toast('Error','err');}loadRecentActivity();}
-function populateDashboard(d){document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsPct').textContent=d.percentSold+'% sold';document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsTx').textContent=d.totalTransactions.toLocaleString();document.getElementById('dsSuccess').textContent=d.successTransactions.toLocaleString();document.getElementById('dsFailed').textContent=d.failedTransactions.toLocaleString();document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();document.getElementById('dsToday').textContent=d.todayTransactions.toLocaleString();document.getElementById('dsTodayRev').textContent='₱'+d.todayRevenue.toLocaleString();const pct=d.totalSold/d.totalPool*100;const bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid');}
-
-async function loadRecentActivity(){try{const d=await adminApi('adminRecentActivity',{limit:15});if(!d.success)return;const list=document.getElementById('feedList');if(!d.activities.length){list.innerHTML='<li class="tbl-empty">No activity yet.</li>';return;}let h='';d.activities.forEach(a=>{const dc=a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail';h+='<li><div class="dot '+dc+'"></div><div style="flex:1"><strong>'+a.name+'</strong> — '+a.quantity+' numbers (₱'+Number(a.amount).toLocaleString()+')<br><span class="time">'+a.timestamp+' • '+a.transactionId+'</span></div><span class="badge '+(a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail')+'">'+a.status+'</span></li>';});list.innerHTML=h;}catch(e){}}
-
-async function loadTransactions(page){currentPage.tx=page||1;showOv('Loading...','');try{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});hideOv();if(!d.success)return toast(d.error,'err');const body=document.getElementById('txBody');if(!d.transactions.length){body.innerHTML='<tr><td colspan="9" class="tbl-empty">No transactions.</td></tr>';document.getElementById('txPagination').innerHTML='';return;}let h='';d.transactions.forEach(t=>{const sc=t.status==='SUCCESS'?'ok':t.status==='DELETED'?'del':'fail';h+='<tr><td>'+t.timestamp+'</td><td class="mono" style="font-size:.75rem">'+t.transactionId+'</td><td>'+t.name+'</td><td>'+t.phone+'</td><td>'+t.gcashRef+'</td><td>'+t.quantity+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+t.status+'</span></td><td>'+(t.status==='SUCCESS'?'<button class="btn-sm btn-red" onclick="confirmDelete(\''+t.transactionId+'\')">Delete</button>':'—')+'</td></tr>';});body.innerHTML=h;renderPagination('txPagination',d.page,d.totalPages,'loadTransactions');}catch(e){hideOv();toast('Error','err');}}
-
-async function loadNumbers(page){currentPage.num=page||1;showOv('Loading...','');try{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});hideOv();if(!d.success)return toast(d.error,'err');const body=document.getElementById('numBody');if(!d.numbers.length){body.innerHTML='<tr><td colspan="6" class="tbl-empty">No numbers.</td></tr>';document.getElementById('numPagination').innerHTML='';return;}let h='';d.numbers.forEach(n=>{h+='<tr><td class="mono">'+n.number+'</td><td style="font-size:.75rem">'+n.transactionId+'</td><td>'+n.name+'</td><td>'+n.phone+'</td><td>'+n.gcashRef+'</td><td>'+n.timestamp+'</td></tr>';});body.innerHTML=h;renderPagination('numPagination',d.page,d.totalPages,'loadNumbers');}catch(e){hideOv();toast('Error','err');}}
-
-function renderPagination(cid,cur,total,fn){const c=document.getElementById(cid);if(total<=1){c.innerHTML='';return;}let h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>← Prev</button>';const s=Math.max(1,cur-2),e=Math.min(total,cur+2);if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';if(s>2)h+='<span class="pg-info">...</span>';for(let i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';if(e<total-1)h+='<span class="pg-info">...</span>';if(e<total)h+='<button class="pg-btn" onclick="'+fn+'('+total+')">'+total+'</button>';h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=total?'disabled':'')+'>Next →</button><span class="pg-info" style="margin-left:8px">Page '+cur+'/'+total+'</span>';c.innerHTML=h;}
-
-function confirmDelete(txId){document.getElementById('confirmTitle').textContent='⚠️ Delete Transaction?';document.getElementById('confirmMsg').innerHTML='Permanently remove <code>'+txId+'</code> and all its numbers?<br><br><strong>Cannot be undone.</strong>';document.getElementById('confirmYes').textContent='Yes, Delete';document.getElementById('confirmYes').onclick=()=>doDeleteTx(txId);document.getElementById('confirmModal').classList.add('on');}
-async function doDeleteTx(txId){closeConfirm();showOv('Deleting...','');try{const d=await adminApi('adminDeleteTransaction',{transactionId:txId});hideOv();if(d.success){toast(d.message,'suc');loadTransactions(currentPage.tx);loadDashboard();}else toast(d.error,'err');}catch(e){hideOv();toast('Failed','err');}}
-
-async function searchNumber(){const q=document.getElementById('searchNum').value.trim();if(!q)return toast('Enter a number.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchNumber',{query:q});hideOv();const w=document.getElementById('searchResults');w.style.display='block';document.getElementById('searchTitle').textContent=d.found?'✅ Number '+d.query+' found':'❌ Not found';if(d.found){document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr>';let h='';d.results.forEach(r=>{h+='<tr><td class="mono">'+r.number+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.timestamp+'</td></tr>';});document.getElementById('searchTbody').innerHTML=h;}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">Not sold yet.</td></tr>';}}catch(e){hideOv();toast('Error','err');}}
-
-async function searchBuyerFn(){const q=document.getElementById('searchBuyer').value.trim();if(!q)return toast('Enter search term.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchBuyer',{query:q});hideOv();const w=document.getElementById('searchResults');w.style.display='block';document.getElementById('searchTitle').textContent=d.total+' result(s) for "'+q+'"';if(d.total>0){document.getElementById('searchThead').innerHTML='<tr><th>Date</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amount</th><th>Status</th></tr>';let h='';d.results.forEach(r=>{const sc=r.status==='SUCCESS'?'ok':r.status==='DELETED'?'del':'fail';h+='<tr><td>'+r.timestamp+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.quantity+'</td><td>₱'+Number(r.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>';});document.getElementById('searchTbody').innerHTML=h;}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">No records.</td></tr>';}}catch(e){hideOv();toast('Error','err');}}
-
-async function addNumber(){const num=document.getElementById('addNum').value.trim();if(!num||num.length>6)return toast('Enter valid number.','err');const name=document.getElementById('addName').value.trim()||'ADMIN',phone=document.getElementById('addPhone').value.trim()||'N/A';showOv('Adding...','');try{const d=await adminApi('adminAddNumber',{number:num,name:name,phone:phone});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('addNum').value='';document.getElementById('addName').value='';document.getElementById('addPhone').value='';}else toast(d.error,'err');}catch(e){hideOv();toast('Error','err');}}
-
-async function removeNumber(){const num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter a number.','err');document.getElementById('confirmTitle').textContent='⚠️ Remove Number?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Yes, Remove';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{const d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';}else toast(d.error,'err');}catch(e){hideOv();toast('Error','err');}};document.getElementById('confirmModal').classList.add('on');}
-
-async function loadSettingsFn(){showOv('Loading settings...','');try{const d=await adminApi('adminGetSettings');hideOv();if(!d.success)return toast(d.error,'err');const s=d.settings;document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNum').value=s.gcash_number||'';document.getElementById('setLotteryName').value=s.lottery_name||'';document.getElementById('setDrawDate').value=s.draw_date||'';document.getElementById('setPrice').value=s.price_per_number||'1';document.getElementById('setMinQty').value=s.min_quantity||'50';document.getElementById('setMaxQty').value=s.max_quantity||'10000';document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setMaintenance').value=s.maintenance_mode||'false';}catch(e){hideOv();toast('Error loading settings','err');}}
-
-async function saveSettings(){const np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;if(np&&np.length<6)return toast('Password min 6 chars.','err');if(np&&np!==np2)return toast('Passwords don\'t match.','err');showOv('Saving...','');const params={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};if(np)params.new_password=np;try{const d=await adminApi('adminUpdateSettings',params);hideOv();if(d.success){toast('✅ '+d.message,'suc');document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed. Log in again.','warn');setTimeout(doLogout,2000);}}else toast(d.error,'err');}catch(e){hideOv();toast('Save error','err');}}
-
-async function exportData(type){showOv('Exporting...','');try{const d=await adminApi('adminExportData',{type:type});hideOv();if(!d.success)return toast(d.error,'err');let csv=d.headers.join(',')+'\n';d.data.forEach(row=>{csv+=row.map(cell=>'"'+String(cell).replace(/"/g,'""')+'"').join(',')+'\n';});const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Lucky6-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);toast('Exported '+(d.total||0).toLocaleString()+' rows!','suc');}catch(e){hideOv();toast('Export error','err');}}
+async function exportData(type){showOv('Exporting...','');try{const d=await adminApi('adminExportData',{type});hideOv();if(!d.success)return toast(d.error,'err');let csv=d.headers.join(',')+'\n';d.data.forEach(row=>{csv+=row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')+'\n'});const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);toast('Exported '+(d.total||0)+' rows!','suc')}catch(e){hideOv();toast('Error','err')}}
 
 /* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded',async()=>{
   detectMode();
-
   if(IS_ADMIN_MODE){
     const saved=localStorage.getItem('lk6_token'),user=localStorage.getItem('lk6_user');
-    if(saved&&user){TOKEN=saved;showOv('Restoring session...','');try{const d=await adminApi('adminDashboard');if(d.success){document.getElementById('adminUser').textContent=user;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';populateDashboard(d);loadRecentActivity();}else doLogout();}catch(e){doLogout();}hideOv();}
-    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-    document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+    if(saved&&user){TOKEN=saved;showOv('Restoring...','');try{const d=await adminApi('adminDashboard');if(d.success){document.getElementById('adminUser').textContent=user;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';cache.dashboard=d;cache.dashboardTime=Date.now();populateDashboard(d);adminApi('adminRecentActivity',{limit:15}).then(a=>{if(a&&a.success)populateFeed(a.activities)})}else doLogout()}catch(e){doLogout()}hideOv()}
+    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
   } else {
-    // ★ PUBLIC MODE — set defaults then load from server
-    setTodayDate();
-    document.getElementById('dP').textContent=GCASH_NUMBER;
-    document.getElementById('dN').textContent=GCASH_NAME;
-
-    const nameInput=document.getElementById('fN');
-    nameInput.addEventListener('input',()=>{const pos=nameInput.selectionStart;nameInput.value=titleCase(nameInput.value);nameInput.setSelectionRange(pos,pos);});
-
-    const phoneInput=document.getElementById('fP');
-    phoneInput.addEventListener('input',()=>{phoneInput.value=getDigitsOnly(phoneInput.value).substring(0,11);updatePhoneStatus();});
-    phoneInput.addEventListener('blur',updatePhoneStatus);
-
-    const qtyInput=document.getElementById('fQ');
-    qtyInput.addEventListener('input',calc);
-    qtyInput.addEventListener('focus',()=>{qtyInput.value='';calc();});
-    qtyInput.addEventListener('blur',()=>{let v=parseInt(qtyInput.value);if(isNaN(v)||v<MIN_QTY){if(qtyInput.value!==''){qtyInput.value=MIN_QTY;toast('Minimum quantity is '+MIN_QTY,'warn');}}if(v>MAX_QTY){qtyInput.value=MAX_QTY;toast('Maximum '+MAX_QTY.toLocaleString(),'warn');}calc();});
-
-    checkConnection();
-    setInterval(setTodayDate,60000);
+    setTodayDate();document.getElementById('dP').textContent=GCASH_NUMBER;document.getElementById('dN').textContent=GCASH_NAME;
+    const ni=document.getElementById('fN');ni.addEventListener('input',()=>{const p=ni.selectionStart;ni.value=titleCase(ni.value);ni.setSelectionRange(p,p)});
+    const pi=document.getElementById('fP');pi.addEventListener('input',()=>{pi.value=getDigitsOnly(pi.value).substring(0,11);updatePhoneStatus()});pi.addEventListener('blur',updatePhoneStatus);
+    const qi=document.getElementById('fQ');qi.addEventListener('input',calc);qi.addEventListener('focus',()=>{qi.value='';calc()});qi.addEventListener('blur',()=>{let v=parseInt(qi.value);if(isNaN(v)||v<MIN_QTY){if(qi.value!==''){qi.value=MIN_QTY;toast('Minimum '+MIN_QTY,'warn')}}if(v>MAX_QTY){qi.value=MAX_QTY;toast('Maximum '+MAX_QTY.toLocaleString(),'warn')}calc()});
+    checkConnection();setInterval(setTodayDate,60000);
   }
 });
 </script>
 </body>
 </html>
-
