@@ -256,19 +256,51 @@ tr:hover td{background:rgba(255,215,0,.02)}
 </div></div></div></div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxK0hk_Je2YtTUiPAbqycqjAASgtTArUrJ5SB3sttVDSWgrwm7LLLjbWd2AvbzAYMq8NQ/exec';
+const SCRIPT_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 const ADMIN_SECRET='admin2025';
 
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
 let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 
-// ★ DATA CACHE — prevents re-fetching when switching tabs
-let cache={dashboard:null,dashboardTime:0,txData:null,txTime:0,numData:null,numTime:0,settingsData:null,settingsTime:0};
-const CACHE_MS=10000; // 10 second cache
+/* ═══════════════════════════════════════════════════════════
+   ★ ULTRA-FAST CACHE SYSTEM
+   Show cached data in <1ms, refresh from server in background
+   ═══════════════════════════════════════════════════════════ */
+const CACHE={};
+const SERVER_REFRESH_MS=8000;  // fetch new data from server every 8s
+const UI_RENDER_MS=500;        // re-render UI from cache every 500ms
+
+function cacheSet(key,data){CACHE[key]={data:data,time:Date.now()}}
+function cacheGet(key){return CACHE[key]||null}
+function cacheAge(key){const c=CACHE[key];return c?Date.now()-c.time:Infinity}
+function cacheClear(prefix){Object.keys(CACHE).forEach(k=>{if(!prefix||k.startsWith(prefix))delete CACHE[k]})}
+
+// ★ Stale-While-Revalidate: show cache NOW, fetch in background
+async function fetchWithCache(cacheKey,fetchFn,renderFn){
+  const cached=cacheGet(cacheKey);
+
+  // 1. If cached, render INSTANTLY (< 1ms)
+  if(cached){renderFn(cached.data);
+
+    // 2. If cache is still fresh, don't fetch
+    if(cacheAge(cacheKey)<SERVER_REFRESH_MS)return cached.data;
+  }
+
+  // 3. Fetch in background (no spinner if we have cache)
+  try{
+    const fresh=await fetchFn();
+    if(fresh){cacheSet(cacheKey,fresh);renderFn(fresh)}
+    return fresh;
+  }catch(e){
+    // If fetch fails but we have cache, that's fine
+    if(!cached)throw e;
+    return cached.data;
+  }
+}
 
 function pad6(n){return String(n).padStart(6,'0').substring(0,6)}
-function detectMode(){const p=new URLSearchParams(location.search);if(p.get('access')===ADMIN_SECRET){IS_ADMIN_MODE=true;document.getElementById('publicPage').style.display='none';document.getElementById('adminPage').style.display='block';document.title='Lucky 6 — Admin';}else{document.getElementById('publicPage').style.display='block';document.getElementById('adminPage').style.display='none';}}
+function detectMode(){const p=new URLSearchParams(location.search);if(p.get('access')===ADMIN_SECRET){IS_ADMIN_MODE=true;document.getElementById('publicPage').style.display='none';document.getElementById('adminPage').style.display='block';document.title='Lucky 6 — Admin'}else{document.getElementById('publicPage').style.display='block';document.getElementById('adminPage').style.display='none'}}
 function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast '+t+' on';clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),4000)}
 function showOv(t,s){document.getElementById('ovT').textContent=t||'';document.getElementById('ovS').textContent=s||'';document.getElementById('ov').classList.add('on')}
 function hideOv(){document.getElementById('ov').classList.remove('on')}
@@ -276,38 +308,15 @@ function closeConfirm(){document.getElementById('confirmModal').classList.remove
 function show(id){document.getElementById(id).classList.remove('hide')}
 function hide(id){document.getElementById(id).classList.add('hide')}
 
-async function safeFetch(url,ms){const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||FETCH_TIMEOUT);try{const r=await fetch(url,{redirect:'follow',signal:c.signal});clearTimeout(t);const txt=await r.text();if(txt.trim().startsWith('<!DOCTYPE')||txt.trim().startsWith('<html')){if(txt.includes('accounts.google.com'))throw new Error('AUTH_ERROR');throw new Error('HTML_RESPONSE');}try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('PARSE_ERROR')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('TIMEOUT');throw err}}
+async function safeFetch(url,ms){const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||FETCH_TIMEOUT);try{const r=await fetch(url,{redirect:'follow',signal:c.signal});clearTimeout(t);const txt=await r.text();if(txt.trim().startsWith('<!DOCTYPE')||txt.trim().startsWith('<html')){if(txt.includes('accounts.google.com'))throw new Error('AUTH_ERROR');throw new Error('HTML_RESPONSE')}try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('PARSE_ERROR')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('TIMEOUT');throw err}}
 
-function getFriendlyError(err){const m=err.message||'';if(m==='AUTH_ERROR')return{short:'Not deployed as "Anyone"',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};if(m==='TIMEOUT')return{short:'Server timed out',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};return{short:m,detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'}}
+function getFriendlyError(err){const m=err.message||'';if(m==='AUTH_ERROR')return{short:'Not deployed as "Anyone"',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};if(m==='TIMEOUT')return{short:'Timed out',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};return{short:m,detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'}}
 
-/* ═══ ★ FIXED DRAW DATE PARSER ═══ */
-function parseDrawDate(dateStr){
-  if(!dateStr||!dateStr.trim())return null;
-  // Handle YYYY-MM-DD format safely across all browsers
-  var parts=dateStr.trim().split('-');
-  if(parts.length===3){
-    var y=parseInt(parts[0]),m=parseInt(parts[1])-1,d=parseInt(parts[2]);
-    if(!isNaN(y)&&!isNaN(m)&&!isNaN(d)){
-      return new Date(y,m,d);
-    }
-  }
-  // Fallback: try other formats
-  var fallback=new Date(dateStr);
-  if(!isNaN(fallback.getTime()))return fallback;
-  return null;
-}
+function parseDrawDate(s){if(!s||!s.trim())return null;var p=s.trim().split('-');if(p.length===3){var y=parseInt(p[0]),m=parseInt(p[1])-1,d=parseInt(p[2]);if(!isNaN(y)&&!isNaN(m)&&!isNaN(d))return new Date(y,m,d)}return null}
+function formatDrawDate(s){var d=parseDrawDate(s);if(!d)return null;var mo=['January','February','March','April','May','June','July','August','September','October','November','December'];var dy=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];return dy[d.getDay()]+', '+mo[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear()}
 
-function formatDrawDate(dateStr){
-  var d=parseDrawDate(dateStr);
-  if(!d)return null;
-  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  return days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
-}
-
-/* ═══ APPLY SETTINGS ═══ */
 function applyPublicSettings(s){
-  if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var last=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+last+'</span>';}}
+  if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var last=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+last+'</span>'}}
   if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}
   if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}
   if(s.price_per_number&&s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!'}
@@ -315,18 +324,13 @@ function applyPublicSettings(s){
   if(s.max_quantity&&s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}
   document.getElementById('qtyLabel').innerHTML='How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">('+MIN_QTY.toLocaleString()+' – '+MAX_QTY.toLocaleString()+')</span>';
   document.getElementById('qtyHelp').textContent='Each = unique 6-digit code. Min '+MIN_QTY.toLocaleString()+', max '+MAX_QTY.toLocaleString()+'.';
-
-  // ★ FIXED DRAW DATE
-  var formatted=formatDrawDate(s.draw_date);
-  if(formatted){document.getElementById('drawDateText').textContent=formatted;document.getElementById('drawBanner').style.display='block';}
-  else{document.getElementById('drawBanner').style.display='none';}
-
+  var fd=formatDrawDate(s.draw_date);if(fd){document.getElementById('drawDateText').textContent=fd;document.getElementById('drawBanner').style.display='block'}else{document.getElementById('drawBanner').style.display='none'}
   if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}
   if(s.maintenance_mode){document.getElementById('maintOverlay').classList.add('on')}else{document.getElementById('maintOverlay').classList.remove('on')}
   calc();
 }
 
-/* ═══ PUBLIC FUNCTIONS ═══ */
+/* ═══ PUBLIC ═══ */
 function titleCase(s){return s.replace(/\b\w/g,c=>c.toUpperCase())}
 function getDigitsOnly(s){return s.replace(/\D/g,'')}
 function isValidPhone(s){return getDigitsOnly(s).length===11}
@@ -334,10 +338,25 @@ function updatePhoneStatus(){const raw=document.getElementById('fP').value,d=get
 function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
 function updateProgress(sold,rem){const pct=Math.max(0,Math.min(100,(rem/TOTAL_POOL)*100));const f=document.getElementById('progressFill'),t=document.getElementById('availTxt');f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');if(pct>60){t.textContent='Plenty available';t.classList.add('high')}else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid')}else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low')}else if(pct>0){t.textContent='Almost sold out!';t.classList.add('low');f.classList.add('low')}else{t.textContent='Sold out';t.classList.add('low');f.classList.add('low')}}
 
-async function checkConnection(){const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');bar.className='conn checking';txt.textContent='Checking...';errP.classList.add('hide');if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}try{const[health,settings,stats]=await Promise.all([safeFetch(SCRIPT_URL+'?action=health',12000),safeFetch(SCRIPT_URL+'?action=publicSettings',12000),safeFetch(SCRIPT_URL+'?action=stats',12000)]);if(health.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}if(settings.success)applyPublicSettings(settings);if(stats.success)updateProgress(stats.sold,stats.remaining)}catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide')}}
+// ★ PUBLIC: parallel fetch health+settings+stats
+async function checkConnection(){
+  const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');
+  bar.className='conn checking';txt.textContent='Connecting...';errP.classList.add('hide');
+  if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}
+  try{
+    const[health,settings,stats]=await Promise.all([
+      safeFetch(SCRIPT_URL+'?action=health',12000),
+      safeFetch(SCRIPT_URL+'?action=publicSettings',12000),
+      safeFetch(SCRIPT_URL+'?action=stats',12000)
+    ]);
+    if(health.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}
+    if(settings.success){cacheSet('pubSettings',settings);applyPublicSettings(settings)}
+    if(stats.success){cacheSet('pubStats',stats);updateProgress(stats.sold,stats.remaining)}
+  }catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide')}
+}
 
 function calc(){const v=Math.min(MAX_QTY,Math.max(0,parseInt(document.getElementById('fQ').value)||0));document.getElementById('dT').textContent='₱ '+(v*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-function go2(){const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);if(!nm)return toast('Enter your name.','err');if(!isValidPhone(ph))return toast('Phone must be 11 digits.','err');if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Minimum '+MIN_QTY+'.','err')}if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Maximum '+MAX_QTY.toLocaleString()+'.','err')}hide('p1');show('p2');document.getElementById('dA').textContent=' ₱ '+(qt*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});stpSet(2)}
+function go2(){const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);if(!nm)return toast('Enter name.','err');if(!isValidPhone(ph))return toast('Phone must be 11 digits.','err');if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Minimum '+MIN_QTY+'.','err')}if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Maximum '+MAX_QTY.toLocaleString()+'.','err')}hide('p1');show('p2');document.getElementById('dA').textContent=' ₱ '+(qt*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});stpSet(2)}
 function go1(){hide('p2');show('p1');stpSet(1)}
 function stpSet(n){const c=(id,cl)=>document.getElementById(id).className=cl;c('i1',n===1?'stp on':'stp ok');c('i2',n===2?'stp on':n>2?'stp ok':'stp');c('i3',n===3?'stp on':'stp');c('l1',n>=2?'sln on':'sln');c('l2',n>=3?'sln on':'sln')}
 
@@ -351,96 +370,190 @@ function prA(){const w=window.open('');w.document.write('<!DOCTYPE html><html><h
 function cpGC(){navigator.clipboard.writeText(GCASH_NUMBER.replace(/\D/g,'')).then(()=>toast('GCash # copied!','suc')).catch(()=>{})}
 function again(){hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>document.getElementById(id).value='');document.getElementById('dT').textContent='₱ 0.00';document.getElementById('phoneErr').style.display='none';document.getElementById('fP').style.borderColor='rgba(255,255,255,.1)';hide('p2');show('p1');stpSet(1);document.getElementById('errPanel').classList.add('hide');myNums=[];scrollTo({top:0,behavior:'smooth'})}
 
-/* ═══ ADMIN ═══ */
+/* ══════════════════════════════════════════════════════════════
+   ★ ADMIN — ULTRA-FAST WITH STALE-WHILE-REVALIDATE
+   ══════════════════════════════════════════════════════════════ */
 async function adminApi(action,params){params=params||{};params.action=action;params.token=TOKEN;const url=SCRIPT_URL+'?'+new URLSearchParams(params);const c=new AbortController();const t=setTimeout(()=>c.abort(),60000);try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);const txt=await r.text();try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}}
 
 async function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{const d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;localStorage.setItem('lk6_token',TOKEN);localStorage.setItem('lk6_user',u);document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();toast('Welcome!','suc')}else toast(d.error,'err')}catch(e){toast('Error: '+e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
-function doLogout(){TOKEN='';localStorage.removeItem('lk6_token');localStorage.removeItem('lk6_user');cache={dashboard:null,dashboardTime:0,txData:null,txTime:0,numData:null,numTime:0,settingsData:null,settingsTime:0};document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginPass').value='';toast('Logged out.','warn')}
+function doLogout(){TOKEN='';localStorage.removeItem('lk6_token');localStorage.removeItem('lk6_user');Object.keys(CACHE).forEach(k=>delete CACHE[k]);document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginPass').value='';if(adminRefreshTimer)clearInterval(adminRefreshTimer);toast('Logged out.','warn')}
 
-function goPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+name).classList.add('active');document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active')});if(name==='dashboard')loadDashboard();if(name==='transactions')loadTransactions();if(name==='numbers')loadNumbers();if(name==='settings')loadSettingsFn()}
+// ★ Track which admin page is active
+let activeAdminPage='dashboard';
+let adminRefreshTimer=null;
 
-// ★ FAST DASHBOARD — use cache if fresh
-async function loadDashboard(force){
-  var now=Date.now();
-  if(!force&&cache.dashboard&&now-cache.dashboardTime<CACHE_MS){populateDashboard(cache.dashboard);return}
-  try{const[d,a]=await Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]);if(d.success){cache.dashboard=d;cache.dashboardTime=Date.now();populateDashboard(d)}if(a.success)populateFeed(a.activities)}catch(e){toast('Error','err')}
+function goPage(name){
+  activeAdminPage=name;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));
+  document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active')});
+
+  // ★ Instant render from cache, then background refresh
+  if(name==='dashboard')loadDashboard();
+  if(name==='transactions')loadTransactions();
+  if(name==='numbers')loadNumbers();
+  if(name==='settings')loadSettingsFn();
+}
+
+/* ═══ ★ DASHBOARD — instant from cache ═══ */
+async function loadDashboard(){
+  await fetchWithCache('admin_dash',
+    async()=>{
+      const[d,a]=await Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]);
+      return{dashboard:d.success?d:null,activity:a.success?a.activities:[]};
+    },
+    (data)=>{
+      if(data.dashboard)populateDashboard(data.dashboard);
+      populateFeed(data.activity||[]);
+    }
+  );
 }
 function populateDashboard(d){document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsPct').textContent=d.percentSold+'% sold';document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsTx').textContent=d.totalTransactions.toLocaleString();document.getElementById('dsSuccess').textContent=d.successTransactions.toLocaleString();document.getElementById('dsFailed').textContent=d.failedTransactions.toLocaleString();document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();document.getElementById('dsToday').textContent=d.todayTransactions.toLocaleString();document.getElementById('dsTodayRev').textContent='₱'+d.todayRevenue.toLocaleString();const pct=d.totalSold/d.totalPool*100;const bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid')}
-function populateFeed(acts){const list=document.getElementById('feedList');if(!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}let h='';acts.forEach(a=>{const dc=a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail';h+='<li><div class="dot '+dc+'"></div><div style="flex:1"><strong>'+a.name+'</strong> — '+a.quantity+' (₱'+Number(a.amount).toLocaleString()+')<br><span class="time">'+a.timestamp+' • '+a.transactionId+'</span></div><span class="badge '+(a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail')+'">'+a.status+'</span></li>'});list.innerHTML=h}
+function populateFeed(acts){const list=document.getElementById('feedList');if(!acts||!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}let h='';acts.forEach(a=>{const dc=a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail';h+='<li><div class="dot '+dc+'"></div><div style="flex:1"><strong>'+a.name+'</strong> — '+a.quantity+' (₱'+Number(a.amount).toLocaleString()+')<br><span class="time">'+a.timestamp+' • '+a.transactionId+'</span></div><span class="badge '+(a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail')+'">'+a.status+'</span></li>'});list.innerHTML=h}
 
-// ★ FAST TRANSACTIONS — cached
+/* ═══ ★ TRANSACTIONS — instant from cache ═══ */
 async function loadTransactions(page){
-  currentPage.tx=page||currentPage.tx||1;
-  var now=Date.now();
-  var cacheKey='tx_'+currentPage.tx;
-  if(cache[cacheKey]&&now-cache[cacheKey+'_t']<CACHE_MS){renderTx(cache[cacheKey]);return}
-  showOv('Loading...','');
-  try{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});hideOv();if(d.success){cache[cacheKey]=d;cache[cacheKey+'_t']=Date.now();renderTx(d)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
-}
-function renderTx(d){const body=document.getElementById('txBody');if(!d.transactions.length){body.innerHTML='<tr><td colspan="9" class="tbl-empty">No transactions.</td></tr>';document.getElementById('txPagination').innerHTML='';return}let h='';d.transactions.forEach(t=>{const sc=t.status==='SUCCESS'?'ok':t.status==='DELETED'?'del':'fail';h+='<tr data-tx="'+t.transactionId+'"><td>'+t.timestamp+'</td><td class="mono" style="font-size:.75rem">'+t.transactionId+'</td><td>'+t.name+'</td><td>'+t.phone+'</td><td>'+t.gcashRef+'</td><td>'+t.quantity+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+t.status+'</span></td><td>'+(t.status==='SUCCESS'?'<button class="btn-sm btn-red" onclick="confirmDelete(\''+t.transactionId+'\')">Delete</button>':'—')+'</td></tr>'});body.innerHTML=h;renderPagination('txPagination',d.page,d.totalPages,'loadTransactions')}
+  if(page)currentPage.tx=page;
+  const ck='admin_tx_'+currentPage.tx;
 
-// ★ FAST NUMBERS — cached
-async function loadNumbers(page){
-  currentPage.num=page||currentPage.num||1;
-  var now=Date.now();
-  var ck='num_'+currentPage.num;
-  if(cache[ck]&&now-cache[ck+'_t']<CACHE_MS){renderNums(cache[ck]);return}
-  showOv('Loading...','');
-  try{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});hideOv();if(d.success){cache[ck]=d;cache[ck+'_t']=Date.now();renderNums(d)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
+  await fetchWithCache(ck,
+    async()=>{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});return d.success?d:null},
+    (data)=>{if(data)renderTx(data)}
+  );
 }
-function renderNums(d){const body=document.getElementById('numBody');if(!d.numbers.length){body.innerHTML='<tr><td colspan="6" class="tbl-empty">No numbers.</td></tr>';document.getElementById('numPagination').innerHTML='';return}let h='';d.numbers.forEach(n=>{h+='<tr><td class="mono">'+n.number+'</td><td style="font-size:.75rem">'+n.transactionId+'</td><td>'+n.name+'</td><td>'+n.phone+'</td><td>'+n.gcashRef+'</td><td>'+n.timestamp+'</td></tr>'});body.innerHTML=h;renderPagination('numPagination',d.page,d.totalPages,'loadNumbers')}
+function renderTx(d){const body=document.getElementById('txBody');if(!d.transactions||!d.transactions.length){body.innerHTML='<tr><td colspan="9" class="tbl-empty">No transactions.</td></tr>';document.getElementById('txPagination').innerHTML='';return}let h='';d.transactions.forEach(t=>{const sc=t.status==='SUCCESS'?'ok':t.status==='DELETED'?'del':'fail';h+='<tr data-tx="'+t.transactionId+'"><td>'+t.timestamp+'</td><td class="mono" style="font-size:.75rem">'+t.transactionId+'</td><td>'+t.name+'</td><td>'+t.phone+'</td><td>'+t.gcashRef+'</td><td>'+t.quantity+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+t.status+'</span></td><td>'+(t.status==='SUCCESS'?'<button class="btn-sm btn-red" onclick="confirmDelete(\''+t.transactionId+'\')">Del</button>':'—')+'</td></tr>'});body.innerHTML=h;renderPagination('txPagination',d.page,d.totalPages,'loadTransactions')}
+
+/* ═══ ★ NUMBERS — instant from cache ═══ */
+async function loadNumbers(page){
+  if(page)currentPage.num=page;
+  const ck='admin_num_'+currentPage.num;
+
+  await fetchWithCache(ck,
+    async()=>{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});return d.success?d:null},
+    (data)=>{if(data)renderNums(data)}
+  );
+}
+function renderNums(d){const body=document.getElementById('numBody');if(!d.numbers||!d.numbers.length){body.innerHTML='<tr><td colspan="6" class="tbl-empty">No numbers.</td></tr>';document.getElementById('numPagination').innerHTML='';return}let h='';d.numbers.forEach(n=>{h+='<tr><td class="mono">'+n.number+'</td><td style="font-size:.75rem">'+n.transactionId+'</td><td>'+n.name+'</td><td>'+n.phone+'</td><td>'+n.gcashRef+'</td><td>'+n.timestamp+'</td></tr>'});body.innerHTML=h;renderPagination('numPagination',d.page,d.totalPages,'loadNumbers')}
 
 function renderPagination(cid,cur,total,fn){const c=document.getElementById(cid);if(total<=1){c.innerHTML='';return}let h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>←</button>';const s=Math.max(1,cur-2),e=Math.min(total,cur+2);if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';if(s>2)h+='<span class="pg-info">…</span>';for(let i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';if(e<total-1)h+='<span class="pg-info">…</span>';if(e<total)h+='<button class="pg-btn" onclick="'+fn+'('+total+')">'+total+'</button>';h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=total?'disabled':'')+'>→</button> <span class="pg-info">'+cur+'/'+total+'</span>';c.innerHTML=h}
 
-// ★ INSTANT DELETE — optimistic UI, then server confirm
+/* ═══ ★ INSTANT DELETE — optimistic UI ═══ */
 function confirmDelete(txId){document.getElementById('confirmTitle').textContent='⚠️ Delete?';document.getElementById('confirmMsg').innerHTML='Delete <code>'+txId+'</code> and all numbers?<br><strong>Cannot be undone.</strong>';document.getElementById('confirmYes').textContent='Delete';document.getElementById('confirmYes').onclick=()=>doDeleteTx(txId);document.getElementById('confirmModal').classList.add('on')}
 
 async function doDeleteTx(txId){
   closeConfirm();
 
-  // ★ OPTIMISTIC: instantly remove row from UI
+  // ★ INSTANT: remove row from UI now
   const row=document.querySelector('tr[data-tx="'+txId+'"]');
   if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}
   toast('Deleting...','warn');
 
-  // ★ Invalidate caches
-  cache.dashboard=null;Object.keys(cache).forEach(k=>{if(k.startsWith('tx_')||k.startsWith('num_'))delete cache[k]});
+  // ★ Invalidate all caches
+  cacheClear('admin_');
 
   try{
     const d=await adminApi('adminDeleteTransaction',{transactionId:txId});
-    if(d.success){toast('✅ '+d.message,'suc');loadDashboard(true)}
-    else{toast(d.error,'err');loadTransactions(currentPage.tx)} // reload if failed
-  }catch(e){toast('Failed: '+e.message,'err');loadTransactions(currentPage.tx)}
+    if(d.success){toast('✅ '+d.message,'suc');
+      // Refresh dashboard in background
+      loadDashboard();
+    }else{toast(d.error,'err');loadTransactions()}
+  }catch(e){toast('Failed','err');loadTransactions()}
 }
 
+/* ═══ SEARCH ═══ */
 async function searchNumber(){const q=document.getElementById('searchNum').value.trim();if(!q)return toast('Enter number.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchNumber',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.found?'✅ '+d.query+' found':'❌ Not found';if(d.found){document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr>';let h='';d.results.forEach(r=>{h+='<tr><td class="mono">'+r.number+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.timestamp+'</td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">Not sold.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
 
 async function searchBuyerFn(){const q=document.getElementById('searchBuyer').value.trim();if(!q)return toast('Enter term.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchBuyer',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.total+' result(s)';if(d.total>0){document.getElementById('searchThead').innerHTML='<tr><th>Date</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amt</th><th>Status</th></tr>';let h='';d.results.forEach(r=>{const sc=r.status==='SUCCESS'?'ok':r.status==='DELETED'?'del':'fail';h+='<tr><td>'+r.timestamp+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.quantity+'</td><td>₱'+Number(r.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">None found.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
 
-async function addNumber(){const num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{const d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cache.dashboard=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
+/* ═══ TOOLS ═══ */
+async function addNumber(){const num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{const d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
 
-async function removeNumber(){const num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{const d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cache.dashboard=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
+async function removeNumber(){const num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{const d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
 
-// ★ FAST SETTINGS — cached
+/* ═══ ★ SETTINGS — instant from cache ═══ */
 async function loadSettingsFn(){
-  var now=Date.now();
-  if(cache.settingsData&&now-cache.settingsTime<CACHE_MS*3){fillSettings(cache.settingsData);return}
-  showOv('Loading...','');
-  try{const d=await adminApi('adminGetSettings');hideOv();if(d.success){cache.settingsData=d.settings;cache.settingsTime=Date.now();fillSettings(d.settings)}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
+  await fetchWithCache('admin_settings',
+    async()=>{const d=await adminApi('adminGetSettings');return d.success?d.settings:null},
+    (data)=>{if(data)fillSettings(data)}
+  );
 }
 function fillSettings(s){document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNum').value=s.gcash_number||'';document.getElementById('setLotteryName').value=s.lottery_name||'';document.getElementById('setDrawDate').value=s.draw_date||'';document.getElementById('setPrice').value=s.price_per_number||'1';document.getElementById('setMinQty').value=s.min_quantity||'50';document.getElementById('setMaxQty').value=s.max_quantity||'10000';document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setMaintenance').value=s.maintenance_mode||'false'}
 
-async function saveSettings(){const np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;if(np&&np.length<6)return toast('Min 6 chars.','err');if(np&&np!==np2)return toast('No match.','err');showOv('Saving...','');const p={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};if(np)p.new_password=np;try{const d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cache.settingsData=null;document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed. Re-login.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
+async function saveSettings(){const np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;if(np&&np.length<6)return toast('Min 6 chars.','err');if(np&&np!==np2)return toast('No match.','err');showOv('Saving...','');const p={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};if(np)p.new_password=np;try{const d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cacheClear('admin_settings');cacheClear('pubSettings');document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
 
 async function exportData(type){showOv('Exporting...','');try{const d=await adminApi('adminExportData',{type});hideOv();if(!d.success)return toast(d.error,'err');let csv=d.headers.join(',')+'\n';d.data.forEach(row=>{csv+=row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')+'\n'});const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);toast('Exported '+(d.total||0)+' rows!','suc')}catch(e){hideOv();toast('Error','err')}}
+
+/* ═══════════════════════════════════════════════════════════
+   ★ BACKGROUND AUTO-REFRESH — keeps data fresh
+   ═══════════════════════════════════════════════════════════ */
+function startAdminAutoRefresh(){
+  if(adminRefreshTimer)clearInterval(adminRefreshTimer);
+
+  adminRefreshTimer=setInterval(()=>{
+    if(!TOKEN)return;
+
+    // ★ Silently refresh the active page's data in background
+    if(activeAdminPage==='dashboard'){
+      // Only fetch if cache is stale
+      if(cacheAge('admin_dash')>=SERVER_REFRESH_MS){
+        Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]).then(([d,a])=>{
+          if(d&&d.success){
+            const data={dashboard:d,activity:a&&a.success?a.activities:[]};
+            cacheSet('admin_dash',data);
+            populateDashboard(d);
+            populateFeed(data.activity);
+          }
+        }).catch(()=>{});
+      }
+    }else if(activeAdminPage==='transactions'){
+      const ck='admin_tx_'+currentPage.tx;
+      if(cacheAge(ck)>=SERVER_REFRESH_MS){
+        adminApi('adminTransactions',{page:currentPage.tx,perPage:30}).then(d=>{
+          if(d&&d.success){cacheSet(ck,d);renderTx(d)}
+        }).catch(()=>{});
+      }
+    }else if(activeAdminPage==='numbers'){
+      const ck='admin_num_'+currentPage.num;
+      if(cacheAge(ck)>=SERVER_REFRESH_MS){
+        adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100}).then(d=>{
+          if(d&&d.success){cacheSet(ck,d);renderNums(d)}
+        }).catch(()=>{});
+      }
+    }
+  },UI_RENDER_MS);
+}
 
 /* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded',async()=>{
   detectMode();
+
   if(IS_ADMIN_MODE){
     const saved=localStorage.getItem('lk6_token'),user=localStorage.getItem('lk6_user');
-    if(saved&&user){TOKEN=saved;showOv('Restoring...','');try{const d=await adminApi('adminDashboard');if(d.success){document.getElementById('adminUser').textContent=user;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';cache.dashboard=d;cache.dashboardTime=Date.now();populateDashboard(d);adminApi('adminRecentActivity',{limit:15}).then(a=>{if(a&&a.success)populateFeed(a.activities)})}else doLogout()}catch(e){doLogout()}hideOv()}
-    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
+    if(saved&&user){
+      TOKEN=saved;showOv('Restoring...','');
+      try{
+        const d=await adminApi('adminDashboard');
+        if(d.success){
+          document.getElementById('adminUser').textContent=user;
+          document.getElementById('adminLogin').style.display='none';
+          document.getElementById('adminPanel').style.display='block';
+          const data={dashboard:d,activity:[]};
+          cacheSet('admin_dash',data);
+          populateDashboard(d);
+          // Fetch activity in background
+          adminApi('adminRecentActivity',{limit:15}).then(a=>{
+            if(a&&a.success){data.activity=a.activities;cacheSet('admin_dash',data);populateFeed(a.activities)}
+          });
+          // ★ Start auto-refresh
+          startAdminAutoRefresh();
+        }else doLogout();
+      }catch(e){doLogout()}
+      hideOv();
+    }
+    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+    document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
   } else {
     setTodayDate();document.getElementById('dP').textContent=GCASH_NUMBER;document.getElementById('dN').textContent=GCASH_NAME;
     const ni=document.getElementById('fN');ni.addEventListener('input',()=>{const p=ni.selectionStart;ni.value=titleCase(ni.value);ni.setSelectionRange(p,p)});
@@ -448,7 +561,16 @@ document.addEventListener('DOMContentLoaded',async()=>{
     const qi=document.getElementById('fQ');qi.addEventListener('input',calc);qi.addEventListener('focus',()=>{qi.value='';calc()});qi.addEventListener('blur',()=>{let v=parseInt(qi.value);if(isNaN(v)||v<MIN_QTY){if(qi.value!==''){qi.value=MIN_QTY;toast('Minimum '+MIN_QTY,'warn')}}if(v>MAX_QTY){qi.value=MAX_QTY;toast('Maximum '+MAX_QTY.toLocaleString(),'warn')}calc()});
     checkConnection();setInterval(setTodayDate,60000);
   }
+
+  // ★ After login, start auto-refresh
+  const origLogin=doLogin;
+  window._origDoLogin=doLogin;
+  window.doLogin=async function(){
+    await window._origDoLogin();
+    if(TOKEN)startAdminAutoRefresh();
+  };
 });
 </script>
 </body>
 </html>
+
