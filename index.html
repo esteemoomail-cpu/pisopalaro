@@ -176,7 +176,7 @@
 </div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzChXLMGHIOddLtNKd38cmQXqV4cH0bf8kcbwJKkUKz0l8BGIC_9Kq5A2bc4NSlH7oN/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxG-vmD7RwjgQYqOosk03mp0fxUk-Ay7fOWLvaT1RCHegTDEfUGd646Turjh2PkTy4B/exec';
 const ADMIN_SECRET='admin';
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
@@ -246,17 +246,24 @@ function again(){hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>doc
 /* ═══ ADMIN ═══ */
 async function adminApi(a,p){p=p||{};p.action=a;p.token=TOKEN;var c=new AbortController(),t=setTimeout(()=>c.abort(),60000);try{var r=await fetch(SCRIPT_URL+'?'+new URLSearchParams(p),{signal:c.signal,redirect:'follow'});clearTimeout(t);var txt=await r.text();try{return JSON.parse(txt)}catch(e){var m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}}
 
-/* ★ For large payloads (QR image), use POST via form */
+/* ★ POST handler for large payloads (QR image base64).
+   Sends JSON as text/plain — avoids CORS preflight on Google Apps Script.
+   Apps Script doPost reads e.postData.contents and JSON.parses it. */
 async function adminApiPost(a,p){
   p=p||{};p.action=a;p.token=TOKEN;
-  var fd=new FormData();
-  Object.keys(p).forEach(k=>fd.append(k,p[k]));
+  var body=JSON.stringify(p);
   var c=new AbortController(),t=setTimeout(()=>c.abort(),90000);
   try{
-    var r=await fetch(SCRIPT_URL,{method:'POST',body:fd,signal:c.signal,redirect:'follow'});
+    var r=await fetch(SCRIPT_URL,{
+      method:'POST',
+      body:body,
+      headers:{'Content-Type':'text/plain'},
+      signal:c.signal,
+      redirect:'follow'
+    });
     clearTimeout(t);
     var txt=await r.text();
-    try{return JSON.parse(txt)}catch(e){var m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}
+    try{return JSON.parse(txt)}catch(e){var m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error: '+txt.substring(0,200))}
   }catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}
 }
 
@@ -458,7 +465,7 @@ async function saveQrImage(){
   overlay.classList.add('on');
   document.getElementById('qrSaveBtn').disabled=true;
   try{
-    var d=await adminApi('adminUpdateQrImage',{gcash_qr_image:_qrPendingDataUrl});
+    var d=await adminApiPost('adminUpdateQrImage',{gcash_qr_image:_qrPendingDataUrl});
     if(d.success){
       setQrPreview(_qrPendingDataUrl,true);
       _qrPendingDataUrl=null;
@@ -480,7 +487,7 @@ async function removeQrImage(){
   var overlay=document.getElementById('qrSavingOverlay');
   overlay.classList.add('on');
   try{
-    var d=await adminApi('adminUpdateQrImage',{gcash_qr_image:''});
+    var d=await adminApiPost('adminUpdateQrImage',{gcash_qr_image:''});
     if(d.success){
       clearQrPreview(true);
       cacheClear('admin_set');
