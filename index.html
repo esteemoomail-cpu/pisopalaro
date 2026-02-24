@@ -151,8 +151,9 @@
         <button class="btn-sm btn-red" onclick="removeQrImage()" id="qrRemoveBtn" style="display:none">🗑 Remove</button>
       </div>
       <div style="margin-top:8px;font-size:.72rem;color:var(--sub);line-height:1.6">
-        The QR image is stored as Base64 in your Google Sheet.<br>
-        Max recommended size: <strong style="color:var(--gold)">800×800px</strong>, under <strong style="color:var(--gold)">1MB</strong>.
+        The QR image is saved to <strong style="color:var(--gold)">Google Drive</strong> — no size limits.<br>
+        A <strong style="color:var(--gold)">Lucky6_QR</strong> folder is auto-created in your Drive.<br>
+        Recommended: <strong style="color:var(--gold)">square PNG</strong>, around 400×400px.
       </div>
     </div>
     <!-- Preview box -->
@@ -176,7 +177,7 @@
 </div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxG-vmD7RwjgQYqOosk03mp0fxUk-Ay7fOWLvaT1RCHegTDEfUGd646Turjh2PkTy4B/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwgKiMVad64aNWPjX3W8VwUIgqqAwRKUFHUivc5IalxpbXgA4xfOW49kl7sIUQmoiL0/exec';
 const ADMIN_SECRET='admin';
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
@@ -454,23 +455,23 @@ function handleQrFile(file){
 
 async function saveQrImage(){
   if(!_qrPendingDataUrl){
-    // Check if there's already a saved QR — if so nothing to save
     var badge=document.getElementById('qrStatusBadge');
     if(badge.classList.contains('saved'))return toast('QR already saved. Upload a new image to replace.','warn');
     return toast('No image selected. Please choose a file first.','err');
   }
-  // Validate size: base64 of 1MB file ≈ 1.37MB string
-  if(_qrPendingDataUrl.length>1.5*1024*1024){return toast('Image too large after encoding. Use a smaller image.','err')}
   var overlay=document.getElementById('qrSavingOverlay');
   overlay.classList.add('on');
   document.getElementById('qrSaveBtn').disabled=true;
   try{
     var d=await adminApiPost('adminUpdateQrImage',{gcash_qr_image:_qrPendingDataUrl});
     if(d.success){
-      setQrPreview(_qrPendingDataUrl,true);
+      // ★ Use the Drive serving URL returned by the server for the preview
+      // Add cache-bust so browser doesn't show stale image
+      var previewUrl=d.imageUrl?(d.imageUrl+'&t='+Date.now()):_qrPendingDataUrl;
+      setQrPreview(previewUrl,true);
       _qrPendingDataUrl=null;
       cacheClear('admin_set');
-      toast('✅ QR image saved!','suc');
+      toast('✅ QR image saved to Google Drive!','suc');
     }else{
       toast(d.error||'Failed to save.','err');
     }
@@ -487,7 +488,7 @@ async function removeQrImage(){
   var overlay=document.getElementById('qrSavingOverlay');
   overlay.classList.add('on');
   try{
-    var d=await adminApiPost('adminUpdateQrImage',{gcash_qr_image:''});
+    var d=await adminApiPost('adminUpdateQrImage',{gcash_qr_image:'',remove:'true'});
     if(d.success){
       clearQrPreview(true);
       cacheClear('admin_set');
