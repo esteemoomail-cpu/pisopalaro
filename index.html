@@ -108,12 +108,8 @@ header{text-align:center;padding:30px 0 8px}
 .rb .fl{height:100%;background:var(--gold);border-radius:3px}
 .toast{position:fixed;top:14px;right:14px;padding:12px 20px;border-radius:10px;font-weight:600;font-size:.85rem;z-index:10001;transform:translateX(150%);transition:transform .3s;max-width:400px;line-height:1.5}
 .toast.on{transform:translateX(0)}
-.toast.err{background:var(--err);color:#fff}
-.toast.suc{background:var(--ok);color:#000}
-.toast.warn{background:var(--warn);color:#000}
-.nbox::-webkit-scrollbar{width:5px}
-.nbox::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
-.nbox::-webkit-scrollbar-thumb{background:rgba(255,215,0,.2);border-radius:3px}
+.toast.err{background:var(--err);color:#fff}.toast.suc{background:var(--ok);color:#000}.toast.warn{background:var(--warn);color:#000}
+.nbox::-webkit-scrollbar{width:5px}.nbox::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}.nbox::-webkit-scrollbar-thumb{background:rgba(255,215,0,.2);border-radius:3px}
 .hide{display:none!important}
 .err-panel{background:linear-gradient(135deg,rgba(255,59,59,.1),rgba(255,59,59,.03));border:1px solid rgba(255,59,59,.2);border-radius:var(--r);padding:18px;margin:14px 0;line-height:1.8;font-size:.85rem}
 .err-panel h3{color:var(--err);margin-bottom:8px;font-size:.95rem}
@@ -168,8 +164,7 @@ tr:hover td{background:rgba(255,215,0,.02)}
 .tbl-empty{padding:40px;text-align:center;color:var(--sub);font-size:.88rem}
 .pagination{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-top:1px solid var(--bdr)}
 .pg-btn{padding:6px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:6px;color:var(--txt);font-size:.78rem;cursor:pointer;font-family:inherit;transition:.2s}
-.pg-btn:hover{background:rgba(255,215,0,.08);border-color:var(--gold)}
-.pg-btn:disabled{opacity:.3;cursor:not-allowed}
+.pg-btn:hover{background:rgba(255,215,0,.08);border-color:var(--gold)}.pg-btn:disabled{opacity:.3;cursor:not-allowed}
 .pg-btn.active{background:var(--gold);color:#000;font-weight:700;border-color:var(--gold)}
 .pg-info{font-size:.75rem;color:var(--sub)}
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -183,8 +178,7 @@ tr:hover td{background:rgba(255,215,0,.02)}
 .tool-row .fg{flex:1;min-width:160px;margin-bottom:0}
 .bar-track{width:100%;height:8px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-top:8px}
 .bar-fill{height:100%;border-radius:6px;transition:width 1s;background:linear-gradient(90deg,var(--ok),#69f0ae)}
-.bar-fill.mid{background:linear-gradient(90deg,var(--warn),#ffcc02)}
-.bar-fill.low{background:linear-gradient(90deg,var(--err),#ff6b6b)}
+.bar-fill.mid{background:linear-gradient(90deg,var(--warn),#ffcc02)}.bar-fill.low{background:linear-gradient(90deg,var(--err),#ff6b6b)}
 .feed{list-style:none}
 .feed li{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:12px;font-size:.82rem}
 .feed li:last-child{border-bottom:none}
@@ -199,11 +193,14 @@ tr:hover td{background:rgba(255,215,0,.02)}
 .confirm-box code{background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;color:var(--gold)}
 .confirm-btns{display:flex;gap:10px;justify-content:center}
 .confirm-btns .btn-sm{padding:10px 24px;font-size:.8rem}
-/* Fade-out animation for deleted rows */
 .row-deleting{opacity:0;transform:translateX(40px);transition:all .4s ease}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
-::-webkit-scrollbar-thumb{background:rgba(255,215,0,.15);border-radius:3px}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}::-webkit-scrollbar-thumb{background:rgba(255,215,0,.15);border-radius:3px}
+
+/* ★ Public page links in admin */
+.pub-link{display:block;margin-top:20px;color:var(--gc);font-size:.82rem;font-weight:600;text-decoration:none;transition:.2s;letter-spacing:.5px}
+.pub-link:hover{color:var(--gold);text-decoration:underline}
+.pub-link-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:rgba(0,122,255,.1);border:1px solid rgba(0,122,255,.2);color:#64b5f6;border-radius:10px;font-size:.78rem;font-weight:700;text-decoration:none;transition:.2s;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.pub-link-btn:hover{background:rgba(0,122,255,.2);color:#fff;border-color:rgba(0,122,255,.4);transform:translateY(-1px)}
 
 @media(max-width:640px){.w{padding:10px}.info-bar{padding:16px}.info-top{flex-direction:column;align-items:flex-start;gap:12px}.avail-label,.avail-status{text-align:left}.fr{grid-template-columns:1fr}.card{padding:16px}.ngrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}.acts{grid-template-columns:1fr}.rd{grid-template-columns:1fr}.stp .stx{display:none}.stp{padding:7px 6px}}
 @media(max-width:768px){.sidebar{display:none}.admain{flex-direction:column}.content{padding:14px}.stats{grid-template-columns:repeat(2,1fr)}.settings-grid{grid-template-columns:1fr}.tbl-head{flex-direction:column;align-items:stretch}.tool-row{flex-direction:column}.tool-row .fg{min-width:100%}table{font-size:.75rem}th,td{padding:8px 10px}.mob-nav{display:flex!important;overflow-x:auto;gap:4px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bdr)}.mob-nav .nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap;padding:8px 12px;font-size:.72rem}.mob-nav .nav-item.active{border-bottom-color:var(--gold);border-left:none}}
@@ -220,19 +217,14 @@ tr:hover td{background:rgba(255,215,0,.02)}
 <!-- ═══ PUBLIC ═══ -->
 <div id="publicPage">
 <div class="w">
-<header>
-  <div class="logo" id="logoText">🎰 LUCKY 6<span>LOTTERY</span></div>
-  <p class="tag" id="tagLine">Get your lucky 6-digit number — only ₱1 each!</p>
-  <div class="pill" id="priceTag">₱1.00 PER NUMBER</div>
-  <div class="range">000000 — 999999</div>
-</header>
+<header><div class="logo" id="logoText">🎰 LUCKY 6<span>LOTTERY</span></div><p class="tag" id="tagLine">Get your lucky 6-digit number — only ₱1 each!</p><div class="pill" id="priceTag">₱1.00 PER NUMBER</div><div class="range">000000 — 999999</div></header>
 <div class="draw-banner" id="drawBanner"><div class="db-label">🎯 Draw Date</div><div class="db-date" id="drawDateText"></div></div>
 <div class="announce-banner" id="announceBanner"><span class="ab-icon">📢</span><span id="announceText"></span></div>
-<div class="conn checking" id="connBar"><div class="dot"></div><span id="connTxt">Checking server...</span></div>
+<div class="conn checking" id="connBar"><div class="dot"></div><span id="connTxt">Connecting...</span></div>
 <div id="errPanel" class="err-panel hide"><h3>⚠️ Connection Failed</h3><div id="errDetail"></div></div>
 <div class="info-bar"><div class="info-top"><div class="date-box"><div class="date-icon">📅</div><div><div class="date-label">Today's Date</div><div class="date-value" id="dateToday">—</div></div></div><div><div class="avail-label">Availability</div><div class="avail-status high" id="availTxt">Loading...</div></div></div><div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:100%"></div></div><div class="progress-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
 <div id="secB"><div class="card"><div class="steps"><div class="stp on" id="i1"><div class="n">1</div><span class="stx">Details</span></div><div class="sln" id="l1"></div><div class="stp" id="i2"><div class="n">2</div><span class="stx">Payment</span></div><div class="sln" id="l2"></div><div class="stp" id="i3"><div class="n">3</div><span class="stx">Complete</span></div></div>
-<div id="p1"><div class="ct">📝 Your Details</div><div class="fr"><div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div><div class="fg"><label>Phone Number <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="e.g. 09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div></div><div class="fg"><label id="qtyLabel">How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">(50 – 10,000)</span></label><input id="fQ" type="number" min="50" max="10000" placeholder="Minimum 50 numbers"><small id="qtyHelp">Each = unique random 6-digit code. Min 50, max 10,000.</small></div><div class="tot"><div class="tl">Total Amount</div><div class="tv" id="dT">₱ 0.00</div></div><button class="btn b1" onclick="go2()">Continue to Payment →</button></div>
+<div id="p1"><div class="ct">📝 Your Details</div><div class="fr"><div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div><div class="fg"><label>Phone Number <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="e.g. 09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div></div><div class="fg"><label id="qtyLabel">How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">(50 – 10,000)</span></label><input id="fQ" type="number" min="50" max="10000" placeholder="Minimum 50 numbers"><small id="qtyHelp">Each = unique 6-digit code. Min 50, max 10,000.</small></div><div class="tot"><div class="tl">Total Amount</div><div class="tv" id="dT">₱ 0.00</div></div><button class="btn b1" onclick="go2()">Continue to Payment →</button></div>
 <div id="p2" class="hide"><div class="ct">💳 GCash Payment</div><div class="gc"><div class="gc-h"><div class="gc-b">GCash</div> Send Payment To:</div><div style="line-height:2.2"><strong>Name:</strong> <span id="dN"></span><br><strong>Number:</strong><br><div class="gc-num" id="dP" onclick="cpGC()" title="Click to copy"></div><br><strong>Amount:</strong> <span style="color:var(--gold);font-weight:800;font-size:1.1rem" id="dA"></span></div></div><div class="fg"><label>GCash Reference Number</label><input id="fR" placeholder="Enter ref # from your GCash receipt" autocomplete="off"><small>The reference number shown after sending payment.</small></div><button class="btn b1" id="buyBtn" onclick="submitPurchase()">✓ Confirm Purchase</button><button class="btn b2" onclick="go1()">← Go Back</button></div></div></div>
 <div id="secR" class="hide"><div class="receipt"><div class="rh"><div class="ic">✓</div><h2 style="font-size:1.3rem;margin-bottom:3px">Purchase Successful!</h2><p style="color:var(--sub);font-size:.83rem">Your unique 6-digit lottery numbers are ready.</p><div class="ubadge">🔒 Verified unique — zero duplicates</div></div><div class="rd"><div class="ri"><div class="rl">Transaction ID</div><div class="rv" id="rI"></div></div><div class="ri"><div class="rl">Date & Time</div><div class="rv" id="rD"></div></div><div class="ri"><div class="rl">Name</div><div class="rv" id="rN"></div></div><div class="ri"><div class="rl">Phone</div><div class="rv" id="rP"></div></div><div class="ri"><div class="rl">Quantity</div><div class="rv" id="rQ"></div></div><div class="ri"><div class="rl">Amount Paid</div><div class="rv" style="color:var(--gold)" id="rA"></div></div><div class="ri"><div class="rl">GCash Ref</div><div class="rv" id="rR"></div></div></div><div class="nt">🎰 Your Numbers (<span id="rC">0</span>)</div><div class="nbox"><div class="ngrid" id="nG"></div></div><div class="acts"><button class="btn b2" onclick="cpA()">📋 Copy</button><button class="btn b2" onclick="dlA()">⬇ Download</button><button class="btn b2" onclick="prA()">🖨 Print</button></div><button class="btn b1" style="margin-top:16px" onclick="again()">🎰 Buy More Numbers</button></div></div>
 <footer>© 2024 Lucky 6 Lottery &bull; 000000–999999 &bull; GCash only</footer>
@@ -240,64 +232,57 @@ tr:hover td{background:rgba(255,215,0,.02)}
 
 <!-- ═══ ADMIN ═══ -->
 <div id="adminPage" style="display:none">
-<div id="adminLogin" class="login-wrap"><div class="login-box"><h1>🔐 LUCKY 6</h1><div class="lsub">Admin Panel</div><div class="fg"><label>Username</label><input id="loginUser" placeholder="Username" autocomplete="username"></div><div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Password" autocomplete="current-password"></div><button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button></div></div>
+
+<!-- ★ Login with public page link -->
+<div id="adminLogin" class="login-wrap">
+  <div class="login-box">
+    <h1>🔐 LUCKY 6</h1>
+    <div class="lsub">Admin Panel — Authorized Access Only</div>
+    <div class="fg"><label>Username</label><input id="loginUser" placeholder="Username" autocomplete="username"></div>
+    <div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Password" autocomplete="current-password"></div>
+    <button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button>
+    <a href="#" onclick="goToPublicPage();return false" class="pub-link">🎰 Go to Public Lottery Page →</a>
+  </div>
+</div>
+
 <div class="admin" id="adminPanel">
 <div class="topbar"><h1>🎰 LUCKY 6 — Admin</h1><div class="user"><span id="adminUser">admin</span><button class="logout" onclick="doLogout()">Logout</button></div></div>
 <div class="mob-nav"><div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div><div class="nav-item" onclick="goPage('transactions')">📋 TX</div><div class="nav-item" onclick="goPage('numbers')">🔢 Numbers</div><div class="nav-item" onclick="goPage('search')">🔍 Search</div><div class="nav-item" onclick="goPage('tools')">🔧 Tools</div><div class="nav-item" onclick="goPage('settings')">⚙️ Settings</div></div>
 <div class="admain">
 <div class="sidebar"><div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')">📊 <span>Dashboard</span></div><div class="nav-item" data-page="transactions" onclick="goPage('transactions')">📋 <span>Transactions</span></div><div class="nav-item" data-page="numbers" onclick="goPage('numbers')">🔢 <span>Sold Numbers</span></div><div class="nav-sep"></div><div class="nav-item" data-page="search" onclick="goPage('search')">🔍 <span>Search</span></div><div class="nav-item" data-page="tools" onclick="goPage('tools')">🔧 <span>Tools</span></div><div class="nav-sep"></div><div class="nav-item" data-page="settings" onclick="goPage('settings')">⚙️ <span>Settings</span></div></div>
 <div class="content">
-<div class="page active" id="pg-dashboard"><div class="page-title">Dashboard</div><div class="page-sub">Real-time overview</div><div class="stats"><div class="stat gold"><div class="sl">Total Sold</div><div class="sv" id="dsSold">—</div><div class="bar-track"><div class="bar-fill" id="dsBar" style="width:0"></div></div></div><div class="stat green"><div class="sl">Remaining</div><div class="sv" id="dsRemain">—</div><div class="sc" id="dsPct" style="color:var(--ok)">—</div></div><div class="stat blue"><div class="sl">Revenue</div><div class="sv" id="dsRevenue">—</div></div><div class="stat gold"><div class="sl">Transactions</div><div class="sv" id="dsTx">—</div></div><div class="stat green"><div class="sl">Successful</div><div class="sv" id="dsSuccess">—</div></div><div class="stat red"><div class="sl">Failed</div><div class="sv" id="dsFailed">—</div></div><div class="stat blue"><div class="sl">Unique Buyers</div><div class="sv" id="dsBuyers">—</div></div><div class="stat gold"><div class="sl">Today</div><div class="sv" id="dsToday">—</div><div class="sc" id="dsTodayRev" style="color:var(--gold)">—</div></div></div><div class="tbl-wrap"><div class="tbl-head"><h3>📡 Recent Activity</h3><button class="btn-sm btn-blue" onclick="loadDashboard()">↻ Refresh</button></div><ul class="feed" id="feedList"><li class="tbl-empty">Loading...</li></ul></div></div>
+
+<!-- ★ Dashboard with public page button -->
+<div class="page active" id="pg-dashboard">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+    <div><div class="page-title">Dashboard</div><div class="page-sub" style="margin-bottom:0">Real-time overview</div></div>
+    <a href="#" onclick="goToPublicPage();return false" class="pub-link-btn">🎰 Open Public Page ↗</a>
+  </div>
+  <div class="stats"><div class="stat gold"><div class="sl">Total Sold</div><div class="sv" id="dsSold">—</div><div class="bar-track"><div class="bar-fill" id="dsBar" style="width:0"></div></div></div><div class="stat green"><div class="sl">Remaining</div><div class="sv" id="dsRemain">—</div><div class="sc" id="dsPct" style="color:var(--ok)">—</div></div><div class="stat blue"><div class="sl">Revenue</div><div class="sv" id="dsRevenue">—</div></div><div class="stat gold"><div class="sl">Transactions</div><div class="sv" id="dsTx">—</div></div><div class="stat green"><div class="sl">Successful</div><div class="sv" id="dsSuccess">—</div></div><div class="stat red"><div class="sl">Failed</div><div class="sv" id="dsFailed">—</div></div><div class="stat blue"><div class="sl">Unique Buyers</div><div class="sv" id="dsBuyers">—</div></div><div class="stat gold"><div class="sl">Today</div><div class="sv" id="dsToday">—</div><div class="sc" id="dsTodayRev" style="color:var(--gold)">—</div></div></div>
+  <div class="tbl-wrap"><div class="tbl-head"><h3>📡 Recent Activity</h3><button class="btn-sm btn-blue" onclick="loadDashboard()">↻ Refresh</button></div><ul class="feed" id="feedList"><li class="tbl-empty">Loading...</li></ul></div>
+</div>
+
 <div class="page" id="pg-transactions"><div class="page-title">Transactions</div><div class="page-sub">All records</div><div class="tbl-wrap"><div class="tbl-head"><h3>📋 Log</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('transactions')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadTransactions()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amt</th><th>Status</th><th>Action</th></tr></thead><tbody id="txBody"><tr><td colspan="9" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="txPagination"></div></div></div>
 <div class="page" id="pg-numbers"><div class="page-title">Sold Numbers</div><div class="page-sub">All assigned</div><div class="tbl-wrap"><div class="tbl-head"><h3>🔢 Registry</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Export</button><button class="btn-sm btn-blue" onclick="loadNumbers()">↻ Refresh</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr></thead><tbody id="numBody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="numPagination"></div></div></div>
 <div class="page" id="pg-search"><div class="page-title">Search</div><div class="page-sub">Find anything</div><div class="tool-card"><h3>🔍 By Number</h3><div class="tool-row"><div class="fg"><label>6-Digit</label><input id="searchNum" maxlength="6" placeholder="042069"></div><button class="btn-sm btn-gold" onclick="searchNumber()" style="height:42px">Search</button></div></div><div class="tool-card"><h3>👤 By Buyer</h3><div class="tool-row"><div class="fg"><label>Name / Phone / TX / GCash</label><input id="searchBuyer" placeholder="Juan"></div><button class="btn-sm btn-gold" onclick="searchBuyerFn()" style="height:42px">Search</button></div></div><div class="tbl-wrap" id="searchResults" style="display:none"><div class="tbl-head"><h3 id="searchTitle">Results</h3></div><div style="overflow-x:auto"><table><thead id="searchThead"></thead><tbody id="searchTbody"></tbody></table></div></div></div>
 <div class="page" id="pg-tools"><div class="page-title">Tools</div><div class="page-sub">Manual ops</div><div class="tool-card"><h3>➕ Add Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="addNum" maxlength="6" placeholder="123456"></div><div class="fg"><label>Name</label><input id="addName" placeholder="Optional"></div><div class="fg"><label>Phone</label><input id="addPhone" maxlength="11" placeholder="Optional"></div><button class="btn-sm btn-green" onclick="addNumber()" style="height:42px">Add</button></div></div><div class="tool-card"><h3>➖ Remove Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="removeNum" maxlength="6" placeholder="123456"></div><button class="btn-sm btn-red" onclick="removeNumber()" style="height:42px">Remove</button></div></div><div class="tool-card"><h3>📥 Export</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Sold CSV</button><button class="btn-sm btn-blue" onclick="exportData('transactions')">⬇ TX CSV</button></div></div></div>
-<div class="page" id="pg-settings"><div class="page-title">Settings</div><div class="page-sub">Live config — changes apply instantly to public page</div><div class="settings-grid"><div class="setting-group"><h3>💳 GCash</h3><div class="fg"><label>GCash Name</label><input id="setGcashName"></div><div class="fg"><label>GCash Number</label><input id="setGcashNum"></div></div><div class="setting-group"><h3>🎰 Lottery</h3><div class="fg"><label>Name</label><input id="setLotteryName"></div><div class="fg"><label>Draw Date</label><input id="setDrawDate" type="date"></div></div><div class="setting-group"><h3>🔢 Limits</h3><div class="fg"><label>Price (₱)</label><input id="setPrice" type="number" min="1"></div><div class="fg"><label>Min Qty</label><input id="setMinQty" type="number" min="1"></div><div class="fg"><label>Max Qty</label><input id="setMaxQty" type="number" min="1"></div></div><div class="setting-group"><h3>📢 Announcement</h3><div class="fg"><label>Message</label><textarea id="setAnnouncement" placeholder="Leave blank to hide"></textarea><small>Blue banner on public page</small></div><div class="fg"><label>Maintenance</label><select id="setMaintenance"><option value="false">Off</option><option value="true">On — Blocks purchases</option></select><small>Full-screen overlay + server rejects purchases</small></div></div></div><div class="setting-group"><h3>🔐 Password</h3><div class="settings-grid"><div class="fg"><label>New Password</label><input id="setNewPass" type="password" placeholder="Min 6 chars"><small>Blank = keep current</small></div><div class="fg"><label>Confirm</label><input id="setNewPass2" type="password" placeholder="Repeat"></div></div></div><button class="btn b1" onclick="saveSettings()" style="max-width:300px">💾 Save All</button></div>
+<div class="page" id="pg-settings"><div class="page-title">Settings</div><div class="page-sub">Live config — applies to public page instantly</div><div class="settings-grid"><div class="setting-group"><h3>💳 GCash</h3><div class="fg"><label>GCash Name</label><input id="setGcashName"></div><div class="fg"><label>GCash Number</label><input id="setGcashNum"></div></div><div class="setting-group"><h3>🎰 Lottery</h3><div class="fg"><label>Name</label><input id="setLotteryName"></div><div class="fg"><label>Draw Date</label><input id="setDrawDate" type="date"></div></div><div class="setting-group"><h3>🔢 Limits</h3><div class="fg"><label>Price (₱)</label><input id="setPrice" type="number" min="1"></div><div class="fg"><label>Min Qty</label><input id="setMinQty" type="number" min="1"></div><div class="fg"><label>Max Qty</label><input id="setMaxQty" type="number" min="1"></div></div><div class="setting-group"><h3>📢 Announcement</h3><div class="fg"><label>Message</label><textarea id="setAnnouncement" placeholder="Leave blank to hide"></textarea><small>Blue banner on public page</small></div><div class="fg"><label>Maintenance</label><select id="setMaintenance"><option value="false">Off</option><option value="true">On — Blocks purchases</option></select><small>Full-screen overlay + rejects purchases</small></div></div></div><div class="setting-group"><h3>🔐 Password</h3><div class="settings-grid"><div class="fg"><label>New Password</label><input id="setNewPass" type="password" placeholder="Min 6 chars"><small>Blank = keep current</small></div><div class="fg"><label>Confirm</label><input id="setNewPass2" type="password" placeholder="Repeat"></div></div></div><button class="btn b1" onclick="saveSettings()" style="max-width:300px">💾 Save All</button></div>
 </div></div></div></div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwSIp0IQ-3VtMPo67v7w3OE5hax5clNP_ywYX6d89JRyDeQ-qgK8hYoXxpo4T1wiiGlqQ/exec';
+const SCRIPT_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 const ADMIN_SECRET='admin2025';
 
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
 let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 
-/* ═══════════════════════════════════════════════════════════
-   ★ ULTRA-FAST CACHE SYSTEM
-   Show cached data in <1ms, refresh from server in background
-   ═══════════════════════════════════════════════════════════ */
-const CACHE={};
-const SERVER_REFRESH_MS=8000;  // fetch new data from server every 8s
-const UI_RENDER_MS=500;        // re-render UI from cache every 500ms
-
-function cacheSet(key,data){CACHE[key]={data:data,time:Date.now()}}
-function cacheGet(key){return CACHE[key]||null}
-function cacheAge(key){const c=CACHE[key];return c?Date.now()-c.time:Infinity}
-function cacheClear(prefix){Object.keys(CACHE).forEach(k=>{if(!prefix||k.startsWith(prefix))delete CACHE[k]})}
-
-// ★ Stale-While-Revalidate: show cache NOW, fetch in background
-async function fetchWithCache(cacheKey,fetchFn,renderFn){
-  const cached=cacheGet(cacheKey);
-
-  // 1. If cached, render INSTANTLY (< 1ms)
-  if(cached){renderFn(cached.data);
-
-    // 2. If cache is still fresh, don't fetch
-    if(cacheAge(cacheKey)<SERVER_REFRESH_MS)return cached.data;
-  }
-
-  // 3. Fetch in background (no spinner if we have cache)
-  try{
-    const fresh=await fetchFn();
-    if(fresh){cacheSet(cacheKey,fresh);renderFn(fresh)}
-    return fresh;
-  }catch(e){
-    // If fetch fails but we have cache, that's fine
-    if(!cached)throw e;
-    return cached.data;
-  }
-}
+const CACHE={};const SERVER_REFRESH_MS=8000;const UI_RENDER_MS=500;
+function cacheSet(k,d){CACHE[k]={data:d,time:Date.now()}}
+function cacheGet(k){return CACHE[k]||null}
+function cacheAge(k){const c=CACHE[k];return c?Date.now()-c.time:Infinity}
+function cacheClear(p){Object.keys(CACHE).forEach(k=>{if(!p||k.startsWith(p))delete CACHE[k]})}
+async function fetchWithCache(ck,fetchFn,renderFn){const cached=cacheGet(ck);if(cached){renderFn(cached.data);if(cacheAge(ck)<SERVER_REFRESH_MS)return cached.data}try{const fresh=await fetchFn();if(fresh){cacheSet(ck,fresh);renderFn(fresh)}return fresh}catch(e){if(!cached)throw e;return cached.data}}
 
 function pad6(n){return String(n).padStart(6,'0').substring(0,6)}
 function detectMode(){const p=new URLSearchParams(location.search);if(p.get('access')===ADMIN_SECRET){IS_ADMIN_MODE=true;document.getElementById('publicPage').style.display='none';document.getElementById('adminPage').style.display='block';document.title='Lucky 6 — Admin'}else{document.getElementById('publicPage').style.display='block';document.getElementById('adminPage').style.display='none'}}
@@ -308,61 +293,29 @@ function closeConfirm(){document.getElementById('confirmModal').classList.remove
 function show(id){document.getElementById(id).classList.remove('hide')}
 function hide(id){document.getElementById(id).classList.add('hide')}
 
+/* ★ Navigate to public page */
+function goToPublicPage(){window.open(location.href.split('?')[0],'_blank')}
+
 async function safeFetch(url,ms){const c=new AbortController();const t=setTimeout(()=>c.abort(),ms||FETCH_TIMEOUT);try{const r=await fetch(url,{redirect:'follow',signal:c.signal});clearTimeout(t);const txt=await r.text();if(txt.trim().startsWith('<!DOCTYPE')||txt.trim().startsWith('<html')){if(txt.includes('accounts.google.com'))throw new Error('AUTH_ERROR');throw new Error('HTML_RESPONSE')}try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('PARSE_ERROR')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('TIMEOUT');throw err}}
-
 function getFriendlyError(err){const m=err.message||'';if(m==='AUTH_ERROR')return{short:'Not deployed as "Anyone"',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};if(m==='TIMEOUT')return{short:'Timed out',detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'};return{short:m,detail:'<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>'}}
-
 function parseDrawDate(s){if(!s||!s.trim())return null;var p=s.trim().split('-');if(p.length===3){var y=parseInt(p[0]),m=parseInt(p[1])-1,d=parseInt(p[2]);if(!isNaN(y)&&!isNaN(m)&&!isNaN(d))return new Date(y,m,d)}return null}
 function formatDrawDate(s){var d=parseDrawDate(s);if(!d)return null;var mo=['January','February','March','April','May','June','July','August','September','October','November','December'];var dy=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];return dy[d.getDay()]+', '+mo[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear()}
 
-function applyPublicSettings(s){
-  if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var last=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+last+'</span>'}}
-  if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}
-  if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}
-  if(s.price_per_number&&s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!'}
-  if(s.min_quantity&&s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('fQ').placeholder='Minimum '+MIN_QTY}
-  if(s.max_quantity&&s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}
-  document.getElementById('qtyLabel').innerHTML='How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">('+MIN_QTY.toLocaleString()+' – '+MAX_QTY.toLocaleString()+')</span>';
-  document.getElementById('qtyHelp').textContent='Each = unique 6-digit code. Min '+MIN_QTY.toLocaleString()+', max '+MAX_QTY.toLocaleString()+'.';
-  var fd=formatDrawDate(s.draw_date);if(fd){document.getElementById('drawDateText').textContent=fd;document.getElementById('drawBanner').style.display='block'}else{document.getElementById('drawBanner').style.display='none'}
-  if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}
-  if(s.maintenance_mode){document.getElementById('maintOverlay').classList.add('on')}else{document.getElementById('maintOverlay').classList.remove('on')}
-  calc();
-}
+function applyPublicSettings(s){if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var last=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+last+'</span>'}}if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}if(s.price_per_number&&s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!'}if(s.min_quantity&&s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('fQ').placeholder='Minimum '+MIN_QTY}if(s.max_quantity&&s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}document.getElementById('qtyLabel').innerHTML='How Many Numbers? <span style="font-weight:400;text-transform:none;color:var(--sub)">('+MIN_QTY.toLocaleString()+' – '+MAX_QTY.toLocaleString()+')</span>';document.getElementById('qtyHelp').textContent='Each = unique 6-digit code. Min '+MIN_QTY.toLocaleString()+', max '+MAX_QTY.toLocaleString()+'.';var fd=formatDrawDate(s.draw_date);if(fd){document.getElementById('drawDateText').textContent=fd;document.getElementById('drawBanner').style.display='block'}else{document.getElementById('drawBanner').style.display='none'}if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}if(s.maintenance_mode){document.getElementById('maintOverlay').classList.add('on')}else{document.getElementById('maintOverlay').classList.remove('on')}calc()}
 
-/* ═══ PUBLIC ═══ */
 function titleCase(s){return s.replace(/\b\w/g,c=>c.toUpperCase())}
 function getDigitsOnly(s){return s.replace(/\D/g,'')}
 function isValidPhone(s){return getDigitsOnly(s).length===11}
 function updatePhoneStatus(){const raw=document.getElementById('fP').value,d=getDigitsOnly(raw),err=document.getElementById('phoneErr'),inp=document.getElementById('fP');if(!raw){err.style.display='none';inp.style.borderColor='rgba(255,255,255,.1)';return}if(d.length===11){err.style.display='none';inp.style.borderColor='var(--ok)'}else{err.style.display='block';err.textContent='Phone must be 11 digits ('+d.length+'/11)';inp.style.borderColor='var(--err)'}}
 function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
 function updateProgress(sold,rem){const pct=Math.max(0,Math.min(100,(rem/TOTAL_POOL)*100));const f=document.getElementById('progressFill'),t=document.getElementById('availTxt');f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');if(pct>60){t.textContent='Plenty available';t.classList.add('high')}else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid')}else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low')}else if(pct>0){t.textContent='Almost sold out!';t.classList.add('low');f.classList.add('low')}else{t.textContent='Sold out';t.classList.add('low');f.classList.add('low')}}
-
-// ★ PUBLIC: parallel fetch health+settings+stats
-async function checkConnection(){
-  const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');
-  bar.className='conn checking';txt.textContent='Connecting...';errP.classList.add('hide');
-  if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}
-  try{
-    const[health,settings,stats]=await Promise.all([
-      safeFetch(SCRIPT_URL+'?action=health',12000),
-      safeFetch(SCRIPT_URL+'?action=publicSettings',12000),
-      safeFetch(SCRIPT_URL+'?action=stats',12000)
-    ]);
-    if(health.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}
-    if(settings.success){cacheSet('pubSettings',settings);applyPublicSettings(settings)}
-    if(stats.success){cacheSet('pubStats',stats);updateProgress(stats.sold,stats.remaining)}
-  }catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide')}
-}
-
+async function checkConnection(){const bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),errP=document.getElementById('errPanel');bar.className='conn checking';txt.textContent='Connecting...';errP.classList.add('hide');if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}try{const[health,settings,stats]=await Promise.all([safeFetch(SCRIPT_URL+'?action=health',12000),safeFetch(SCRIPT_URL+'?action=publicSettings',12000),safeFetch(SCRIPT_URL+'?action=stats',12000)]);if(health.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}if(settings.success){cacheSet('pubSettings',settings);applyPublicSettings(settings)}if(stats.success){cacheSet('pubStats',stats);updateProgress(stats.sold,stats.remaining)}}catch(err){serverOnline=false;bar.className='conn offline';const f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;errP.classList.remove('hide')}}
 function calc(){const v=Math.min(MAX_QTY,Math.max(0,parseInt(document.getElementById('fQ').value)||0));document.getElementById('dT').textContent='₱ '+(v*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function go2(){const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);if(!nm)return toast('Enter name.','err');if(!isValidPhone(ph))return toast('Phone must be 11 digits.','err');if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Minimum '+MIN_QTY+'.','err')}if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Maximum '+MAX_QTY.toLocaleString()+'.','err')}hide('p1');show('p2');document.getElementById('dA').textContent=' ₱ '+(qt*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});stpSet(2)}
 function go1(){hide('p2');show('p1');stpSet(1)}
 function stpSet(n){const c=(id,cl)=>document.getElementById(id).className=cl;c('i1',n===1?'stp on':'stp ok');c('i2',n===2?'stp on':n>2?'stp ok':'stp');c('i3',n===3?'stp on':'stp');c('l1',n>=2?'sln on':'sln');c('l2',n>=3?'sln on':'sln')}
-
 function submitPurchase(){const ref=document.getElementById('fR').value.trim();if(!ref)return toast('Enter GCash ref.','err');if(!serverOnline){toast('Offline.','err');checkConnection();return}const nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);document.getElementById('buyBtn').disabled=true;attemptPurchase(nm,ph,qt,ref,0)}
 async function attemptPurchase(nm,ph,qt,ref,tryN){const rb=document.getElementById('rb'),rf=document.getElementById('rf');if(tryN===0){showOv('Generating '+qt.toLocaleString()+' numbers...','');rb.style.display='none'}else{showOv('Retry '+tryN+'/'+MAX_RETRY,'');rb.style.display='block';rf.style.transition='none';rf.style.width='0%';setTimeout(()=>{rf.style.transition='width '+(RETRY_MS[tryN-1]/1000)+'s linear';rf.style.width='100%'},50)}if(tryN>0)await new Promise(r=>setTimeout(r,RETRY_MS[tryN-1]));try{const d=await safeFetch(SCRIPT_URL+'?'+new URLSearchParams({action:'purchase',quantity:qt,name:nm,phone:ph,gcashRef:ref}),FETCH_TIMEOUT);if(d.success){hideOv();document.getElementById('buyBtn').disabled=false;myNums=d.numbers.map(n=>pad6(n));showResult(d,nm,ph,qt,ref);toast('🎉 '+d.quantity.toLocaleString()+' numbers!','suc')}else if(d.retryable&&tryN<MAX_RETRY){toast('Retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1)}else{hideOv();document.getElementById('buyBtn').disabled=false;toast(d.error||'Failed.','err')}}catch(err){if(tryN<MAX_RETRY){toast('Retrying...','warn');attemptPurchase(nm,ph,qt,ref,tryN+1)}else{hideOv();document.getElementById('buyBtn').disabled=false;toast(getFriendlyError(err).short,'err')}}}
-
 function showResult(d,nm,ph,qt,ref){hide('secB');show('secR');stpSet(3);document.getElementById('rI').textContent=d.transactionId;document.getElementById('rD').textContent=d.timestamp||new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'});document.getElementById('rN').textContent=nm;document.getElementById('rP').textContent=ph;document.getElementById('rQ').textContent=d.quantity.toLocaleString()+' numbers';document.getElementById('rA').textContent='₱ '+Number(d.amount).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('rR').textContent=ref;document.getElementById('rC').textContent=myNums.length.toLocaleString();let h='';for(let i=0;i<myNums.length;i++)h+='<div class="ni">'+myNums[i]+'</div>';document.getElementById('nG').innerHTML=h;scrollTo({top:0,behavior:'smooth'})}
 function cpA(){navigator.clipboard.writeText(myNums.join('\n')).then(()=>toast('Copied!','suc')).catch(()=>{const a=document.createElement('textarea');a.value=myNums.join('\n');document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);toast('Copied!','suc')})}
 function dlA(){const tx=document.getElementById('rI').textContent,L=['═══ '+LOTTERY_NAME+' ═══','','TX: '+tx,'Date: '+document.getElementById('rD').textContent,'Name: '+document.getElementById('rN').textContent,'Phone: '+document.getElementById('rP').textContent,'Qty: '+myNums.length,'Amount: '+document.getElementById('rA').textContent,'GCash: '+document.getElementById('rR').textContent,'','── NUMBERS ──',''];for(let i=0;i<myNums.length;i++)L.push(myNums[i]);const b=new Blob([L.join('\n')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+tx+'.txt';a.click();URL.revokeObjectURL(a.href);toast('Downloaded!','suc')}
@@ -370,209 +323,57 @@ function prA(){const w=window.open('');w.document.write('<!DOCTYPE html><html><h
 function cpGC(){navigator.clipboard.writeText(GCASH_NUMBER.replace(/\D/g,'')).then(()=>toast('GCash # copied!','suc')).catch(()=>{})}
 function again(){hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>document.getElementById(id).value='');document.getElementById('dT').textContent='₱ 0.00';document.getElementById('phoneErr').style.display='none';document.getElementById('fP').style.borderColor='rgba(255,255,255,.1)';hide('p2');show('p1');stpSet(1);document.getElementById('errPanel').classList.add('hide');myNums=[];scrollTo({top:0,behavior:'smooth'})}
 
-/* ══════════════════════════════════════════════════════════════
-   ★ ADMIN — ULTRA-FAST WITH STALE-WHILE-REVALIDATE
-   ══════════════════════════════════════════════════════════════ */
+/* ═══ ADMIN ═══ */
 async function adminApi(action,params){params=params||{};params.action=action;params.token=TOKEN;const url=SCRIPT_URL+'?'+new URLSearchParams(params);const c=new AbortController();const t=setTimeout(()=>c.abort(),60000);try{const r=await fetch(url,{signal:c.signal,redirect:'follow'});clearTimeout(t);const txt=await r.text();try{return JSON.parse(txt)}catch(e){const m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}}
-
-async function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{const d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;localStorage.setItem('lk6_token',TOKEN);localStorage.setItem('lk6_user',u);document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();toast('Welcome!','suc')}else toast(d.error,'err')}catch(e){toast('Error: '+e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
+async function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{const d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;localStorage.setItem('lk6_token',TOKEN);localStorage.setItem('lk6_user',u);document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();startAdminAutoRefresh();toast('Welcome!','suc')}else toast(d.error,'err')}catch(e){toast('Error: '+e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
 function doLogout(){TOKEN='';localStorage.removeItem('lk6_token');localStorage.removeItem('lk6_user');Object.keys(CACHE).forEach(k=>delete CACHE[k]);document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginPass').value='';if(adminRefreshTimer)clearInterval(adminRefreshTimer);toast('Logged out.','warn')}
 
-// ★ Track which admin page is active
-let activeAdminPage='dashboard';
-let adminRefreshTimer=null;
+let activeAdminPage='dashboard';let adminRefreshTimer=null;
 
-function goPage(name){
-  activeAdminPage=name;
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('pg-'+name).classList.add('active');
-  document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));
-  document.querySelectorAll('[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));
-  document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active')});
+function goPage(name){activeAdminPage=name;document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+name).classList.add('active');document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('[data-page="'+name+'"]').forEach(n=>n.classList.add('active'));document.querySelectorAll('.mob-nav .nav-item').forEach(n=>{n.classList.remove('active');if(n.textContent.toLowerCase().includes(name.substring(0,4)))n.classList.add('active')});if(name==='dashboard')loadDashboard();if(name==='transactions')loadTransactions();if(name==='numbers')loadNumbers();if(name==='settings')loadSettingsFn()}
 
-  // ★ Instant render from cache, then background refresh
-  if(name==='dashboard')loadDashboard();
-  if(name==='transactions')loadTransactions();
-  if(name==='numbers')loadNumbers();
-  if(name==='settings')loadSettingsFn();
-}
-
-/* ═══ ★ DASHBOARD — instant from cache ═══ */
-async function loadDashboard(){
-  await fetchWithCache('admin_dash',
-    async()=>{
-      const[d,a]=await Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]);
-      return{dashboard:d.success?d:null,activity:a.success?a.activities:[]};
-    },
-    (data)=>{
-      if(data.dashboard)populateDashboard(data.dashboard);
-      populateFeed(data.activity||[]);
-    }
-  );
-}
+async function loadDashboard(){await fetchWithCache('admin_dash',async()=>{const[d,a]=await Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]);return{dashboard:d.success?d:null,activity:a.success?a.activities:[]}},d=>{if(d.dashboard)populateDashboard(d.dashboard);populateFeed(d.activity||[])})}
 function populateDashboard(d){document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsPct').textContent=d.percentSold+'% sold';document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsTx').textContent=d.totalTransactions.toLocaleString();document.getElementById('dsSuccess').textContent=d.successTransactions.toLocaleString();document.getElementById('dsFailed').textContent=d.failedTransactions.toLocaleString();document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();document.getElementById('dsToday').textContent=d.todayTransactions.toLocaleString();document.getElementById('dsTodayRev').textContent='₱'+d.todayRevenue.toLocaleString();const pct=d.totalSold/d.totalPool*100;const bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid')}
 function populateFeed(acts){const list=document.getElementById('feedList');if(!acts||!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}let h='';acts.forEach(a=>{const dc=a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail';h+='<li><div class="dot '+dc+'"></div><div style="flex:1"><strong>'+a.name+'</strong> — '+a.quantity+' (₱'+Number(a.amount).toLocaleString()+')<br><span class="time">'+a.timestamp+' • '+a.transactionId+'</span></div><span class="badge '+(a.status==='SUCCESS'?'ok':a.status==='DELETED'?'del':'fail')+'">'+a.status+'</span></li>'});list.innerHTML=h}
 
-/* ═══ ★ TRANSACTIONS — instant from cache ═══ */
-async function loadTransactions(page){
-  if(page)currentPage.tx=page;
-  const ck='admin_tx_'+currentPage.tx;
-
-  await fetchWithCache(ck,
-    async()=>{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});return d.success?d:null},
-    (data)=>{if(data)renderTx(data)}
-  );
-}
+async function loadTransactions(page){if(page)currentPage.tx=page;await fetchWithCache('admin_tx_'+currentPage.tx,async()=>{const d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});return d.success?d:null},d=>{if(d)renderTx(d)})}
 function renderTx(d){const body=document.getElementById('txBody');if(!d.transactions||!d.transactions.length){body.innerHTML='<tr><td colspan="9" class="tbl-empty">No transactions.</td></tr>';document.getElementById('txPagination').innerHTML='';return}let h='';d.transactions.forEach(t=>{const sc=t.status==='SUCCESS'?'ok':t.status==='DELETED'?'del':'fail';h+='<tr data-tx="'+t.transactionId+'"><td>'+t.timestamp+'</td><td class="mono" style="font-size:.75rem">'+t.transactionId+'</td><td>'+t.name+'</td><td>'+t.phone+'</td><td>'+t.gcashRef+'</td><td>'+t.quantity+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+t.status+'</span></td><td>'+(t.status==='SUCCESS'?'<button class="btn-sm btn-red" onclick="confirmDelete(\''+t.transactionId+'\')">Del</button>':'—')+'</td></tr>'});body.innerHTML=h;renderPagination('txPagination',d.page,d.totalPages,'loadTransactions')}
 
-/* ═══ ★ NUMBERS — instant from cache ═══ */
-async function loadNumbers(page){
-  if(page)currentPage.num=page;
-  const ck='admin_num_'+currentPage.num;
-
-  await fetchWithCache(ck,
-    async()=>{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});return d.success?d:null},
-    (data)=>{if(data)renderNums(data)}
-  );
-}
+async function loadNumbers(page){if(page)currentPage.num=page;await fetchWithCache('admin_num_'+currentPage.num,async()=>{const d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});return d.success?d:null},d=>{if(d)renderNums(d)})}
 function renderNums(d){const body=document.getElementById('numBody');if(!d.numbers||!d.numbers.length){body.innerHTML='<tr><td colspan="6" class="tbl-empty">No numbers.</td></tr>';document.getElementById('numPagination').innerHTML='';return}let h='';d.numbers.forEach(n=>{h+='<tr><td class="mono">'+n.number+'</td><td style="font-size:.75rem">'+n.transactionId+'</td><td>'+n.name+'</td><td>'+n.phone+'</td><td>'+n.gcashRef+'</td><td>'+n.timestamp+'</td></tr>'});body.innerHTML=h;renderPagination('numPagination',d.page,d.totalPages,'loadNumbers')}
 
 function renderPagination(cid,cur,total,fn){const c=document.getElementById(cid);if(total<=1){c.innerHTML='';return}let h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>←</button>';const s=Math.max(1,cur-2),e=Math.min(total,cur+2);if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';if(s>2)h+='<span class="pg-info">…</span>';for(let i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';if(e<total-1)h+='<span class="pg-info">…</span>';if(e<total)h+='<button class="pg-btn" onclick="'+fn+'('+total+')">'+total+'</button>';h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=total?'disabled':'')+'>→</button> <span class="pg-info">'+cur+'/'+total+'</span>';c.innerHTML=h}
 
-/* ═══ ★ INSTANT DELETE — optimistic UI ═══ */
 function confirmDelete(txId){document.getElementById('confirmTitle').textContent='⚠️ Delete?';document.getElementById('confirmMsg').innerHTML='Delete <code>'+txId+'</code> and all numbers?<br><strong>Cannot be undone.</strong>';document.getElementById('confirmYes').textContent='Delete';document.getElementById('confirmYes').onclick=()=>doDeleteTx(txId);document.getElementById('confirmModal').classList.add('on')}
+async function doDeleteTx(txId){closeConfirm();const row=document.querySelector('tr[data-tx="'+txId+'"]');if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}toast('Deleting...','warn');cacheClear('admin_');try{const d=await adminApi('adminDeleteTransaction',{transactionId:txId});if(d.success){toast('✅ '+d.message,'suc');loadDashboard()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
 
-async function doDeleteTx(txId){
-  closeConfirm();
-
-  // ★ INSTANT: remove row from UI now
-  const row=document.querySelector('tr[data-tx="'+txId+'"]');
-  if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}
-  toast('Deleting...','warn');
-
-  // ★ Invalidate all caches
-  cacheClear('admin_');
-
-  try{
-    const d=await adminApi('adminDeleteTransaction',{transactionId:txId});
-    if(d.success){toast('✅ '+d.message,'suc');
-      // Refresh dashboard in background
-      loadDashboard();
-    }else{toast(d.error,'err');loadTransactions()}
-  }catch(e){toast('Failed','err');loadTransactions()}
-}
-
-/* ═══ SEARCH ═══ */
 async function searchNumber(){const q=document.getElementById('searchNum').value.trim();if(!q)return toast('Enter number.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchNumber',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.found?'✅ '+d.query+' found':'❌ Not found';if(d.found){document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr>';let h='';d.results.forEach(r=>{h+='<tr><td class="mono">'+r.number+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.timestamp+'</td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">Not sold.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
-
 async function searchBuyerFn(){const q=document.getElementById('searchBuyer').value.trim();if(!q)return toast('Enter term.','err');showOv('Searching...','');try{const d=await adminApi('adminSearchBuyer',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.total+' result(s)';if(d.total>0){document.getElementById('searchThead').innerHTML='<tr><th>Date</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Qty</th><th>Amt</th><th>Status</th></tr>';let h='';d.results.forEach(r=>{const sc=r.status==='SUCCESS'?'ok':r.status==='DELETED'?'del':'fail';h+='<tr><td>'+r.timestamp+'</td><td style="font-size:.75rem">'+r.transactionId+'</td><td>'+r.name+'</td><td>'+r.phone+'</td><td>'+r.gcashRef+'</td><td>'+r.quantity+'</td><td>₱'+Number(r.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+r.status+'</span></td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">None found.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
 
-/* ═══ TOOLS ═══ */
 async function addNumber(){const num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{const d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
-
 async function removeNumber(){const num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{const d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
 
-/* ═══ ★ SETTINGS — instant from cache ═══ */
-async function loadSettingsFn(){
-  await fetchWithCache('admin_settings',
-    async()=>{const d=await adminApi('adminGetSettings');return d.success?d.settings:null},
-    (data)=>{if(data)fillSettings(data)}
-  );
-}
+async function loadSettingsFn(){await fetchWithCache('admin_settings',async()=>{const d=await adminApi('adminGetSettings');return d.success?d.settings:null},d=>{if(d)fillSettings(d)})}
 function fillSettings(s){document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNum').value=s.gcash_number||'';document.getElementById('setLotteryName').value=s.lottery_name||'';document.getElementById('setDrawDate').value=s.draw_date||'';document.getElementById('setPrice').value=s.price_per_number||'1';document.getElementById('setMinQty').value=s.min_quantity||'50';document.getElementById('setMaxQty').value=s.max_quantity||'10000';document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setMaintenance').value=s.maintenance_mode||'false'}
-
 async function saveSettings(){const np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;if(np&&np.length<6)return toast('Min 6 chars.','err');if(np&&np!==np2)return toast('No match.','err');showOv('Saving...','');const p={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};if(np)p.new_password=np;try{const d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cacheClear('admin_settings');cacheClear('pubSettings');document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
-
 async function exportData(type){showOv('Exporting...','');try{const d=await adminApi('adminExportData',{type});hideOv();if(!d.success)return toast(d.error,'err');let csv=d.headers.join(',')+'\n';d.data.forEach(row=>{csv+=row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')+'\n'});const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);toast('Exported '+(d.total||0)+' rows!','suc')}catch(e){hideOv();toast('Error','err')}}
 
-/* ═══════════════════════════════════════════════════════════
-   ★ BACKGROUND AUTO-REFRESH — keeps data fresh
-   ═══════════════════════════════════════════════════════════ */
-function startAdminAutoRefresh(){
-  if(adminRefreshTimer)clearInterval(adminRefreshTimer);
+function startAdminAutoRefresh(){if(adminRefreshTimer)clearInterval(adminRefreshTimer);adminRefreshTimer=setInterval(()=>{if(!TOKEN)return;if(activeAdminPage==='dashboard'&&cacheAge('admin_dash')>=SERVER_REFRESH_MS){Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]).then(([d,a])=>{if(d&&d.success){const data={dashboard:d,activity:a&&a.success?a.activities:[]};cacheSet('admin_dash',data);populateDashboard(d);populateFeed(data.activity)}}).catch(()=>{})}else if(activeAdminPage==='transactions'){const ck='admin_tx_'+currentPage.tx;if(cacheAge(ck)>=SERVER_REFRESH_MS)adminApi('adminTransactions',{page:currentPage.tx,perPage:30}).then(d=>{if(d&&d.success){cacheSet(ck,d);renderTx(d)}}).catch(()=>{})}else if(activeAdminPage==='numbers'){const ck='admin_num_'+currentPage.num;if(cacheAge(ck)>=SERVER_REFRESH_MS)adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100}).then(d=>{if(d&&d.success){cacheSet(ck,d);renderNums(d)}}).catch(()=>{})}},UI_RENDER_MS)}
 
-  adminRefreshTimer=setInterval(()=>{
-    if(!TOKEN)return;
-
-    // ★ Silently refresh the active page's data in background
-    if(activeAdminPage==='dashboard'){
-      // Only fetch if cache is stale
-      if(cacheAge('admin_dash')>=SERVER_REFRESH_MS){
-        Promise.all([adminApi('adminDashboard'),adminApi('adminRecentActivity',{limit:15})]).then(([d,a])=>{
-          if(d&&d.success){
-            const data={dashboard:d,activity:a&&a.success?a.activities:[]};
-            cacheSet('admin_dash',data);
-            populateDashboard(d);
-            populateFeed(data.activity);
-          }
-        }).catch(()=>{});
-      }
-    }else if(activeAdminPage==='transactions'){
-      const ck='admin_tx_'+currentPage.tx;
-      if(cacheAge(ck)>=SERVER_REFRESH_MS){
-        adminApi('adminTransactions',{page:currentPage.tx,perPage:30}).then(d=>{
-          if(d&&d.success){cacheSet(ck,d);renderTx(d)}
-        }).catch(()=>{});
-      }
-    }else if(activeAdminPage==='numbers'){
-      const ck='admin_num_'+currentPage.num;
-      if(cacheAge(ck)>=SERVER_REFRESH_MS){
-        adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100}).then(d=>{
-          if(d&&d.success){cacheSet(ck,d);renderNums(d)}
-        }).catch(()=>{});
-      }
-    }
-  },UI_RENDER_MS);
-}
-
-/* ═══ INIT ═══ */
 document.addEventListener('DOMContentLoaded',async()=>{
   detectMode();
-
   if(IS_ADMIN_MODE){
     const saved=localStorage.getItem('lk6_token'),user=localStorage.getItem('lk6_user');
-    if(saved&&user){
-      TOKEN=saved;showOv('Restoring...','');
-      try{
-        const d=await adminApi('adminDashboard');
-        if(d.success){
-          document.getElementById('adminUser').textContent=user;
-          document.getElementById('adminLogin').style.display='none';
-          document.getElementById('adminPanel').style.display='block';
-          const data={dashboard:d,activity:[]};
-          cacheSet('admin_dash',data);
-          populateDashboard(d);
-          // Fetch activity in background
-          adminApi('adminRecentActivity',{limit:15}).then(a=>{
-            if(a&&a.success){data.activity=a.activities;cacheSet('admin_dash',data);populateFeed(a.activities)}
-          });
-          // ★ Start auto-refresh
-          startAdminAutoRefresh();
-        }else doLogout();
-      }catch(e){doLogout()}
-      hideOv();
-    }
-    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-    document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
-  } else {
+    if(saved&&user){TOKEN=saved;showOv('Restoring...','');try{const d=await adminApi('adminDashboard');if(d.success){document.getElementById('adminUser').textContent=user;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';cacheSet('admin_dash',{dashboard:d,activity:[]});populateDashboard(d);adminApi('adminRecentActivity',{limit:15}).then(a=>{if(a&&a.success){const data=cacheGet('admin_dash').data;data.activity=a.activities;cacheSet('admin_dash',data);populateFeed(a.activities)}});startAdminAutoRefresh()}else doLogout()}catch(e){doLogout()}hideOv()}
+    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
+  }else{
     setTodayDate();document.getElementById('dP').textContent=GCASH_NUMBER;document.getElementById('dN').textContent=GCASH_NAME;
     const ni=document.getElementById('fN');ni.addEventListener('input',()=>{const p=ni.selectionStart;ni.value=titleCase(ni.value);ni.setSelectionRange(p,p)});
     const pi=document.getElementById('fP');pi.addEventListener('input',()=>{pi.value=getDigitsOnly(pi.value).substring(0,11);updatePhoneStatus()});pi.addEventListener('blur',updatePhoneStatus);
     const qi=document.getElementById('fQ');qi.addEventListener('input',calc);qi.addEventListener('focus',()=>{qi.value='';calc()});qi.addEventListener('blur',()=>{let v=parseInt(qi.value);if(isNaN(v)||v<MIN_QTY){if(qi.value!==''){qi.value=MIN_QTY;toast('Minimum '+MIN_QTY,'warn')}}if(v>MAX_QTY){qi.value=MAX_QTY;toast('Maximum '+MAX_QTY.toLocaleString(),'warn')}calc()});
     checkConnection();setInterval(setTodayDate,60000);
   }
-
-  // ★ After login, start auto-refresh
-  const origLogin=doLogin;
-  window._origDoLogin=doLogin;
-  window.doLogin=async function(){
-    await window._origDoLogin();
-    if(TOKEN)startAdminAutoRefresh();
-  };
 });
 </script>
 </body>
 </html>
-
-
-
