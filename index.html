@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LUCKY 6 LOTTERY</title>
+<title>PISO PALARO</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}:root{--bg:#060919;--card:rgba(12,17,50,.92);--card2:rgba(20,26,60,.85);--gold:#ffd700;--goldd:#c9a200;--txt:#eef;--sub:#6a73a0;--bdr:rgba(255,215,0,.1);--ok:#00e676;--gc:#007aff;--err:#ff3b3b;--warn:#ff9100;--pend:#ffab00;--r:12px}html{scroll-behavior:smooth}body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% -10%,rgba(255,215,0,.06),transparent 60%),radial-gradient(ellipse at 70% 110%,rgba(0,122,255,.04),transparent 55%);pointer-events:none}.w{max-width:860px;margin:0 auto;padding:14px;position:relative;z-index:1}header{text-align:center;padding:30px 0 8px}.logo{font-size:clamp(2rem,7vw,3.3rem);font-weight:900;background:linear-gradient(135deg,var(--goldd),var(--gold),#fff8c4,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px}.logo span{display:block;font-size:.38em;letter-spacing:12px;font-weight:300;-webkit-text-fill-color:var(--sub)}.tag{color:var(--sub);font-size:.85rem;margin-top:4px;letter-spacing:1px}.pill{display:inline-block;margin-top:12px;padding:7px 24px;background:linear-gradient(135deg,var(--goldd),var(--gold));color:#000;border-radius:50px;font-weight:800;font-size:.95rem}.range{margin-top:6px;color:var(--sub);font-size:.75rem;font-family:'JetBrains Mono',monospace;letter-spacing:2px}.draw-banner{background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,215,0,.03));border:1px solid rgba(255,215,0,.15);border-radius:var(--r);padding:12px 18px;margin:14px 0;text-align:center;display:none}.draw-banner .db-label{font-size:.65rem;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:2px}.draw-banner .db-date{font-size:1.1rem;font-weight:800;color:var(--gold);font-family:'JetBrains Mono',monospace}.announce-banner{background:linear-gradient(135deg,rgba(0,122,255,.1),rgba(0,122,255,.03));border:1px solid rgba(0,122,255,.18);border-radius:var(--r);padding:14px 18px;margin:14px 0;display:none;line-height:1.7;font-size:.88rem}.maint-overlay{display:none;position:fixed;inset:0;background:rgba(6,9,25,.97);z-index:9998;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px}.maint-overlay.on{display:flex}.maint-overlay .mi{font-size:4rem;margin-bottom:16px}.maint-overlay h2{color:var(--gold);font-size:1.5rem;margin-bottom:8px}.maint-overlay p{color:var(--sub);font-size:.92rem;max-width:400px;line-height:1.8}.info-bar{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:20px 24px;backdrop-filter:blur(10px);margin:22px 0}.info-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}.date-box{display:flex;align-items:center;gap:10px}.date-icon{width:42px;height:42px;background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.04));border:1px solid rgba(255,215,0,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}.date-label{font-size:.65rem;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:2px}.date-value{font-size:1.05rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--gold)}.avail-label{font-size:.65rem;color:var(--sub);text-transform:uppercase;letter-spacing:2px;text-align:right}.avail-status{font-size:.82rem;font-weight:600;margin-top:2px;text-align:right}.avail-status.high{color:var(--ok)}.avail-status.mid{color:var(--warn)}.avail-status.low{color:var(--err)}.progress-wrap{position:relative}.progress-track{width:100%;height:14px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--ok),#69f0ae);transition:width 1.5s;position:relative}.progress-fill.mid{background:linear-gradient(90deg,var(--warn),#ffcc02)}.progress-fill.low{background:linear-gradient(90deg,var(--err),#ff6b6b)}.progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 2s infinite}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}.progress-dots{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px}.progress-dots span{width:1px;height:6px;background:rgba(255,255,255,.1)}.conn{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 8px;padding:10px;border-radius:var(--r);font-size:.8rem;font-weight:600;transition:.3s}.conn.checking{background:rgba(255,255,255,.05);color:var(--sub);border:1px solid rgba(255,255,255,.08)}.conn.online{background:rgba(0,230,118,.08);color:var(--ok);border:1px solid rgba(0,230,118,.15)}.conn.offline{background:rgba(255,59,59,.08);color:var(--err);border:1px solid rgba(255,59,59,.15)}.conn .dot{width:8px;height:8px;border-radius:50%}.conn.checking .dot{background:var(--sub);animation:pulse 1s infinite}.conn.online .dot{background:var(--ok)}.conn.offline .dot{background:var(--err)}@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}.card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:24px;backdrop-filter:blur(10px);margin-bottom:22px}.steps{display:flex;justify-content:center;align-items:center;margin-bottom:22px}.stp{display:flex;align-items:center;gap:5px;padding:7px 10px;font-size:.76rem;font-weight:600;color:var(--sub);transition:.3s}.stp .n{width:25px;height:25px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:.73rem;font-weight:700;transition:.3s}.stp.on{color:var(--gold)}.stp.on .n{background:var(--gold);color:#000}.stp.ok{color:var(--ok)}.stp.ok .n{background:var(--ok);color:#fff}.sln{width:28px;height:2px;background:rgba(255,255,255,.07);transition:.3s}.sln.on{background:var(--gold)}.ct{font-size:1.05rem;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:7px}.fg{margin-bottom:14px}.fg label{display:block;font-size:.7rem;font-weight:600;color:var(--sub);margin-bottom:5px;text-transform:uppercase;letter-spacing:2px}.fg input,.fg textarea,.fg select{width:100%;padding:12px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-size:1rem;font-family:inherit;outline:none;transition:.3s}.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,215,0,.08)}.fg input::placeholder{color:rgba(255,255,255,.18)}.fg .field-err{color:var(--err);font-size:.7rem;margin-top:4px;display:none}.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tot{background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,215,0,.02));border:1px dashed rgba(255,215,0,.2);border-radius:var(--r);padding:14px;text-align:center;margin:14px 0}.tot .tl{font-size:.66rem;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}.tot .tv{font-size:1.9rem;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace}.gc{background:linear-gradient(135deg,rgba(0,122,255,.1),rgba(0,122,255,.03));border:1px solid rgba(0,122,255,.18);border-radius:var(--r);padding:18px;margin:14px 0}.gc-h{display:flex;align-items:center;gap:7px;margin-bottom:10px;font-weight:700}.gc-b{background:var(--gc);color:#fff;padding:4px 11px;border-radius:6px;font-weight:800;font-size:.8rem}.gc-num{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:#64b5f6;background:rgba(0,122,255,.12);padding:9px 16px;border-radius:8px;display:inline-block;margin:5px 0;cursor:pointer;user-select:all;border:1px dashed rgba(100,181,246,.3);transition:.2s}.gc-num:hover{background:rgba(0,122,255,.2)}
@@ -43,7 +43,22 @@
 .qr-saving-overlay.on{display:flex}
 .qr-saving-overlay .sp-sm{width:24px;height:24px;border:3px solid rgba(255,215,0,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
 
-@media(max-width:640px){.w{padding:10px}.info-bar{padding:16px}.info-top{flex-direction:column;align-items:flex-start;gap:12px}.avail-label,.avail-status{text-align:left}.fr{grid-template-columns:1fr}.card{padding:16px}.ngrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}.acts{grid-template-columns:1fr}.rd{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.stp .stx{display:none}.stp{padding:7px 6px}.highlight-field .cp-hint{display:none}.qr-settings-layout{grid-template-columns:1fr}.qr-preview-box{width:100%}.qr-preview-img-wrap{width:100%;height:140px}}
+/* ★ Quick-pick stacking buttons */
+.qp-wrap{margin-bottom:14px}
+.qp-label{font-size:.7rem;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.qp-label .qp-reset{font-size:.65rem;color:var(--sub);cursor:pointer;text-transform:none;letter-spacing:0;padding:2px 8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:4px;font-weight:500;transition:.2s}
+.qp-label .qp-reset:hover{color:var(--err);border-color:rgba(255,59,59,.3)}
+.qp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.qp-btn{padding:9px 4px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.15);border-radius:9px;color:var(--gold);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;text-align:center;line-height:1.3}
+.qp-btn:hover{background:rgba(255,215,0,.14);border-color:rgba(255,215,0,.35);transform:translateY(-1px)}
+.qp-btn:active{transform:translateY(0)}
+.qp-btn.max-btn{background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.06));border-color:rgba(255,215,0,.3)}
+.qp-added{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.35);color:var(--ok);animation:qpFlash .35s ease}
+@keyframes qpFlash{0%{transform:scale(1.08)}60%{transform:scale(.97)}100%{transform:scale(1)}}
+.qp-stack-display{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--sub);margin-top:7px;min-height:20px;flex-wrap:wrap}
+.qp-stack-display .qp-chip{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:4px;padding:2px 7px;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700}
+@media(max-width:500px){.qp-grid{grid-template-columns:repeat(3,1fr)}}
+.info-bar{padding:16px}.info-top{flex-direction:column;align-items:flex-start;gap:12px}.avail-label,.avail-status{text-align:left}.fr{grid-template-columns:1fr}.card{padding:16px}.ngrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}.acts{grid-template-columns:1fr}.rd{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.stp .stx{display:none}.stp{padding:7px 6px}.highlight-field .cp-hint{display:none}.qr-settings-layout{grid-template-columns:1fr}.qr-preview-box{width:100%}.qr-preview-img-wrap{width:100%;height:140px}}
 @media(max-width:768px){.sidebar{display:none}.admain{flex-direction:column}.content{padding:14px}.stats{grid-template-columns:repeat(2,1fr)}.settings-grid{grid-template-columns:1fr}.tbl-head{flex-direction:column;align-items:stretch}.tool-row{flex-direction:column}.tool-row .fg{min-width:100%}table{font-size:.75rem}th,td{padding:8px 10px}.mob-nav{display:flex!important;overflow-x:auto;gap:4px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bdr)}.mob-nav .nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap;padding:8px 12px;font-size:.72rem}.mob-nav .nav-item.active{border-bottom-color:var(--gold)}}
 @media(min-width:769px){.mob-nav{display:none!important}}
 </style>
@@ -58,21 +73,36 @@
 <!-- ═══ PUBLIC PAGE ═══ -->
 <div id="publicPage">
 <div class="w">
-<header><div class="logo" id="logoText">🎰 LUCKY 6<span>LOTTERY</span></div><p class="tag" id="tagLine">Get your lucky 6-digit number — only ₱1 each!</p><div class="pill" id="priceTag">₱1.00 PER NUMBER</div><div class="range">000000 — 999999</div></header>
+<header><div class="logo" id="logoText">🎰 PISO<span>PALARO</span></div><p class="tag" id="tagLine">Get your lucky numbers — only ₱1 each!</p><div class="pill" id="priceTag">₱1SO PER ENTRY</div></header>
 <div class="draw-banner" id="drawBanner"><div class="db-label">🎯 Draw Date</div><div class="db-date" id="drawDateText"></div></div>
 <div class="announce-banner" id="announceBanner"><span style="font-size:1.2rem;margin-right:6px">📢</span><span id="announceText"></span></div>
 <div class="conn checking" id="connBar"><div class="dot"></div><span id="connTxt">Connecting...</span></div>
 <div id="errPanel" class="err-panel hide"><h3>⚠️ Connection Failed</h3><div id="errDetail"></div></div>
 <div class="info-bar"><div class="info-top"><div class="date-box"><div class="date-icon">📅</div><div><div class="date-label">Today</div><div class="date-value" id="dateToday">—</div></div></div><div><div class="avail-label">Availability</div><div class="avail-status high" id="availTxt">Loading...</div></div></div><div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:100%"></div></div><div class="progress-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
 <div id="secB"><div class="card"><div class="steps"><div class="stp on" id="i1"><div class="n">1</div><span class="stx">Details</span></div><div class="sln" id="l1"></div><div class="stp" id="i2"><div class="n">2</div><span class="stx">Payment</span></div><div class="sln" id="l2"></div><div class="stp" id="i3"><div class="n">3</div><span class="stx">Complete</span></div></div>
-<div id="p1"><div class="ct">📝 Your Details</div><div class="fr"><div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div><div class="fg"><label>Phone <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div></div><div class="fg"><label id="qtyLabel">How Many? <span style="font-weight:400;text-transform:none;color:var(--sub)">(50–10,000)</span></label><input id="fQ" type="number" min="50" max="10000" placeholder="Minimum 50"><small id="qtyHelp">Each = unique 6-digit code. Min 50, max 10,000.</small></div><div class="tot"><div class="tl">Total</div><div class="tv" id="dT">₱ 0.00</div></div><button class="btn b1" onclick="go2()">Continue to Payment →</button></div>
+<div id="p1"><div class="ct">📝 Your Details</div><div class="fr"><div class="fg"><label>Full Name</label><input id="fN" placeholder="e.g. Juan Dela Cruz" autocomplete="name"></div><div class="fg"><label>Phone <span style="font-weight:400;text-transform:none;color:var(--sub)">(11 digits)</span></label><input id="fP" type="tel" maxlength="11" placeholder="09171234567" autocomplete="tel"><div class="field-err" id="phoneErr"></div></div></div><div class="qp-wrap">
+<div class="qp-label">Quick Pick <span class="qp-reset" onclick="resetQty()">✕ Reset</span></div>
+<div class="qp-grid">
+  <button class="qp-btn" onclick="addQty(100)">+100</button>
+  <button class="qp-btn" onclick="addQty(200)">+200</button>
+  <button class="qp-btn" onclick="addQty(500)">+500</button>
+  <button class="qp-btn" onclick="addQty(1000)">+1,000</button>
+  <button class="qp-btn" onclick="addQty(5000)">+5,000</button>
+  <button class="qp-btn max-btn" onclick="setMaxQtyFn()">MAX</button>
+</div>
+</div>
+<div class="fg"><label id="qtyLabel">Total Quantity <span style="font-weight:400;text-transform:none;color:var(--sub)">(min <span id="minQtySpan">100</span>)</span></label><input id="fQ" type="number" min="100" max="10000" placeholder="Or type manually"></div><div class="tot"><div class="tl">Total</div><div class="tv" id="dT">₱ 0.00</div></div><button class="btn b1" onclick="go2()">Continue to Payment →</button></div>
 <div id="p2" class="hide"><div class="ct">💳 GCash Payment</div><div class="gc"><div class="gc-h"><div class="gc-b">GCash</div> Send To:</div><div style="line-height:2.2"><strong>Name:</strong> <span id="dN"></span><br><strong>Number:</strong><br><div class="gc-num" id="dP" onclick="cpGC()" title="Copy"></div><br><strong>Amount:</strong> <span style="color:var(--gold);font-weight:800;font-size:1.1rem" id="dA"></span></div>
 <!-- QR Code display in payment step -->
 <div class="gc-qr-wrap" id="payQrWrap">
   <div class="gc-qr-label">📷 Scan QR Code</div>
   <img class="gc-qr-img" id="payQrImg" src="" alt="GCash QR Code">
 </div>
-</div><div class="fg"><label>GCash Reference #</label><input id="fR" placeholder="Enter ref from receipt" autocomplete="off"></div><button class="btn b1" id="buyBtn" onclick="submitPurchase()">✓ Confirm Purchase</button><button class="btn b2" onclick="go1()">← Back</button></div></div></div>
+<div style="margin-top:14px;padding:12px 14px;background:rgba(0,122,255,.07);border:1px solid rgba(0,122,255,.15);border-radius:10px;font-size:.82rem;line-height:1.7;color:#a8c8f8">
+  <div>📋 After sending the payment, please input the GCash reference number below.</div>
+  <div style="margin-top:6px;color:var(--warn)">📸 <strong>It is highly recommended to take a screenshot of your GCash payment as back-up proof.</strong></div>
+</div>
+</div><div class="fg"><label>GCash Reference #</label><input id="fR" placeholder="Enter ref from receipt" autocomplete="off"></div><button class="btn b1" id="buyBtn" onclick="submitPurchase()">✓ Confirm Entry</button><button class="btn b2" onclick="go1()">← Back</button></div></div></div>
 
 <div id="secR" class="hide"><div class="receipt"><div class="rh"><div class="ic" style="background:var(--pend)">⏳</div><h2 style="font-size:1.3rem;margin-bottom:3px">Purchase Submitted!</h2><p style="color:var(--sub);font-size:.83rem">Your numbers are reserved and pending approval.</p><div class="ubadge pending">⏳ Pending Approval</div></div>
 <div class="pending-notice">⏳ <strong>Your purchase is pending admin approval.</strong> Your numbers are reserved and will be confirmed once payment is verified. Save your Transaction ID and GCash Reference below.</div>
@@ -80,14 +110,14 @@
 <div class="highlight-field" onclick="cpField('rR')" title="Click to copy" style="margin-bottom:14px"><div class="rl">💳 GCash Reference #</div><div class="rv" id="rR"></div><div class="cp-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</div></div>
 <div class="rd"><div class="ri"><div class="rl">Date</div><div class="rv" id="rD"></div></div><div class="ri"><div class="rl">Name</div><div class="rv" id="rN"></div></div><div class="ri"><div class="rl">Phone</div><div class="rv" id="rP"></div></div><div class="ri"><div class="rl">Quantity</div><div class="rv" id="rQ"></div></div><div class="ri"><div class="rl">Amount</div><div class="rv" style="color:var(--gold)" id="rA"></div></div><div class="ri"><div class="rl">Status</div><div class="rv" style="color:var(--pend);font-weight:800" id="rS">⏳ PENDING</div></div></div>
 <div class="nt">🎰 Your Numbers (<span id="rC">0</span>)</div><div class="nbox"><div class="ngrid" id="nG"></div></div><div class="acts"><button class="btn b2" onclick="cpA()">📋 Copy</button><button class="btn b2" onclick="dlA()">⬇ Download</button><button class="btn b2" onclick="prA()">🖨 Print</button></div><button class="btn b1" style="margin-top:16px" onclick="again()">🎰 Buy More</button></div></div>
-<footer>© 2024 Lucky 6 Lottery &bull; 000000–999999 &bull; GCash only</footer>
+<footer>© 2024 Piso Palaro &bull; GCash only</footer>
 </div></div>
 
 <!-- ═══ ADMIN PAGE ═══ -->
 <div id="adminPage" style="display:none">
-<div id="adminLogin" class="login-wrap"><div class="login-box"><h1>🔐 LUCKY 6</h1><div class="lsub">Admin Panel</div><div class="fg"><label>Username</label><input id="loginUser" placeholder="Username"></div><div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Password"></div><button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button><a href="#" onclick="goToPublicPage();return false" class="pub-link">🎰 Go to Public Page →</a></div></div>
+<div id="adminLogin" class="login-wrap"><div class="login-box"><h1>🔐 PISO PALARO</h1><div class="lsub">Admin Panel</div><div class="fg"><label>Username</label><input id="loginUser" placeholder="Username"></div><div class="fg"><label>Password</label><input id="loginPass" type="password" placeholder="Password"></div><button class="btn b1" id="loginBtn" onclick="doLogin()">🔑 Sign In</button><a href="#" onclick="goToPublicPage();return false" class="pub-link">🎰 Go to Public Page →</a></div></div>
 <div class="admin" id="adminPanel">
-<div class="topbar"><h1>🎰 LUCKY 6 — Admin</h1><div class="user"><span id="adminUser">admin</span><button class="logout" onclick="doLogout()">Logout</button></div></div>
+<div class="topbar"><h1>🎰 PISO PALARO — Admin</h1><div class="user"><span id="adminUser">admin</span><button class="logout" onclick="doLogout()">Logout</button></div></div>
 <div class="mob-nav"><div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div><div class="nav-item" onclick="goPage('transactions')">📋 TX</div><div class="nav-item" onclick="goPage('numbers')">🔢 Numbers</div><div class="nav-item" onclick="goPage('search')">🔍 Search</div><div class="nav-item" onclick="goPage('tools')">🔧 Tools</div><div class="nav-item" onclick="goPage('settings')">⚙️ Settings</div></div>
 <div class="admain">
 <div class="sidebar"><div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')">📊 Dashboard</div><div class="nav-item" data-page="transactions" onclick="goPage('transactions')">📋 Transactions</div><div class="nav-item" data-page="numbers" onclick="goPage('numbers')">🔢 Sold Numbers</div><div class="nav-sep"></div><div class="nav-item" data-page="search" onclick="goPage('search')">🔍 Search</div><div class="nav-item" data-page="tools" onclick="goPage('tools')">🔧 Tools</div><div class="nav-sep"></div><div class="nav-item" data-page="settings" onclick="goPage('settings')">⚙️ Settings</div></div>
@@ -177,10 +207,10 @@
 </div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwgKiMVad64aNWPjX3W8VwUIgqqAwRKUFHUivc5IalxpbXgA4xfOW49kl7sIUQmoiL0/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwcXQRRLY_yXIQRkexXqJRzqoZG7JXvpsXP5TT6IhPJFJKwg_IRYjh87fjuYpOk232t/exec';
 const ADMIN_SECRET='admin';
-let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=50,MAX_QTY=10000,LOTTERY_NAME='LUCKY 6 LOTTERY';
-const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=1000000;
+let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=100,MAX_QTY=10000,LOTTERY_NAME='PISO PALARO';
+const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=200000;
 let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 let _detailTx=null;
 // QR state
@@ -208,10 +238,10 @@ function applyPublicSettings(s){
   if(s.lottery_name){LOTTERY_NAME=s.lottery_name;document.title=s.lottery_name;var p=s.lottery_name.split(' ');if(p.length>=2){var l=p.pop();document.getElementById('logoText').innerHTML='🎰 '+p.join(' ')+'<span>'+l+'</span>'}}
   if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}
   if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}
-  if(s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2)+' PER NUMBER';document.getElementById('tagLine').textContent='Get your lucky 6-digit number — only ₱'+PRICE_PER.toFixed(2)+' each!'}
-  if(s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('fQ').placeholder='Min '+MIN_QTY}
-  if(s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}
-  document.getElementById('qtyLabel').innerHTML='How Many? <span style="font-weight:400;text-transform:none;color:var(--sub)">('+MIN_QTY+'–'+MAX_QTY.toLocaleString()+')</span>';
+  if(s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2).replace('1.00','1SO')+' PER ENTRY';document.getElementById('tagLine').textContent='Get your lucky numbers — only ₱'+PRICE_PER.toFixed(2)+' each!'}
+  if(s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('minQtySpan').textContent=MIN_QTY}
+  if(s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY;document.getElementById('maxBtnLbl').textContent=MAX_QTY.toLocaleString()}
+  document.getElementById('qtyLabel').innerHTML='Total Quantity <span style="font-weight:400;text-transform:none;color:var(--sub)">(min <span id="minQtySpan">'+MIN_QTY+'</span>)</span>';
   var fd=formatDrawDate(s.draw_date);
   if(fd){document.getElementById('drawDateText').textContent=fd;document.getElementById('drawBanner').style.display='block'}else{document.getElementById('drawBanner').style.display='none'}
   if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}
@@ -231,6 +261,30 @@ function updatePhoneStatus(){var r=document.getElementById('fP').value,d=getDigi
 function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
 function updateProgress(sold,rem){var pct=Math.max(0,Math.min(100,(rem/TOTAL_POOL)*100));var f=document.getElementById('progressFill'),t=document.getElementById('availTxt');f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');if(pct>60){t.textContent='Plenty available';t.classList.add('high')}else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid')}else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low')}else{t.textContent=pct>0?'Almost sold out!':'Sold out';t.classList.add('low');f.classList.add('low')}}
 async function checkConnection(){var bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),ep=document.getElementById('errPanel');bar.className='conn checking';txt.textContent='Connecting...';ep.classList.add('hide');if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}try{var[h,s,st]=await Promise.all([safeFetch(SCRIPT_URL+'?action=health',12000),safeFetch(SCRIPT_URL+'?action=publicSettings',12000),safeFetch(SCRIPT_URL+'?action=stats',12000)]);if(h.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}if(s.success)applyPublicSettings(s);if(st.success)updateProgress(st.sold,st.remaining)}catch(err){serverOnline=false;bar.className='conn offline';var f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;ep.classList.remove('hide')}}
+/* ★ Quick-pick stacking */
+function addQty(n){
+  var cur=parseInt(document.getElementById('fQ').value)||0;
+  var next=cur+n;
+  if(next>MAX_QTY){
+    var canAdd=MAX_QTY-cur;
+    if(canAdd<=0)return toast('Already at max ('+MAX_QTY.toLocaleString()+').','warn');
+    next=MAX_QTY;
+    toast('Capped at max '+MAX_QTY.toLocaleString(),'warn');
+  }
+  document.getElementById('fQ').value=next;
+  calc();
+  event.currentTarget.classList.add('qp-added');
+  setTimeout(()=>event.currentTarget.classList.remove('qp-added'),350);
+}
+function setMaxQtyFn(){
+  if(parseInt(document.getElementById('fQ').value)===MAX_QTY)return toast('Already at max.','warn');
+  document.getElementById('fQ').value=MAX_QTY;
+  calc();
+}
+function resetQty(){
+  document.getElementById('fQ').value='';
+  calc();
+}
 function calc(){var v=Math.min(MAX_QTY,Math.max(0,parseInt(document.getElementById('fQ').value)||0));document.getElementById('dT').textContent='₱ '+(v*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function go2(){var nm=document.getElementById('fN').value.trim(),ph=document.getElementById('fP').value.trim(),qt=parseInt(document.getElementById('fQ').value);if(!nm)return toast('Enter name.','err');if(!isValidPhone(ph))return toast('Phone must be 11 digits.','err');if(!qt||qt<MIN_QTY){document.getElementById('fQ').value=MIN_QTY;calc();return toast('Min '+MIN_QTY+'.','err')}if(qt>MAX_QTY){document.getElementById('fQ').value=MAX_QTY;calc();return toast('Max '+MAX_QTY.toLocaleString()+'.','err')}hide('p1');show('p2');document.getElementById('dA').textContent=' ₱ '+(qt*PRICE_PER).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});stpSet(2)}
 function go1(){hide('p2');show('p1');stpSet(1)}
@@ -527,7 +581,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
     setTodayDate();document.getElementById('dP').textContent=GCASH_NUMBER;document.getElementById('dN').textContent=GCASH_NAME;
     var ni=document.getElementById('fN');ni.addEventListener('input',()=>{var p=ni.selectionStart;ni.value=titleCase(ni.value);ni.setSelectionRange(p,p)});
     var pi=document.getElementById('fP');pi.addEventListener('input',()=>{pi.value=getDigitsOnly(pi.value).substring(0,11);updatePhoneStatus()});pi.addEventListener('blur',updatePhoneStatus);
-    var qi=document.getElementById('fQ');qi.addEventListener('input',calc);qi.addEventListener('focus',()=>{qi.value='';calc()});qi.addEventListener('blur',()=>{var v=parseInt(qi.value);if(isNaN(v)||v<MIN_QTY){if(qi.value!==''){qi.value=MIN_QTY;toast('Min '+MIN_QTY,'warn')}}if(v>MAX_QTY){qi.value=MAX_QTY;toast('Max '+MAX_QTY.toLocaleString(),'warn')}calc()});
+    var qi=document.getElementById('fQ');
+    qi.addEventListener('input',function(){calc()});
+    qi.addEventListener('focus',function(){});
+    qi.addEventListener('blur',function(){var v=parseInt(qi.value);if(!isNaN(v)&&v<MIN_QTY&&qi.value!==''){qi.value=MIN_QTY;toast('Min '+MIN_QTY,'warn')}if(!isNaN(v)&&v>MAX_QTY){qi.value=MAX_QTY;toast('Max '+MAX_QTY.toLocaleString(),'warn')}calc()});
     checkConnection();setInterval(setTodayDate,60000)
   }
 });
