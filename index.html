@@ -216,9 +216,20 @@ let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE
 let _detailTx=null;
 // QR state
 let _qrPendingDataUrl=null; // base64 data URL of newly selected (unsaved) image
-const CACHE={};const SRV_MS=8000;const UI_MS=500;
-function cacheSet(k,d){CACHE[k]={data:d,time:Date.now()}}function cacheGet(k){return CACHE[k]||null}function cacheAge(k){var c=CACHE[k];return c?Date.now()-c.time:Infinity}function cacheClear(p){Object.keys(CACHE).forEach(k=>{if(!p||k.startsWith(p))delete CACHE[k]})}
-async function swr(ck,fn,render){var c=cacheGet(ck);if(c){render(c.data);if(cacheAge(ck)<SRV_MS)return c.data}try{var f=await fn();if(f){cacheSet(ck,f);render(f)}return f}catch(e){if(!c)throw e;return c.data}}
+const CACHE={};const SRV_MS=60000;const UI_MS=500;
+// Persist cache to sessionStorage so re-navigating between tabs is instant
+function cacheSet(k,d){CACHE[k]={data:d,time:Date.now()};try{sessionStorage.setItem('pp_'+k,JSON.stringify({data:d,time:Date.now()}))}catch(e){}}
+function cacheGet(k){if(CACHE[k])return CACHE[k];try{var s=sessionStorage.getItem('pp_'+k);if(s){var p=JSON.parse(s);CACHE[k]=p;return p}}catch(e){}return null}
+function cacheAge(k){var c=cacheGet(k);return c?Date.now()-c.time:Infinity}
+function cacheClear(p){Object.keys(CACHE).forEach(k=>{if(!p||k.startsWith(p))delete CACHE[k]});try{Object.keys(sessionStorage).forEach(k=>{if(k.startsWith('pp_')&&(!p||k.startsWith('pp_'+p)))sessionStorage.removeItem(k)})}catch(e){}}
+// swr: render cache INSTANTLY, always refresh in background
+async function swr(ck,fn,render){
+  var c=cacheGet(ck);
+  if(c)render(c.data); // instant — no waiting
+  // Always fetch fresh in background unless cache is very new (<3s)
+  if(cacheAge(ck)<3000)return c?c.data:null;
+  try{var f=await fn();if(f){cacheSet(ck,f);render(f)}return f}catch(e){if(!c)throw e;return c.data}
+}
 function pad6(n){return String(n).padStart(6,'0').substring(0,6)}
 function detectMode(){if(new URLSearchParams(location.search).get('access')===ADMIN_SECRET){IS_ADMIN_MODE=true;document.getElementById('publicPage').style.display='none';document.getElementById('adminPage').style.display='block';document.title='Admin'}else{document.getElementById('publicPage').style.display='block';document.getElementById('adminPage').style.display='none'}}
 function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast '+t+' on';clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),4000)}
@@ -369,7 +380,14 @@ async function adminApiPost(a,p){
   }catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}
 }
 
-async function doLogin(){var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{var d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();startAutoRefresh();toast('Welcome!','suc')}else toast(d.error,'err')}catch(e){toast(e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
+async function doLogin(){var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{var d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();startAutoRefresh();toast('Welcome!','suc');
+  // Pre-fetch all pages in background for instant switching
+  setTimeout(()=>{
+    adminApi('adminTransactions',{page:1,perPage:30}).then(r=>{if(r&&r.success)cacheSet('admin_tx_1',r)}).catch(()=>{});
+    adminApi('adminSoldNumbers',{page:1,perPage:100}).then(r=>{if(r&&r.success)cacheSet('admin_num_1',r)}).catch(()=>{});
+    adminApi('adminGetSettings').then(r=>{if(r&&r.success)cacheSet('admin_set',r.settings)}).catch(()=>{});
+  },500);
+}else toast(d.error,'err')}catch(e){toast(e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
 function doLogout(){
   // Invalidate server token by clearing nonce
   if(TOKEN&&SCRIPT_URL&&!SCRIPT_URL.includes('YOUR_')){
