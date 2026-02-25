@@ -211,7 +211,7 @@
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxhvbXGgLANDseC5Cz4pLArGnshSC6n0VV_k26lbUv3CgjhgERf729IyATjNFzVBqhu/exec';
 const ADMIN_SECRET='admin';
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=100,MAX_QTY=10000,LOTTERY_NAME='PISO PALARO';
-const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=120000,TOTAL_POOL=200000;
+const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=60000,TOTAL_POOL=200000;
 let myNums=[],serverOnline=false,TOKEN='',currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 let _detailTx=null;
 // QR state
@@ -272,7 +272,26 @@ function titleCase(s){return s.replace(/\b\w/g,c=>c.toUpperCase())}function getD
 function updatePhoneStatus(){var r=document.getElementById('fP').value,d=getDigitsOnly(r),e=document.getElementById('phoneErr'),i=document.getElementById('fP');if(!r){e.style.display='none';i.style.borderColor='rgba(255,255,255,.1)';return}if(d.length===11){e.style.display='none';i.style.borderColor='var(--ok)'}else{e.style.display='block';e.textContent='Need 11 digits ('+d.length+'/11)';i.style.borderColor='var(--err)'}}
 function setTodayDate(){document.getElementById('dateToday').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
 function updateProgress(sold,rem){var pct=Math.max(0,Math.min(100,(rem/TOTAL_POOL)*100));var f=document.getElementById('progressFill'),t=document.getElementById('availTxt');f.style.width=pct+'%';f.classList.remove('mid','low');t.classList.remove('high','mid','low');if(pct>60){t.textContent='Plenty available';t.classList.add('high')}else if(pct>30){t.textContent='Selling fast';t.classList.add('mid');f.classList.add('mid')}else if(pct>10){t.textContent='Running low';t.classList.add('low');f.classList.add('low')}else{t.textContent=pct>0?'Almost sold out!':'Sold out';t.classList.add('low');f.classList.add('low')}}
-async function checkConnection(){var bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),ep=document.getElementById('errPanel');bar.className='conn checking';txt.textContent='Connecting...';ep.classList.add('hide');if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='Set SCRIPT_URL';return}try{var[h,s,st]=await Promise.all([safeFetch(SCRIPT_URL+'?action=health',12000),safeFetch(SCRIPT_URL+'?action=publicSettings',12000),safeFetch(SCRIPT_URL+'?action=stats',12000)]);if(h.success){serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected'}if(s.success)applyPublicSettings(s);if(st.success)updateProgress(st.sold,st.remaining)}catch(err){serverOnline=false;bar.className='conn offline';var f=getFriendlyError(err);txt.textContent='✗ '+f.short;document.getElementById('errDetail').innerHTML=f.detail;ep.classList.remove('hide')}}
+async function checkConnection(){
+  var bar=document.getElementById('connBar'),txt=document.getElementById('connTxt'),ep=document.getElementById('errPanel');
+  bar.className='conn checking';txt.textContent='Connecting...';ep.classList.add('hide');
+  if(SCRIPT_URL.includes('YOUR_')){bar.className='conn offline';txt.textContent='⚠ Set SCRIPT_URL';return}
+  try{
+    // Health check first — 30s timeout to handle cold starts
+    var h=await safeFetch(SCRIPT_URL+'?action=health',30000);
+    if(!h||!h.success)throw new Error('Server unreachable');
+    serverOnline=true;bar.className='conn online';txt.textContent='✓ Connected';
+    // Load settings and stats independently — don't fail connection if these are slow
+    safeFetch(SCRIPT_URL+'?action=publicSettings',30000).then(s=>{if(s&&s.success)applyPublicSettings(s)}).catch(()=>{});
+    safeFetch(SCRIPT_URL+'?action=stats',30000).then(st=>{if(st&&st.success)updateProgress(st.sold,st.remaining)}).catch(()=>{});
+  }catch(err){
+    serverOnline=false;bar.className='conn offline';
+    var msg=err.message==='TIMEOUT'?'Connection timed out — server may be warming up':err.message;
+    txt.textContent='✗ '+msg;
+    document.getElementById('errDetail').innerHTML='<button class="retry-btn" onclick="checkConnection()">🔄 Retry</button>';
+    ep.classList.remove('hide');
+  }
+}
 /* ★ Quick-pick stacking */
 function addQty(n){
   var cur=parseInt(document.getElementById('fQ').value)||0;
