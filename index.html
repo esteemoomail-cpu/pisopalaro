@@ -239,9 +239,8 @@ function applyPublicSettings(s){
   if(s.gcash_name){GCASH_NAME=s.gcash_name;document.getElementById('dN').textContent=s.gcash_name}
   if(s.gcash_number){GCASH_NUMBER=s.gcash_number;document.getElementById('dP').textContent=s.gcash_number}
   if(s.price_per_number>0){PRICE_PER=s.price_per_number;document.getElementById('priceTag').textContent='₱'+PRICE_PER.toFixed(2).replace('1.00','1SO')+' PER ENTRY';document.getElementById('tagLine').textContent='Get your lucky numbers — only ₱'+PRICE_PER.toFixed(2)+' each!'}
-  if(s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;document.getElementById('minQtySpan').textContent=MIN_QTY}
-  if(s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY;document.getElementById('maxBtnLbl').textContent=MAX_QTY.toLocaleString()}
-  document.getElementById('qtyLabel').innerHTML='Total Quantity <span style="font-weight:400;text-transform:none;color:var(--sub)">(min <span id="minQtySpan">'+MIN_QTY+'</span>)</span>';
+  if(s.min_quantity>0){MIN_QTY=s.min_quantity;document.getElementById('fQ').min=MIN_QTY;var ms=document.getElementById('minQtySpan');if(ms)ms.textContent=MIN_QTY}
+  if(s.max_quantity>0){MAX_QTY=s.max_quantity;document.getElementById('fQ').max=MAX_QTY}
   var fd=formatDrawDate(s.draw_date);
   if(fd){document.getElementById('drawDateText').textContent=fd;document.getElementById('drawBanner').style.display='block'}else{document.getElementById('drawBanner').style.display='none'}
   if(s.announcement&&s.announcement.trim()){document.getElementById('announceText').textContent=s.announcement;document.getElementById('announceBanner').style.display='block'}else{document.getElementById('announceBanner').style.display='none'}
@@ -591,4 +590,3 @@ document.addEventListener('DOMContentLoaded',async()=>{
 </script>
 </body>
 </html>
-
