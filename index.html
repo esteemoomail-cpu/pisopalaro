@@ -187,7 +187,7 @@ td.mono,td:nth-child(2){white-space:nowrap}
 </div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyYp99PDMVG6wOa71eFHAuhNZxcKwCU38jgpStBygEvuyZAHLtAGytuyKLb4fFuWfZADw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwaTbK8fxrvSp2g1RM3YwDIwuSfb7Eho9IQa7RwbZZvQAad2dh-6SFqUt8cKMOz2EmWxQ/exec';
 const ADMIN_SECRET='admin';
 let GCASH_NUMBER='0917-123-4567',GCASH_NAME='Juan Dela Cruz',PRICE_PER=1,MIN_QTY=100,MAX_QTY=10000,LOTTERY_NAME='PISO PALARO';
 const MAX_RETRY=3,RETRY_MS=[3000,5000,8000],FETCH_TIMEOUT=60000,TOTAL_POOL=200000;
@@ -329,46 +329,194 @@ function cpGC(){navigator.clipboard.writeText(GCASH_NUMBER.replace(/\D/g,'')).th
 function again(){hide('secR');show('secB');['fN','fP','fQ','fR'].forEach(id=>document.getElementById(id).value='');document.getElementById('dT').textContent='₱ 0.00';document.getElementById('phoneErr').style.display='none';document.getElementById('fP').style.borderColor='rgba(255,255,255,.1)';hide('p2');show('p1');stpSet(1);myNums=[];scrollTo({top:0,behavior:'smooth'})}
 
 /* ═══ ADMIN ═══ */
-async function adminApi(a,p){p=p||{};p.action=a;p.token=TOKEN;var c=new AbortController(),t=setTimeout(()=>c.abort(),60000);try{var r=await fetch(SCRIPT_URL+'?'+new URLSearchParams(p),{signal:c.signal,redirect:'follow'});clearTimeout(t);var txt=await r.text();try{return JSON.parse(txt)}catch(e){var m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}}catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}}
 
-async function doLogin(){var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();if(!u||!p)return toast('Enter credentials.','err');document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');try{var d=await adminApi('adminLogin',{username:u,password:p});if(d.success){TOKEN=d.token;document.getElementById('adminUser').textContent=u;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';loadDashboard();startAutoRefresh();toast('Welcome!','suc');
-  // Pre-fetch all pages in background for instant switching
-  setTimeout(()=>{
-    adminApi('adminTransactions',{page:1,perPage:30}).then(r=>{if(r&&r.success)cacheSet('admin_tx_1',r)}).catch(()=>{});
-    adminApi('adminSoldNumbers',{page:1,perPage:100}).then(r=>{if(r&&r.success)cacheSet('admin_num_1',r)}).catch(()=>{});
-    adminApi('adminGetSettings').then(r=>{if(r&&r.success)cacheSet('admin_set',r.settings)}).catch(()=>{});
-  },500);
-}else toast(d.error,'err')}catch(e){toast(e.message,'err')}hideOv();document.getElementById('loginBtn').disabled=false}
-function doLogout(){TOKEN='';cacheClear();document.getElementById('adminPanel').style.display='none';document.getElementById('adminLogin').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';if(_art)clearInterval(_art);toast('Logged out.','warn')}
-var activeP='dashboard',_art=null;
-function goPage(n){activeP=n;document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+n).classList.add('active');document.querySelectorAll('.sidebar .nav-item').forEach(x=>x.classList.remove('active'));document.querySelectorAll('[data-page="'+n+'"]').forEach(x=>x.classList.add('active'));document.querySelectorAll('.mob-nav .nav-item').forEach(x=>{x.classList.remove('active');if(x.textContent.toLowerCase().includes(n.substring(0,4)))x.classList.add('active')});if(n==='dashboard')loadDashboard();if(n==='transactions')loadTransactions();if(n==='numbers')loadNumbers();if(n==='settings')loadSettingsFn()}
+// ── adminInit: ONE call after login, populates all panels ──
+var _initData = null; // holds last adminInit response
+
+async function adminApi(a,p){
+  p=p||{};p.action=a;p.token=TOKEN;
+  var c=new AbortController(),t=setTimeout(()=>c.abort(),60000);
+  try{
+    var r=await fetch(SCRIPT_URL+'?'+new URLSearchParams(p),{signal:c.signal,redirect:'follow'});
+    clearTimeout(t);var txt=await r.text();
+    try{return JSON.parse(txt)}catch(e){var m=txt.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);throw new Error('Parse error')}
+  }catch(err){clearTimeout(t);if(err.name==='AbortError')throw new Error('Timeout');throw err}
+}
+
+async function doLogin(){
+  var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
+  if(!u||!p)return toast('Enter credentials.','err');
+  document.getElementById('loginBtn').disabled=true;showOv('Signing in...','');
+  try{
+    var d=await adminApi('adminLogin',{username:u,password:p});
+    if(d.success){
+      TOKEN=d.token;
+      document.getElementById('adminUser').textContent=u;
+      document.getElementById('adminLogin').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+      toast('Welcome!','suc');
+
+      // ── Single combined call: gets dashboard + transactions + settings ──
+      showOv('Loading panel...','');
+      try{
+        var init=await adminApi('adminInit');
+        if(init&&init.success){
+          _initData=init;
+          // Pre-fill caches so navigation is instant
+          cacheSet('admin_dash', init.dashboard);
+          if(init.transactions) cacheSet('admin_tx_1', init.transactions);
+          if(init.settings)     cacheSet('admin_set', init.settings);
+        }
+      }catch(e){ /* non-fatal — pages will load individually */ }
+      hideOv();
+
+      loadDashboard();
+      startAutoRefresh();
+      startKeepAlive();
+
+      // Background: pre-fetch remaining pages
+      setTimeout(()=>{
+        if(!_initData||!_initData.transactions) adminApi('adminTransactions',{page:1,perPage:30}).then(r=>{if(r&&r.success)cacheSet('admin_tx_1',r)}).catch(()=>{});
+        adminApi('adminSoldNumbers',{page:1,perPage:100}).then(r=>{if(r&&r.success)cacheSet('admin_num_1',r)}).catch(()=>{});
+      },1000);
+    }else toast(d.error,'err');
+  }catch(e){toast(e.message,'err')}
+  hideOv();document.getElementById('loginBtn').disabled=false;
+}
+
+function doLogout(){
+  TOKEN='';_initData=null;cacheClear();
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('adminLogin').style.display='flex';
+  document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';
+  if(_art)clearInterval(_art);if(_kat)clearInterval(_kat);
+  toast('Logged out.','warn');
+}
+
+var activeP='dashboard',_art=null,_kat=null;
+
+// Keep GAS warm: ping health endpoint every 55s so next real request has no cold start
+function startKeepAlive(){
+  if(_kat)clearInterval(_kat);
+  _kat=setInterval(()=>{
+    if(!TOKEN)return;
+    fetch(SCRIPT_URL+'?action=health',{redirect:'follow'}).catch(()=>{});
+  },55000);
+}
+
+function goPage(n){
+  activeP=n;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+n).classList.add('active');
+  document.querySelectorAll('.sidebar .nav-item').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('[data-page="'+n+'"]').forEach(x=>x.classList.add('active'));
+  document.querySelectorAll('.mob-nav .nav-item').forEach(x=>{x.classList.remove('active');if(x.textContent.toLowerCase().includes(n.substring(0,4)))x.classList.add('active')});
+  if(n==='dashboard')loadDashboard();
+  if(n==='transactions')loadTransactions();
+  if(n==='numbers')loadNumbers();
+  if(n==='settings')loadSettingsFn();
+}
 function statusClass(st){if(st==='APPROVED')return'ok';if(st==='PENDING')return'pend';if(st==='DECLINED')return'dec';return'fail'}
 
-async function loadDashboard(){await swr('admin_dash',async()=>await adminApi('adminDashboard'),d=>{if(!d||!d.success)return;document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsPct').textContent=d.percentSold+'% sold';document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsPending').textContent=d.pendingTransactions.toLocaleString();document.getElementById('dsApproved').textContent=d.approvedTransactions.toLocaleString();document.getElementById('dsDeclined').textContent=d.declinedTransactions.toLocaleString();document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();var pct=d.totalSold/d.totalPool*100;var bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid');var list=document.getElementById('feedList');var acts=d.recentActivity||[];if(!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}var h='';acts.forEach(a=>{var dc=statusClass(a.status);var txE=esc(a.transactionId),nmE=esc(a.name),stE=esc(a.status);h+='<li style="cursor:pointer;align-items:flex-start" onclick="openTxDetail(\''+txE+'\')"><div class="dot '+dc+'" style="margin-top:4px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><strong style="word-break:break-word">'+nmE+'</strong><span class="badge '+dc+'" style="flex-shrink:0;margin-left:4px">'+stE+'</span></div><div style="font-size:.8rem;color:var(--sub);margin-top:2px">'+esc(String(a.quantity))+' entries · ₱'+Number(a.amount).toLocaleString()+'</div><span class="time" style="display:block;margin-top:2px">'+esc(a.timestamp)+'<br>'+txE+'</span></div></li>'});list.innerHTML=h})}
+// ── Dashboard ─────────────────────────────────────────────
+async function loadDashboard(){
+  // If we have init data fresh, render immediately
+  var initDash=_initData&&_initData.dashboard;
+  if(initDash&&cacheAge('admin_dash')<30000){renderDashboard(initDash);return;}
 
+  await swr('admin_dash',
+    async()=>{ var d=await adminApi('adminDashboard'); return d.success?d:null; },
+    d=>{ if(d) renderDashboard(d); }
+  );
+}
+
+function renderDashboard(d){
+  document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();
+  document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();
+  document.getElementById('dsPct').textContent=d.percentSold+'% sold';
+  document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();
+  document.getElementById('dsPending').textContent=d.pendingTransactions.toLocaleString();
+  document.getElementById('dsApproved').textContent=d.approvedTransactions.toLocaleString();
+  document.getElementById('dsDeclined').textContent=d.declinedTransactions.toLocaleString();
+  document.getElementById('dsBuyers').textContent=d.uniqueBuyers.toLocaleString();
+  var pct=d.totalSold/d.totalPool*100;
+  var bar=document.getElementById('dsBar');bar.style.width=pct+'%';bar.classList.remove('mid','low');
+  if(pct>70)bar.classList.add('low');else if(pct>40)bar.classList.add('mid');
+  var list=document.getElementById('feedList');var acts=d.recentActivity||[];
+  if(!acts.length){list.innerHTML='<li class="tbl-empty">No activity.</li>';return}
+  var h='';
+  acts.forEach(a=>{var dc=statusClass(a.status),txE=esc(a.transactionId),nmE=esc(a.name),stE=esc(a.status);
+    h+='<li style="cursor:pointer;align-items:flex-start" onclick="openTxDetail(\''+txE+'\')"><div class="dot '+dc+'" style="margin-top:4px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><strong style="word-break:break-word">'+nmE+'</strong><span class="badge '+dc+'" style="flex-shrink:0;margin-left:4px">'+stE+'</span></div><div style="font-size:.8rem;color:var(--sub);margin-top:2px">'+esc(String(a.quantity))+' entries · ₱'+Number(a.amount).toLocaleString()+'</div><span class="time" style="display:block;margin-top:2px">'+esc(a.timestamp)+'<br>'+txE+'</span></div></li>';
+  });
+  list.innerHTML=h;
+}
+
+// ── Transactions ──────────────────────────────────────────
 function buildTxActions(status,txId){
   var a='<div class="tx-actions">';
-  if(status==='PENDING')a+=
-    '<button class="btn-sm btn-green" onclick="event.stopPropagation();confirmApprove(\''+txId+'\')">Approve</button>'+
-    '<button class="btn-sm btn-red" onclick="event.stopPropagation();confirmDecline(\''+txId+'\')">Decline</button>';
+  if(status==='PENDING')a+='<button class="btn-sm btn-green" onclick="event.stopPropagation();confirmApprove(\''+txId+'\')">Approve</button><button class="btn-sm btn-red" onclick="event.stopPropagation();confirmDecline(\''+txId+'\')">Decline</button>';
   a+='<button class="btn-sm btn-orange" onclick="event.stopPropagation();confirmDelete(\''+txId+'\')">Delete</button></div>';
   return a;
 }
 
-async function loadTransactions(pg){if(pg)currentPage.tx=pg;await swr('admin_tx_'+currentPage.tx,async()=>{var d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30});return d.success?d:null},d=>{if(!d)return;var b=document.getElementById('txBody');if(!d.transactions.length){b.innerHTML='<tr><td colspan="9" class="tbl-empty">None.</td></tr>';document.getElementById('txPagination').innerHTML='';return}var h='';d.transactions.forEach(t=>{var sc=statusClass(t.status),txE=esc(t.transactionId);h+='<tr data-tx="'+txE+'" class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td>'+esc(t.timestamp)+'</td><td class="mono" style="font-size:.73rem">'+txE+'</td><td>'+esc(t.name)+'</td><td>'+esc(t.phone)+'</td><td>'+esc(t.gcashRef)+'</td><td>'+esc(String(t.quantity))+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+esc(t.status)+'</span></td><td>'+buildTxActions(t.status,txE)+'</td></tr>'});b.innerHTML=h;renderPg('txPagination',d.page,d.totalPages,'loadTransactions')})};
+function renderTransactions(d){
+  var b=document.getElementById('txBody');
+  if(!d.transactions||!d.transactions.length){b.innerHTML='<tr><td colspan="9" class="tbl-empty">None.</td></tr>';document.getElementById('txPagination').innerHTML='';return}
+  var h='';
+  d.transactions.forEach(t=>{var sc=statusClass(t.status),txE=esc(t.transactionId);
+    h+='<tr data-tx="'+txE+'" class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td>'+esc(t.timestamp)+'</td><td class="mono" style="font-size:.73rem">'+txE+'</td><td>'+esc(t.name)+'</td><td>'+esc(t.phone)+'</td><td>'+esc(t.gcashRef)+'</td><td>'+esc(String(t.quantity))+'</td><td>₱'+Number(t.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+esc(t.status)+'</span></td><td>'+buildTxActions(t.status,txE)+'</td></tr>';
+  });
+  b.innerHTML=h;renderPg('txPagination',d.page,d.totalPages,'loadTransactions');
+}
 
-async function loadNumbers(pg){if(pg)currentPage.num=pg;await swr('admin_num_'+currentPage.num,async()=>{var d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100});return d.success?d:null},d=>{if(!d)return;var b=document.getElementById('numBody');if(!d.numbers.length){b.innerHTML='<tr><td colspan="6" class="tbl-empty">None.</td></tr>';document.getElementById('numPagination').innerHTML='';return}var h='';d.numbers.forEach(n=>{var txE=esc(n.transactionId);h+='<tr class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td class="mono">'+esc(n.number)+'</td><td style="font-size:.73rem">'+txE+'</td><td>'+esc(n.name)+'</td><td>'+esc(n.phone)+'</td><td>'+esc(n.gcashRef)+'</td><td>'+esc(n.timestamp)+'</td></tr>'});b.innerHTML=h;renderPg('numPagination',d.page,d.totalPages,'loadNumbers')})}
+async function loadTransactions(pg){
+  if(pg)currentPage.tx=pg;
+  // Use init data for page 1 if fresh
+  if(currentPage.tx===1&&_initData&&_initData.transactions&&cacheAge('admin_tx_1')<30000){
+    renderTransactions(_initData.transactions);return;
+  }
+  await swr('admin_tx_'+currentPage.tx,
+    async()=>{ var d=await adminApi('adminTransactions',{page:currentPage.tx,perPage:30}); return d.success?d:null; },
+    d=>{ if(d) renderTransactions(d); }
+  );
+}
 
-function renderPg(cid,cur,tot,fn){var c=document.getElementById(cid);if(tot<=1){c.innerHTML='';return}var h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>←</button>';var s=Math.max(1,cur-2),e=Math.min(tot,cur+2);if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';if(s>2)h+='<span class="pg-info">…</span>';for(var i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';if(e<tot-1)h+='<span class="pg-info">…</span>';if(e<tot)h+='<button class="pg-btn" onclick="'+fn+'('+tot+')">'+tot+'</button>';h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=tot?'disabled':'')+'>→</button> <span class="pg-info">'+cur+'/'+tot+'</span>';c.innerHTML=h}
+// ── Sold Numbers ──────────────────────────────────────────
+async function loadNumbers(pg){
+  if(pg)currentPage.num=pg;
+  await swr('admin_num_'+currentPage.num,
+    async()=>{ var d=await adminApi('adminSoldNumbers',{page:currentPage.num,perPage:100}); return d.success?d:null; },
+    d=>{
+      if(!d)return;
+      var b=document.getElementById('numBody');
+      if(!d.numbers.length){b.innerHTML='<tr><td colspan="6" class="tbl-empty">None.</td></tr>';document.getElementById('numPagination').innerHTML='';return}
+      var h='';
+      d.numbers.forEach(n=>{var txE=esc(n.transactionId);h+='<tr class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td class="mono">'+esc(n.number)+'</td><td style="font-size:.73rem">'+txE+'</td><td>'+esc(n.name)+'</td><td>'+esc(n.phone)+'</td><td>'+esc(n.gcashRef)+'</td><td>'+esc(n.timestamp)+'</td></tr>';});
+      b.innerHTML=h;renderPg('numPagination',d.page,d.totalPages,'loadNumbers');
+    }
+  );
+}
 
+function renderPg(cid,cur,tot,fn){
+  var c=document.getElementById(cid);if(tot<=1){c.innerHTML='';return}
+  var h='<button class="pg-btn" onclick="'+fn+'('+(cur-1)+')" '+(cur<=1?'disabled':'')+'>←</button>';
+  var s=Math.max(1,cur-2),e=Math.min(tot,cur+2);
+  if(s>1)h+='<button class="pg-btn" onclick="'+fn+'(1)">1</button>';
+  if(s>2)h+='<span class="pg-info">…</span>';
+  for(var i=s;i<=e;i++)h+='<button class="pg-btn'+(i===cur?' active':'')+'" onclick="'+fn+'('+i+')">'+i+'</button>';
+  if(e<tot-1)h+='<span class="pg-info">…</span>';
+  if(e<tot)h+='<button class="pg-btn" onclick="'+fn+'('+tot+')">'+tot+'</button>';
+  h+='<button class="pg-btn" onclick="'+fn+'('+(cur+1)+')" '+(cur>=tot?'disabled':'')+'>→</button> <span class="pg-info">'+cur+'/'+tot+'</span>';
+  c.innerHTML=h;
+}
+
+// ── Transaction Detail ────────────────────────────────────
 async function openTxDetail(txId){
   showOv('Loading details...','');
   try{
     var d=await adminApi('adminGetTransaction',{transactionId:txId});
-    hideOv();
-    if(!d.success){toast(d.error||'Not found','err');return}
-    var tx=d.transaction;
-    _detailTx=tx;
+    hideOv();if(!d.success){toast(d.error||'Not found','err');return}
+    var tx=d.transaction;_detailTx=tx;
     document.getElementById('detailTitle').innerHTML='📋 Transaction Detail';
     document.getElementById('detailSub').textContent=tx.transactionId;
     var g='';
@@ -381,12 +529,10 @@ async function openTxDetail(txId){
     g+='<div class="ri"><div class="rl">Amount</div><div class="rv" style="color:var(--gold);font-weight:800">₱'+Number(tx.amount).toLocaleString()+'</div></div>';
     g+='<div class="ri"><div class="rl">Status</div><div class="rv"><span class="badge '+statusClass(tx.status)+'">'+tx.status+'</span></div></div>';
     document.getElementById('detailGrid').innerHTML=g;
-    var allNums=[];
-    var nh='';
+    var allNums=[],nh='';
     if(tx.soldNumbers&&tx.soldNumbers.length>0){
       allNums=tx.soldNumbers;
-      nh+='<h3>🎰 Numbers ('+tx.soldCount.toLocaleString()+' in registry)</h3>';
-      nh+='<div class="nbox" style="max-height:300px"><div class="ngrid">';
+      nh+='<h3>🎰 Numbers ('+tx.soldCount.toLocaleString()+' in registry)</h3><div class="nbox" style="max-height:300px"><div class="ngrid">';
       tx.soldNumbers.forEach(n=>{nh+='<div class="ni">'+n+'</div>'});
       nh+='</div></div>';
     }else if(tx.numbers&&tx.numbers.trim()){
@@ -395,8 +541,7 @@ async function openTxDetail(txId){
       nh+='<h3>🎰 Numbers ('+nums.length.toLocaleString()+' from log)</h3>';
       if(tx.status==='DECLINED')nh+='<div style="font-size:.78rem;color:var(--err);margin-bottom:8px">⚠️ Numbers were freed (declined)</div>';
       nh+='<div class="nbox" style="max-height:300px"><div class="ngrid">';
-      var showN=nums.slice(0,500);
-      showN.forEach(n=>{nh+='<div class="ni" style="opacity:'+(tx.status==='DECLINED'?'.4':'1')+'">'+pad6(n)+'</div>'});
+      nums.slice(0,500).forEach(n=>{nh+='<div class="ni" style="opacity:'+(tx.status==='DECLINED'?'.4':'1')+'">'+pad6(n)+'</div>'});
       if(nums.length>500)nh+='<div style="text-align:center;padding:10px;color:var(--sub)">...and '+(nums.length-500).toLocaleString()+' more</div>';
       nh+='</div></div>';
     }else{
@@ -405,10 +550,7 @@ async function openTxDetail(txId){
     _detailTx._allNums=allNums;
     document.getElementById('detailNums').innerHTML=nh;
     var ah='';
-    if(allNums.length>0){
-      ah+='<button class="btn-sm btn-blue" onclick="copyDetailNums()">📋 Copy All Numbers</button>';
-      ah+='<button class="btn-sm btn-green" onclick="downloadDetailTx()">⬇ Download TXT</button>';
-    }
+    if(allNums.length>0){ah+='<button class="btn-sm btn-blue" onclick="copyDetailNums()">📋 Copy All Numbers</button><button class="btn-sm btn-green" onclick="downloadDetailTx()">⬇ Download TXT</button>';}
     ah+='<button class="btn-sm btn-blue" onclick="closeDetail()" style="margin-left:4px">Close</button>';
     document.getElementById('detailActions').innerHTML=ah;
     document.getElementById('detailModal').classList.add('on');
@@ -416,37 +558,48 @@ async function openTxDetail(txId){
 }
 
 function copyDetailNums(){if(!_detailTx||!_detailTx._allNums||!_detailTx._allNums.length)return toast('No numbers','err');navigator.clipboard.writeText(_detailTx._allNums.join('\n')).then(()=>toast('📋 Copied '+_detailTx._allNums.length.toLocaleString()+' numbers!','suc')).catch(()=>toast('Copy failed','err'))}
-function downloadDetailTx(){if(!_detailTx)return;var tx=_detailTx;var nums=tx._allNums||[];var L=[LOTTERY_NAME,'','TX: '+tx.transactionId,'Date: '+tx.timestamp,'Name: '+tx.name,'Phone: '+tx.phone,'GCash Ref: '+tx.gcashRef,'Status: '+tx.status,'Qty: '+tx.quantity,'Amount: ₱'+Number(tx.amount).toLocaleString(),'','NUMBERS ('+nums.length+'):',''];nums.forEach(n=>L.push(n));var b=new Blob([L.join('\n')],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+tx.transactionId+'.txt';a.click();toast('⬇ Downloaded!','suc')}
+function downloadDetailTx(){if(!_detailTx)return;var tx=_detailTx,nums=tx._allNums||[];var L=[LOTTERY_NAME,'','TX: '+tx.transactionId,'Date: '+tx.timestamp,'Name: '+tx.name,'Phone: '+tx.phone,'GCash Ref: '+tx.gcashRef,'Status: '+tx.status,'Qty: '+tx.quantity,'Amount: ₱'+Number(tx.amount).toLocaleString(),'','NUMBERS ('+nums.length+'):',''];nums.forEach(n=>L.push(n));var b=new Blob([L.join('\n')],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+tx.transactionId+'.txt';a.click();toast('⬇ Downloaded!','suc')}
 
+// ── Confirm modals ────────────────────────────────────────
 function confirmApprove(tx){document.getElementById('confirmTitle').textContent='✅ Approve Transaction?';document.getElementById('confirmMsg').innerHTML='Approve <code>'+tx+'</code>?<br>This confirms payment has been verified.';document.getElementById('confirmYes').textContent='Approve';document.getElementById('confirmYes').className='btn-sm btn-green';document.getElementById('confirmYes').onclick=()=>doApprove(tx);document.getElementById('confirmModal').classList.add('on')}
-async function doApprove(tx){closeConfirm();toast('Approving...','warn');cacheClear('admin_');try{var d=await adminApi('adminApproveTransaction',{transactionId:tx});if(d.success){toast('✅ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
+async function doApprove(tx){closeConfirm();toast('Approving...','warn');cacheClear('admin_');_initData=null;try{var d=await adminApi('adminApproveTransaction',{transactionId:tx});if(d.success){toast('✅ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
 function confirmDecline(tx){document.getElementById('confirmTitle').textContent='❌ Decline Transaction?';document.getElementById('confirmMsg').innerHTML='Decline <code>'+tx+'</code>?<br>This will free up the reserved numbers.<br>The log entry stays as "DECLINED".';document.getElementById('confirmYes').textContent='Decline';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=()=>doDecline(tx);document.getElementById('confirmModal').classList.add('on')}
-async function doDecline(tx){closeConfirm();toast('Declining...','warn');cacheClear('admin_');try{var d=await adminApi('adminDeclineTransaction',{transactionId:tx});if(d.success){toast('❌ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
+async function doDecline(tx){closeConfirm();toast('Declining...','warn');cacheClear('admin_');_initData=null;try{var d=await adminApi('adminDeclineTransaction',{transactionId:tx});if(d.success){toast('❌ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
 function confirmDelete(tx){document.getElementById('confirmTitle').textContent='🗑️ Permanently Delete?';document.getElementById('confirmMsg').innerHTML='Completely erase <code>'+tx+'</code> from ALL sheets.<br>Numbers + transaction log = permanently gone.<br><strong>This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Forever';document.getElementById('confirmYes').className='btn-sm btn-orange';document.getElementById('confirmYes').onclick=()=>doDelete(tx);document.getElementById('confirmModal').classList.add('on')}
-async function doDelete(tx){closeConfirm();var row=document.querySelector('tr[data-tx="'+tx+'"]');if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}toast('Deleting...','warn');cacheClear('admin_');try{var d=await adminApi('adminDeleteTransaction',{transactionId:tx});if(d.success){toast('🗑️ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
+async function doDelete(tx){closeConfirm();var row=document.querySelector('tr[data-tx="'+tx+'"]');if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}toast('Deleting...','warn');cacheClear('admin_');_initData=null;try{var d=await adminApi('adminDeleteTransaction',{transactionId:tx});if(d.success){toast('🗑️ '+d.message,'suc');loadDashboard();loadTransactions()}else{toast(d.error,'err');loadTransactions()}}catch(e){toast('Failed','err');loadTransactions()}}
 function confirmDeleteAll(){document.getElementById('confirmTitle').textContent='🗑️ Delete ALL Transactions?';document.getElementById('confirmMsg').innerHTML='This will permanently erase <strong>every transaction and all sold numbers</strong> from the sheet.<br><br><strong style="color:var(--err)">This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Everything';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=()=>doDeleteAll();document.getElementById('confirmModal').classList.add('on')}
-async function doDeleteAll(){closeConfirm();showOv('Deleting all transactions...','');cacheClear('admin_');try{var d=await adminApi('adminDeleteAllTransactions');hideOv();if(d.success){toast('🗑️ All transactions deleted.','suc');loadDashboard();loadTransactions()}else{toast(d.error||'Failed.','err')}}catch(e){hideOv();toast('Error: '+e.message,'err')}}
+async function doDeleteAll(){closeConfirm();showOv('Deleting all transactions...','');cacheClear('admin_');_initData=null;try{var d=await adminApi('adminDeleteAllTransactions');hideOv();if(d.success){toast('🗑️ All transactions deleted.','suc');loadDashboard();loadTransactions()}else{toast(d.error||'Failed.','err')}}catch(e){hideOv();toast('Error: '+e.message,'err')}}
 
+// ── Search ────────────────────────────────────────────────
 async function searchNumber(){var q=document.getElementById('searchNum').value.trim();if(!q)return toast('Enter number.','err');showOv('Searching...','');try{var d=await adminApi('adminSearchNumber',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.found?'✅ '+d.query+' found — click to view details':'❌ Not found';if(d.found){document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr>';var h='';d.results.forEach(r=>{var txE=esc(r.transactionId);h+='<tr class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td class="mono">'+esc(r.number)+'</td><td>'+txE+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.phone)+'</td><td>'+esc(r.gcashRef)+'</td><td>'+esc(r.timestamp)+'</td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">Not sold.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
 async function searchBuyerFn(){var q=document.getElementById('searchBuyer').value.trim();if(!q)return toast('Enter term.','err');showOv('Searching...','');try{var d=await adminApi('adminSearchBuyer',{query:q});hideOv();document.getElementById('searchResults').style.display='block';document.getElementById('searchTitle').textContent=d.total+' result(s) — click to view details';if(d.total>0){document.getElementById('searchThead').innerHTML='<tr><th>Date</th><th>TX</th><th>Name</th><th>Phone</th><th>Qty</th><th>Amt</th><th>Status</th></tr>';var h='';d.results.forEach(r=>{var sc=statusClass(r.status),txE=esc(r.transactionId);h+='<tr class="clickable-row" onclick="openTxDetail(\''+txE+'\')"><td>'+esc(r.timestamp)+'</td><td>'+txE+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.phone)+'</td><td>'+esc(String(r.quantity))+'</td><td>₱'+Number(r.amount).toLocaleString()+'</td><td><span class="badge '+sc+'">'+esc(r.status)+'</span></td></tr>'});document.getElementById('searchTbody').innerHTML=h}else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">None.</td></tr>'}}catch(e){hideOv();toast('Error','err')}}
-async function addNumber(){var num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{var d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
-async function removeNumber(){var num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{var d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cacheClear('admin_')}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
 
+// ── Tools ─────────────────────────────────────────────────
+async function addNumber(){var num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{var d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_');_initData=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
+async function removeNumber(){var num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{var d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cacheClear('admin_');_initData=null}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
+
+// ── Settings ──────────────────────────────────────────────
 async function loadSettingsFn(){
-  await swr('admin_set',async()=>{var d=await adminApi('adminGetSettings');return d.success?d.settings:null},s=>{
-    if(!s)return;
-    document.getElementById('setGcashName').value=s.gcash_name||'';
-    document.getElementById('setGcashNum').value=s.gcash_number||'';
-    document.getElementById('setLotteryName').value=s.lottery_name||'';
-    document.getElementById('setDrawDate').value=s.draw_date||'';
-    document.getElementById('setPrice').value=s.price_per_number||'1';
-    document.getElementById('setMinQty').value=s.min_quantity||'50';
-    document.getElementById('setMaxQty').value=s.max_quantity||'10000';
-    document.getElementById('setAnnouncement').value=s.announcement||'';
-    document.getElementById('setMaintenance').value=s.maintenance_mode||'false';
-  });
+  // Use init data if available and fresh
+  if(_initData&&_initData.settings&&cacheAge('admin_set')<60000){
+    _applySettingsToForm(_initData.settings);return;
+  }
+  await swr('admin_set',
+    async()=>{ var d=await adminApi('adminGetSettings'); return d.success?d.settings:null; },
+    s=>{ if(s) _applySettingsToForm(s); }
+  );
 }
-
+function _applySettingsToForm(s){
+  document.getElementById('setGcashName').value=s.gcash_name||'';
+  document.getElementById('setGcashNum').value=s.gcash_number||'';
+  document.getElementById('setLotteryName').value=s.lottery_name||'';
+  document.getElementById('setDrawDate').value=s.draw_date||'';
+  document.getElementById('setPrice').value=s.price_per_number||'1';
+  document.getElementById('setMinQty').value=s.min_quantity||'50';
+  document.getElementById('setMaxQty').value=s.max_quantity||'10000';
+  document.getElementById('setAnnouncement').value=s.announcement||'';
+  document.getElementById('setMaintenance').value=s.maintenance_mode||'false';
+}
 async function saveSettings(){
   var np=document.getElementById('setNewPass').value,np2=document.getElementById('setNewPass2').value;
   if(np&&np.length<6)return toast('Min 6 chars.','err');
@@ -454,27 +607,22 @@ async function saveSettings(){
   showOv('Saving...','');
   var p={gcash_name:document.getElementById('setGcashName').value.trim(),gcash_number:document.getElementById('setGcashNum').value.trim(),lottery_name:document.getElementById('setLotteryName').value.trim(),draw_date:document.getElementById('setDrawDate').value,price_per_number:document.getElementById('setPrice').value,min_quantity:document.getElementById('setMinQty').value,max_quantity:document.getElementById('setMaxQty').value,announcement:document.getElementById('setAnnouncement').value.trim(),maintenance_mode:document.getElementById('setMaintenance').value};
   if(np)p.new_password=np;
-  try{var d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cacheClear();document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
+  try{var d=await adminApi('adminUpdateSettings',p);hideOv();if(d.success){toast('✅ Saved!','suc');cacheClear();_initData=null;document.getElementById('setNewPass').value='';document.getElementById('setNewPass2').value='';if(np){toast('Password changed.','warn');setTimeout(doLogout,2000)}}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}
 }
 
 async function exportData(type){showOv('Exporting...','');try{var d=await adminApi('adminExportData',{type});hideOv();if(!d.success)return toast(d.error,'err');var csv=d.headers.join(',')+'\n';d.data.forEach(r=>{csv+=r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')+'\n'});var b=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Lucky6-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';a.click();toast('Exported '+(d.total||0)+' rows!','suc')}catch(e){hideOv();toast('Error','err')}}
 
-function startAutoRefresh(){if(_art)clearInterval(_art);_art=setInterval(()=>{if(!TOKEN)return;if(activeP==='dashboard'&&cacheAge('admin_dash')>=SRV_MS)adminApi('adminDashboard').then(d=>{if(d&&d.success){cacheSet('admin_dash',d);if(activeP==='dashboard'){document.getElementById('dsSold').textContent=d.totalSold.toLocaleString();document.getElementById('dsRemain').textContent=d.remaining.toLocaleString();document.getElementById('dsRevenue').textContent='₱'+d.totalRevenue.toLocaleString();document.getElementById('dsPending').textContent=d.pendingTransactions.toLocaleString();document.getElementById('dsApproved').textContent=d.approvedTransactions.toLocaleString();document.getElementById('dsDeclined').textContent=d.declinedTransactions.toLocaleString()}}}).catch(()=>{})},UI_MS)}
-
-document.addEventListener('DOMContentLoaded',async()=>{
-  detectMode();
-  if(IS_ADMIN_MODE){
-    document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()})
-  }else{
-    setTodayDate();document.getElementById('dP').textContent=GCASH_NUMBER;document.getElementById('dN').textContent=GCASH_NAME;
-    var ni=document.getElementById('fN');ni.addEventListener('input',()=>{var p=ni.selectionStart;ni.value=titleCase(ni.value);ni.setSelectionRange(p,p)});
-    var pi=document.getElementById('fP');pi.addEventListener('input',()=>{pi.value=getDigitsOnly(pi.value).substring(0,11);updatePhoneStatus()});pi.addEventListener('blur',updatePhoneStatus);
-    var qi=document.getElementById('fQ');
-    qi.addEventListener('input',function(){calc()});
-    qi.addEventListener('blur',function(){var v=parseInt(qi.value);if(!isNaN(v)&&v<MIN_QTY&&qi.value!==''){qi.value=MIN_QTY;toast('Min '+MIN_QTY,'warn')}if(!isNaN(v)&&v>MAX_QTY){qi.value=MAX_QTY;toast('Max '+MAX_QTY.toLocaleString(),'warn')}calc()});
-    checkConnection();setInterval(setTodayDate,60000)
-  }
-});
+function startAutoRefresh(){
+  if(_art)clearInterval(_art);
+  _art=setInterval(()=>{
+    if(!TOKEN)return;
+    if(activeP==='dashboard'&&cacheAge('admin_dash')>=30000){
+      adminApi('adminDashboard').then(d=>{
+        if(d&&d.success){cacheSet('admin_dash',d);if(activeP==='dashboard')renderDashboard(d);}
+      }).catch(()=>{});
+    }
+  },5000);
+}
 </script>
 </body>
 </html>
