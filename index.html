@@ -579,28 +579,39 @@ async function searchDuplicates(){
     var d=await adminApi('adminSearchDuplicates');
     document.getElementById('sl3').classList.remove('on');
     document.getElementById('dupeBtn').disabled=false;
+
+    if(!d||!d.success){
+      toast(d&&d.error?d.error:'Failed to scan','err');
+      return;
+    }
+
     document.getElementById('dupeResult').style.display='block';
 
+    var totalNums=d.totalNumbers||0;
+    var dupNums=d.uniqueDuplicatedNumbers||0;
+    var dupEntries=d.duplicateEntries||d.totalDuplicateEntries||0;
+    var dupes=d.duplicates||[];
     var summary=document.getElementById('dupeSummary');
-    if(d.uniqueDuplicatedNumbers===0){
+
+    if(dupNums===0){
       summary.style.background='rgba(0,230,118,.08)';
       summary.style.border='1px solid rgba(0,230,118,.2)';
       summary.style.color='var(--ok)';
-      summary.innerHTML='✅ <strong>No duplicates found!</strong><br><span style="font-size:.8rem;color:var(--sub)">All '+d.totalNumbers.toLocaleString()+' numbers in the registry are unique.</span>';
+      summary.innerHTML='✅ <strong>No duplicates found!</strong><br><span style="font-size:.8rem;color:var(--sub)">All '+totalNums.toLocaleString()+' numbers in the registry are unique.</span>';
+      document.getElementById('searchResults').style.display='none';
     }else{
       summary.style.background='rgba(255,59,59,.08)';
       summary.style.border='1px solid rgba(255,59,59,.2)';
       summary.style.color='var(--err)';
-      summary.innerHTML='⚠️ <strong>'+d.uniqueDuplicatedNumbers+' number(s) have duplicates!</strong><br><span style="font-size:.8rem;color:var(--sub)">'+d.duplicateEntries+' total duplicate entries found across '+d.totalNumbers.toLocaleString()+' numbers.</span>';
+      summary.innerHTML='⚠️ <strong>'+dupNums.toLocaleString()+' number(s) have duplicates!</strong><br><span style="font-size:.8rem;color:var(--sub)">'+dupEntries.toLocaleString()+' total duplicate entries found across '+totalNums.toLocaleString()+' numbers.</span>';
 
-      // Show in search results table
       document.getElementById('searchResults').style.display='block';
-      document.getElementById('searchTitle').textContent='🔄 Duplicate Numbers — '+d.duplicateEntries+' entries';
+      document.getElementById('searchTitle').textContent='🔄 Duplicate Numbers — '+dupEntries.toLocaleString()+' entries';
       document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th><th>Count</th></tr>';
       var h='';
-      d.duplicates.forEach(function(r){
-        var txE=esc(r.transactionId);
-        h+='<tr class="clickable-row" style="background:rgba(255,59,59,.03)" onclick="openTxDetail(\''+txE+'\')"><td class="mono" style="color:var(--err)">'+esc(r.number)+'</td><td style="font-size:.73rem">'+txE+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.phone)+'</td><td>'+esc(r.gcashRef)+'</td><td>'+esc(r.timestamp)+'</td><td><span class="badge fail">×'+r.occurrences+'</span></td></tr>';
+      dupes.forEach(function(r){
+        var txE=esc(r.transactionId||'');
+        h+='<tr class="clickable-row" style="background:rgba(255,59,59,.03)" onclick="openTxDetail(\''+txE+'\')"><td class="mono" style="color:var(--err)">'+esc(r.number||'')+'</td><td style="font-size:.73rem">'+txE+'</td><td>'+esc(r.name||'')+'</td><td>'+esc(r.phone||'')+'</td><td>'+esc(r.gcashRef||'')+'</td><td>'+esc(r.timestamp||'')+'</td><td><span class="badge fail">×'+(r.occurrences||0)+'</span></td></tr>';
       });
       document.getElementById('searchTbody').innerHTML=h;
     }
@@ -609,17 +620,6 @@ async function searchDuplicates(){
     document.getElementById('dupeBtn').disabled=false;
     toast('Error scanning: '+e.message,'err');
   }
-}
-
-async function addNumber(){var num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{var d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_');_initData=null;txCacheInvalidate();}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
-async function removeNumber(){var num=document.getElementById('removeNum').value.trim();if(!num)return toast('Enter number.','err');document.getElementById('confirmTitle').textContent='Remove?';document.getElementById('confirmMsg').innerHTML='Remove <code>'+num.padStart(6,'0')+'</code>?';document.getElementById('confirmYes').textContent='Remove';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=async()=>{closeConfirm();showOv('Removing...','');try{var d=await adminApi('adminRemoveNumber',{number:num});hideOv();if(d.success){toast(d.message,'suc');document.getElementById('removeNum').value='';cacheClear('admin_');_initData=null;}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}};document.getElementById('confirmModal').classList.add('on')}
-
-async function loadSettingsFn(){
-  if(_initData&&_initData.settings&&cacheAge('admin_set')<60000){_applySettingsToForm(_initData.settings);return;}
-  await swr('admin_set',
-    async()=>{var d=await adminApi('adminGetSettings');return d.success?d.settings:null;},
-    s=>{if(s)_applySettingsToForm(s);}
-  );
 }
 function _applySettingsToForm(s){
   document.getElementById('setGcashName').value=s.gcash_name||'';
