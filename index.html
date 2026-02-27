@@ -76,7 +76,11 @@
 <div class="page" id="pg-numbers"><div class="page-title">Sold Numbers</div><div class="page-sub">Click any row to view transaction details</div><div class="tbl-wrap"><div class="tbl-head"><h3>🔢 Registry</h3><div class="tbl-actions"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Export</button><button class="btn-sm btn-blue" onclick="refreshNumbers()">↻</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th></tr></thead><tbody id="numBody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody></table></div><div class="pagination" id="numPagination"></div></div></div>
 
 <!-- SEARCH -->
-<div class="page" id="pg-search"><div class="page-title">Search</div><div class="page-sub">Click any result to view full transaction details</div><div class="tool-card"><h3>🔍 By Number</h3><div class="tool-row"><div class="fg"><label>6-Digit</label><input id="searchNum" maxlength="6" placeholder="042069"></div><button class="btn-sm btn-gold" onclick="searchNumber()" style="height:42px">Search</button></div><div class="search-loading" id="sl1"><div class="sp-sm"></div> Searching...</div></div><div class="tool-card"><h3>👤 By Buyer</h3><div class="tool-row"><div class="fg"><label>Name / Phone / TX / GCash</label><input id="searchBuyer" placeholder="Juan"></div><button class="btn-sm btn-gold" onclick="searchBuyerFn()" style="height:42px">Search</button></div><div class="search-loading" id="sl2"><div class="sp-sm"></div> Searching...</div></div><div class="tbl-wrap" id="searchResults" style="display:none"><div class="tbl-head"><h3 id="searchTitle"></h3></div><div style="overflow-x:auto"><table><thead id="searchThead"></thead><tbody id="searchTbody"></tbody></table></div></div></div>
+<div class="page" id="pg-search"><div class="page-title">Search</div><div class="page-sub">Click any result to view full transaction details</div>
+<div class="tool-card"><h3>🔍 By Number</h3><div class="tool-row"><div class="fg"><label>6-Digit</label><input id="searchNum" maxlength="6" placeholder="042069"></div><button class="btn-sm btn-gold" onclick="searchNumber()" style="height:42px">Search</button></div><div class="search-loading" id="sl1"><div class="sp-sm"></div> Searching...</div></div>
+<div class="tool-card"><h3>👤 By Buyer</h3><div class="tool-row"><div class="fg"><label>Name / Phone / TX / GCash</label><input id="searchBuyer" placeholder="Juan"></div><button class="btn-sm btn-gold" onclick="searchBuyerFn()" style="height:42px">Search</button></div><div class="search-loading" id="sl2"><div class="sp-sm"></div> Searching...</div></div>
+<div class="tool-card"><h3>🔄 Duplicate Number Checker</h3><p style="color:var(--sub);font-size:.82rem;margin-bottom:12px;line-height:1.7">Scan all sold numbers for duplicates. This checks the entire SoldNumbers registry.</p><button class="btn-sm btn-orange" onclick="searchDuplicates()" id="dupeBtn">🔄 Scan for Duplicates</button><div class="search-loading" id="sl3"><div class="sp-sm"></div> Scanning all numbers...</div><div id="dupeResult" style="display:none;margin-top:14px"><div id="dupeSummary" style="padding:14px;border-radius:10px;margin-bottom:12px;line-height:1.8;font-size:.88rem"></div></div></div>
+<div class="tbl-wrap" id="searchResults" style="display:none"><div class="tbl-head"><h3 id="searchTitle"></h3></div><div style="overflow-x:auto"><table><thead id="searchThead"></thead><tbody id="searchTbody"></tbody></table></div></div></div>
 
 <!-- TOOLS -->
 <div class="page" id="pg-tools"><div class="page-title">Tools</div><div class="page-sub">Manual ops</div><div class="tool-card"><h3>➕ Add Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="addNum" maxlength="6" placeholder="123456"></div><div class="fg"><label>Name</label><input id="addName" placeholder="Optional"></div><div class="fg"><label>Phone</label><input id="addPhone" maxlength="11" placeholder="Optional"></div><button class="btn-sm btn-green" onclick="addNumber()" style="height:42px">Add</button></div></div><div class="tool-card"><h3>➖ Remove Number</h3><div class="tool-row"><div class="fg"><label>Number</label><input id="removeNum" maxlength="6" placeholder="123456"></div><button class="btn-sm btn-red" onclick="removeNumber()" style="height:42px">Remove</button></div></div><div class="tool-card"><h3>📥 Export</h3><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn-sm btn-green" onclick="exportData('sold')">⬇ Sold CSV</button><button class="btn-sm btn-blue" onclick="exportData('transactions')">⬇ TX CSV</button></div></div></div>
@@ -97,20 +101,17 @@ let myNums=[],serverOnline=false,TOKEN='';
 let currentPage={tx:1,num:1},IS_ADMIN_MODE=false;
 let _detailTx=null,_initData=null;
 
-/* ── Frontend cache (memory + sessionStorage) ─────────── */
 const CACHE={};
 function cacheSet(k,d){CACHE[k]={data:d,time:Date.now()};try{sessionStorage.setItem('pp_'+k,JSON.stringify({data:d,time:Date.now()}))}catch(e){}}
 function cacheGet(k){if(CACHE[k])return CACHE[k];try{var s=sessionStorage.getItem('pp_'+k);if(s){var p=JSON.parse(s);CACHE[k]=p;return p}}catch(e){}return null}
 function cacheAge(k){var c=cacheGet(k);return c?Date.now()-c.time:Infinity}
 function cacheClear(p){Object.keys(CACHE).forEach(k=>{if(!p||k.startsWith(p))delete CACHE[k]});try{Object.keys(sessionStorage).forEach(k=>{if(k.startsWith('pp_')&&(!p||k.startsWith('pp_'+p)))sessionStorage.removeItem(k)})}catch(e){}}
 
-/* ── TX detail frontend cache ──────────────────────────── */
 const _txCache={};
 function txCacheGet(id){return _txCache[id]||null;}
 function txCacheSet(id,d){_txCache[id]=d;}
 function txCacheInvalidate(id){if(id)delete _txCache[id];else Object.keys(_txCache).forEach(k=>delete _txCache[k]);}
 
-/* ── SWR: render instantly from cache, refresh behind scenes */
 async function swr(ck,fn,render){
   var c=cacheGet(ck);
   if(c)render(c.data);
@@ -131,7 +132,6 @@ function hide(id){document.getElementById(id).classList.add('hide')}
 function goToPublicPage(){window.open(location.href.split('?')[0],'_blank')}
 function cpField(id){var txt=document.getElementById(id).textContent;navigator.clipboard.writeText(txt).then(()=>toast('📋 Copied: '+txt,'suc')).catch(()=>toast('Copy failed','err'))}
 
-// ── Sanitize on frontend too (defense in depth) ──────────
 function sanitizeInput(str,maxLen){
   str=String(str||'').trim();
   str=str.replace(/<[^>]*>/g,'');
@@ -516,21 +516,24 @@ async function doDecline(tx){
   }catch(e){toast('Failed','err');loadTransactions();}
 }
 
-function confirmDelete(tx){document.getElementById('confirmTitle').textContent='🗑️ Permanently Delete?';document.getElementById('confirmMsg').innerHTML='Completely erase <code>'+esc(tx)+'</code> from ALL sheets.<br><strong>This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Forever';document.getElementById('confirmYes').className='btn-sm btn-orange';document.getElementById('confirmYes').onclick=()=>doDelete(tx);document.getElementById('confirmModal').classList.add('on')}
+function confirmDelete(tx){document.getElementById('confirmTitle').textContent='🗑️ Permanently Delete?';document.getElementById('confirmMsg').innerHTML='Completely erase <code>'+esc(tx)+'</code> from ALL sheets.<br><strong>Numbers will be freed back to the pool.</strong><br><strong>This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Forever';document.getElementById('confirmYes').className='btn-sm btn-orange';document.getElementById('confirmYes').onclick=()=>doDelete(tx);document.getElementById('confirmModal').classList.add('on')}
 async function doDelete(tx){
   closeConfirm();
   var row=document.querySelector('tr[data-tx="'+tx+'"]');
   if(row){row.classList.add('row-deleting');setTimeout(()=>row.remove(),400)}
-  toast('Deleting...','warn');cacheClear('admin_');_initData=null;txCacheInvalidate();
+  toast('Deleting & freeing numbers...','warn');cacheClear('admin_');_initData=null;txCacheInvalidate();
   try{
     var d=await adminApi('adminDeleteTransaction',{transactionId:tx});
-    if(d.success){toast('🗑️ '+d.message,'suc');loadDashboard();loadTransactions();}
-    else{toast(d.error,'err');loadTransactions();}
+    if(d.success){
+      var msg='🗑️ '+d.message;
+      if(d.freedNumbers>0)msg+=' ('+d.freedNumbers+' numbers freed)';
+      toast(msg,'suc');loadDashboard();loadTransactions();
+    }else{toast(d.error,'err');loadTransactions();}
   }catch(e){toast('Failed','err');loadTransactions();}
 }
 
-function confirmDeleteAll(){document.getElementById('confirmTitle').textContent='🗑️ Delete ALL Transactions?';document.getElementById('confirmMsg').innerHTML='Permanently erase <strong>every transaction and all sold numbers</strong>.<br><br><strong style="color:var(--err)">This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Everything';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=()=>doDeleteAll();document.getElementById('confirmModal').classList.add('on')}
-async function doDeleteAll(){closeConfirm();showOv('Deleting all transactions...','');cacheClear('admin_');_initData=null;txCacheInvalidate();try{var d=await adminApi('adminDeleteAllTransactions');hideOv();if(d.success){toast('🗑️ All transactions deleted.','suc');loadDashboard();loadTransactions()}else{toast(d.error||'Failed.','err')}}catch(e){hideOv();toast('Error: '+e.message,'err')}}
+function confirmDeleteAll(){document.getElementById('confirmTitle').textContent='🗑️ Delete ALL Transactions?';document.getElementById('confirmMsg').innerHTML='Permanently erase <strong>every transaction and all sold numbers</strong>.<br>All numbers will be freed back to the pool.<br><br><strong style="color:var(--err)">This cannot be undone!</strong>';document.getElementById('confirmYes').textContent='Delete Everything';document.getElementById('confirmYes').className='btn-sm btn-red';document.getElementById('confirmYes').onclick=()=>doDeleteAll();document.getElementById('confirmModal').classList.add('on')}
+async function doDeleteAll(){closeConfirm();showOv('Deleting all transactions...','Freeing all numbers');cacheClear('admin_');_initData=null;txCacheInvalidate();try{var d=await adminApi('adminDeleteAllTransactions');hideOv();if(d.success){toast('🗑️ All transactions deleted. All numbers freed.','suc');loadDashboard();loadTransactions()}else{toast(d.error||'Failed.','err')}}catch(e){hideOv();toast('Error: '+e.message,'err')}}
 
 async function searchNumber(){
   var q=document.getElementById('searchNum').value.trim(); if(!q)return toast('Enter number.','err');
@@ -564,6 +567,48 @@ async function searchBuyerFn(){
       document.getElementById('searchTbody').innerHTML=h;
     }else{document.getElementById('searchThead').innerHTML='';document.getElementById('searchTbody').innerHTML='<tr><td class="tbl-empty">None.</td></tr>';}
   }catch(e){document.getElementById('sl2').classList.remove('on');toast('Error','err')}
+}
+
+// ── FIX #4: Duplicate Number Checker ──────────────────────────
+async function searchDuplicates(){
+  document.getElementById('dupeBtn').disabled=true;
+  document.getElementById('sl3').classList.add('on');
+  document.getElementById('dupeResult').style.display='none';
+  document.getElementById('searchResults').style.display='none';
+  try{
+    var d=await adminApi('adminSearchDuplicates');
+    document.getElementById('sl3').classList.remove('on');
+    document.getElementById('dupeBtn').disabled=false;
+    document.getElementById('dupeResult').style.display='block';
+
+    var summary=document.getElementById('dupeSummary');
+    if(d.uniqueDuplicatedNumbers===0){
+      summary.style.background='rgba(0,230,118,.08)';
+      summary.style.border='1px solid rgba(0,230,118,.2)';
+      summary.style.color='var(--ok)';
+      summary.innerHTML='✅ <strong>No duplicates found!</strong><br><span style="font-size:.8rem;color:var(--sub)">All '+d.totalNumbers.toLocaleString()+' numbers in the registry are unique.</span>';
+    }else{
+      summary.style.background='rgba(255,59,59,.08)';
+      summary.style.border='1px solid rgba(255,59,59,.2)';
+      summary.style.color='var(--err)';
+      summary.innerHTML='⚠️ <strong>'+d.uniqueDuplicatedNumbers+' number(s) have duplicates!</strong><br><span style="font-size:.8rem;color:var(--sub)">'+d.duplicateEntries+' total duplicate entries found across '+d.totalNumbers.toLocaleString()+' numbers.</span>';
+
+      // Show in search results table
+      document.getElementById('searchResults').style.display='block';
+      document.getElementById('searchTitle').textContent='🔄 Duplicate Numbers — '+d.duplicateEntries+' entries';
+      document.getElementById('searchThead').innerHTML='<tr><th>Number</th><th>TX ID</th><th>Name</th><th>Phone</th><th>GCash</th><th>Date</th><th>Count</th></tr>';
+      var h='';
+      d.duplicates.forEach(function(r){
+        var txE=esc(r.transactionId);
+        h+='<tr class="clickable-row" style="background:rgba(255,59,59,.03)" onclick="openTxDetail(\''+txE+'\')"><td class="mono" style="color:var(--err)">'+esc(r.number)+'</td><td style="font-size:.73rem">'+txE+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.phone)+'</td><td>'+esc(r.gcashRef)+'</td><td>'+esc(r.timestamp)+'</td><td><span class="badge fail">×'+r.occurrences+'</span></td></tr>';
+      });
+      document.getElementById('searchTbody').innerHTML=h;
+    }
+  }catch(e){
+    document.getElementById('sl3').classList.remove('on');
+    document.getElementById('dupeBtn').disabled=false;
+    toast('Error scanning: '+e.message,'err');
+  }
 }
 
 async function addNumber(){var num=document.getElementById('addNum').value.trim();if(!num)return toast('Enter number.','err');showOv('Adding...','');try{var d=await adminApi('adminAddNumber',{number:num,name:document.getElementById('addName').value.trim()||'ADMIN',phone:document.getElementById('addPhone').value.trim()||'N/A'});hideOv();if(d.success){toast(d.message,'suc');['addNum','addName','addPhone'].forEach(id=>document.getElementById(id).value='');cacheClear('admin_');_initData=null;txCacheInvalidate();}else toast(d.error,'err')}catch(e){hideOv();toast('Error','err')}}
@@ -622,7 +667,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
     ni.maxLength=MAX_NAME_LENGTH;
     ni.addEventListener('input',()=>{
       var p=ni.selectionStart;
-      // Strip dangerous chars on input
       ni.value=ni.value.replace(/[<>"'`;{}()\\]/g,'');
       ni.value=ni.value.replace(/\b\w/g,c=>c.toUpperCase());
       if(ni.value.length>MAX_NAME_LENGTH)ni.value=ni.value.substring(0,MAX_NAME_LENGTH);
