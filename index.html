@@ -7,9 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    /* ═══════════════════════════════════════════════════════
-       CSS RESET & VARIABLES
-       ═══════════════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -193,6 +190,25 @@
     }
 
     /* ═══════════════════════════════════════════════════════
+       DRAW DATE BANNER
+       ═══════════════════════════════════════════════════════ */
+    .draw-date-banner {
+      background: linear-gradient(135deg, rgba(108,60,225,0.1), rgba(139,92,246,0.05));
+      border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-sm);
+      padding: 16px; margin-bottom: 20px; text-align: center;
+      display: none;
+    }
+    .draw-date-banner.visible { display: block; }
+    .draw-date-banner .label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-muted); font-weight: 600; margin-bottom: 4px;
+    }
+    .draw-date-banner .date {
+      font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
+      color: var(--primary-light);
+    }
+
+    /* ═══════════════════════════════════════════════════════
        CARDS
        ═══════════════════════════════════════════════════════ */
     .card {
@@ -212,26 +228,8 @@
     .card-icon.green  { background: rgba(16,185,129,0.15); color: var(--accent); }
     .card-icon.blue   { background: rgba(59,130,246,0.15); color: #60A5FA; }
     .card-icon.amber  { background: rgba(245,158,11,0.15); color: var(--secondary); }
+    .card-icon.red    { background: rgba(239,68,68,0.15); color: var(--danger); }
     .card-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-
-    /* ═══════════════════════════════════════════════════════
-       DRAW DATE BANNER
-       ═══════════════════════════════════════════════════════ */
-    .draw-date-banner {
-      background: linear-gradient(135deg, rgba(108,60,225,0.1), rgba(139,92,246,0.05));
-      border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-sm);
-      padding: 16px; margin-bottom: 20px; text-align: center;
-      display: none;
-    }
-    .draw-date-banner.visible { display: block; }
-    .draw-date-banner .label {
-      font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--text-muted); font-weight: 600; margin-bottom: 4px;
-    }
-    .draw-date-banner .date {
-      font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
-      color: var(--primary-light);
-    }
 
     /* ═══════════════════════════════════════════════════════
        GCASH INFO
@@ -356,13 +354,20 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       color: #fff;
     }
+    .btn-success:hover:not(:disabled) {
+      box-shadow: 0 6px 24px rgba(16,185,129,0.3); transform: translateY(-1px);
+    }
 
-    /* Spinner inside button */
     .btn .spinner {
       width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.3);
       border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-group {
+      display: flex; gap: 10px; margin-top: 24px;
+    }
+    .btn-group .btn { flex: 1; }
 
     /* ═══════════════════════════════════════════════════════
        RECEIPT / RESULT
@@ -373,17 +378,23 @@
       box-shadow: var(--shadow-lg); margin-bottom: 20px;
     }
     .receipt-header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       padding: 28px 24px; text-align: center; position: relative;
     }
     .receipt-header .check-circle {
-      width: 56px; height: 56px; border-radius: 50%;
+      width: 64px; height: 64px; border-radius: 50%;
       background: rgba(255,255,255,0.15); margin: 0 auto 14px;
       display: flex; align-items: center; justify-content: center;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .receipt-header .check-circle i { font-size: 28px; color: #fff; }
+    .receipt-header .check-circle i { font-size: 30px; color: #fff; }
     .receipt-header h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .receipt-header p { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
 
     .receipt-body { padding: 24px; }
     .receipt-row {
@@ -395,6 +406,7 @@
     .receipt-row .r-value {
       font-size: 14px; color: var(--text-primary); font-weight: 600;
       text-align: right; max-width: 60%; word-break: break-word;
+      display: flex; align-items: center; gap: 8px;
     }
     .receipt-row .r-value.txid {
       font-family: 'Courier New', monospace; font-size: 13px;
@@ -403,6 +415,10 @@
     .receipt-row .r-value.amount {
       font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 800;
       color: var(--accent);
+    }
+    .receipt-row .r-value.ref {
+      font-family: 'Courier New', monospace; font-size: 13px;
+      color: #60A5FA;
     }
 
     .receipt-notice {
@@ -422,6 +438,16 @@
       background: rgba(245,158,11,0.12); color: var(--secondary);
     }
 
+    /* Copy button in receipt */
+    .copy-btn-sm {
+      background: rgba(139,92,246,0.15); border: none; color: var(--primary-light);
+      width: 26px; height: 26px; border-radius: 5px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; transition: var(--transition); flex-shrink: 0;
+    }
+    .copy-btn-sm:hover { background: rgba(139,92,246,0.3); }
+    .copy-btn-sm.copied { background: rgba(16,185,129,0.2); color: var(--accent); }
+
     /* ═══════════════════════════════════════════════════════
        SECTIONS VISIBILITY
        ═══════════════════════════════════════════════════════ */
@@ -430,6 +456,100 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       GENERATING OVERLAY
+       ═══════════════════════════════════════════════════════ */
+    .generating-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(15, 11, 26, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px; text-align: center;
+    }
+    .generating-overlay.active { display: flex; }
+
+    .gen-container {
+      animation: fadeIn 0.3s ease;
+    }
+
+    .gen-icon-wrapper {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(108,60,225,0.2), rgba(139,92,246,0.1));
+      border: 2px solid rgba(139,92,246,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px; position: relative;
+    }
+
+    .gen-icon-wrapper::before {
+      content: ''; position: absolute; inset: -8px;
+      border-radius: 50%; border: 2px solid transparent;
+      border-top-color: var(--primary-light);
+      border-right-color: var(--secondary);
+      animation: spin 1.5s linear infinite;
+    }
+
+    .gen-icon-wrapper::after {
+      content: ''; position: absolute; inset: -16px;
+      border-radius: 50%; border: 2px solid transparent;
+      border-bottom-color: var(--accent);
+      border-left-color: var(--primary);
+      animation: spin 2s linear infinite reverse;
+    }
+
+    .gen-icon-wrapper i {
+      font-size: 44px; color: var(--primary-light);
+      animation: genPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes genPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    .gen-title {
+      font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 8px;
+    }
+
+    .gen-subtitle {
+      font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;
+      max-width: 280px;
+    }
+
+    .gen-numbers {
+      display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px; min-height: 44px;
+    }
+
+    .gen-num {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 700;
+      color: var(--primary-light);
+      animation: numPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes numPop {
+      from { transform: scale(0) rotate(-10deg); opacity: 0; }
+      to { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .gen-progress {
+      width: 200px; height: 4px; background: var(--bg-input);
+      border-radius: 99px; overflow: hidden; margin: 0 auto;
+    }
+    .gen-progress-fill {
+      height: 100%; border-radius: 99px; width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--secondary));
+      transition: width 0.3s ease;
+    }
+
+    .gen-status {
+      font-size: 12px; color: var(--text-muted); margin-top: 12px;
+      font-weight: 500;
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -483,20 +603,7 @@
     @keyframes toastOut { to { opacity: 0; transform: translateY(-12px); } }
 
     /* ═══════════════════════════════════════════════════════
-       LOADING SKELETON
-       ═══════════════════════════════════════════════════════ */
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
-      background-size: 200% 100%; animation: skeleton 1.5s ease infinite;
-      border-radius: var(--radius-xs);
-    }
-    @keyframes skeleton {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* ═══════════════════════════════════════════════════════
-       ADMIN LOGIN LINK
+       ADMIN
        ═══════════════════════════════════════════════════════ */
     .admin-link {
       text-align: center; padding: 24px 0 12px;
@@ -506,32 +613,17 @@
       transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;
     }
     .admin-link a:hover { color: var(--primary-light); }
-
-    /* ═══════════════════════════════════════════════════════
-       ADMIN PANEL
-       ═══════════════════════════════════════════════════════ */
     .admin-section .card { max-width: 400px; margin: 40px auto; }
 
     /* ═══════════════════════════════════════════════════════
-       RESPONSIVE
-       ═══════════════════════════════════════════════════════ */
-    @media (max-width: 380px) {
-      .app-container { padding: 12px 12px 32px; }
-      .stats-bar { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-      .stat-value { font-size: 18px; }
-      .app-title { font-size: 24px; }
-      .price-total .amount { font-size: 20px; }
-    }
-
-    /* ═══════════════════════════════════════════════════════
-       STEP INDICATOR
+       STEP INDICATOR (4 STEPS)
        ═══════════════════════════════════════════════════════ */
     .steps {
       display: flex; align-items: center; justify-content: center;
       gap: 0; margin-bottom: 24px;
     }
     .step {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 6px;
     }
     .step-circle {
       width: 32px; height: 32px; border-radius: 50%;
@@ -549,19 +641,61 @@
       color: #fff;
     }
     .step-label {
-      font-size: 11px; color: var(--text-muted); font-weight: 600;
+      font-size: 10px; color: var(--text-muted); font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.3px;
       display: none;
     }
     .step.active .step-label { color: var(--text-primary); }
+    .step.done .step-label { color: var(--accent); }
     .step-line {
-      width: 40px; height: 2px; background: var(--border); margin: 0 4px;
+      width: 28px; height: 2px; background: var(--border); margin: 0 3px;
+      transition: var(--transition);
     }
     .step-line.done { background: var(--accent); }
 
-    @media (min-width: 400px) {
+    @media (min-width: 420px) {
       .step-label { display: block; }
+      .step-line { width: 32px; }
     }
+
+    /* ═══════════════════════════════════════════════════════
+       PAYMENT INSTRUCTIONS
+       ═══════════════════════════════════════════════════════ */
+    .payment-amount-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: var(--radius-sm); padding: 20px; text-align: center;
+      margin-bottom: 20px;
+    }
+    .payment-amount-banner .pay-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.6); font-weight: 600; margin-bottom: 4px;
+    }
+    .payment-amount-banner .pay-amount {
+      font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800;
+      color: #fff;
+    }
+    .payment-amount-banner .pay-qty {
+      font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 2px;
+    }
+
+    .payment-steps {
+      margin-top: 16px;
+    }
+    .payment-step {
+      display: flex; gap: 14px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .payment-step:last-child { border-bottom: none; }
+    .payment-step-num {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(108,60,225,0.15); color: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .payment-step-text {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .payment-step-text strong { color: var(--text-primary); }
 
     /* ═══════════════════════════════════════════════════════
        FOOTER
@@ -571,6 +705,35 @@
       border-top: 1px solid var(--border); margin-top: 12px;
     }
     .app-footer p { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════ */
+    @media (max-width: 380px) {
+      .app-container { padding: 12px 12px 32px; }
+      .stats-bar { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+      .stat-value { font-size: 18px; }
+      .app-title { font-size: 24px; }
+      .price-total .amount { font-size: 20px; }
+      .payment-amount-banner .pay-amount { font-size: 28px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       CONFETTI
+       ═══════════════════════════════════════════════════════ */
+    .confetti-container {
+      position: fixed; inset: 0; z-index: 1001; pointer-events: none; overflow: hidden;
+    }
+    .confetti {
+      position: absolute; width: 10px; height: 10px;
+      top: -10px; border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg) scale(0.3); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -591,6 +754,25 @@
     <h2>Under Maintenance</h2>
     <p>We're working on something amazing. Please check back soon!</p>
   </div>
+
+  <!-- Generating Numbers Overlay -->
+  <div class="generating-overlay" id="generatingOverlay">
+    <div class="gen-container">
+      <div class="gen-icon-wrapper">
+        <i class="fas fa-dice"></i>
+      </div>
+      <div class="gen-title">Generating Your Numbers</div>
+      <div class="gen-subtitle">Please wait while we assign your lucky numbers...</div>
+      <div class="gen-numbers" id="genNumbers"></div>
+      <div class="gen-progress">
+        <div class="gen-progress-fill" id="genProgressFill"></div>
+      </div>
+      <div class="gen-status" id="genStatus">Initializing...</div>
+    </div>
+  </div>
+
+  <!-- Confetti Container -->
+  <div class="confetti-container" id="confettiContainer"></div>
 
   <!-- Main App -->
   <div class="app-container">
@@ -644,126 +826,291 @@
     <!-- ═══════════════════════════════════════════════════
          STEP 1: BUYER INFO
          ═══════════════════════════════════════════════════ -->
-    <div class="section active" id="sectionBuyerInfo">
+    <div class="section active" id="sectionStep1">
 
-      <div class="steps">
+      <!-- Step Indicator -->
+      <div class="steps" id="stepIndicator">
         <div class="step active" id="step1">
           <div class="step-circle">1</div>
           <div class="step-label">Info</div>
         </div>
         <div class="step-line" id="stepLine1"></div>
-        <div class="step active" id="step2">
+        <div class="step" id="step2">
           <div class="step-circle">2</div>
           <div class="step-label">Pay</div>
         </div>
         <div class="step-line" id="stepLine2"></div>
         <div class="step" id="step3">
           <div class="step-circle">3</div>
+          <div class="step-label">Proof</div>
+        </div>
+        <div class="step-line" id="stepLine3"></div>
+        <div class="step" id="step4">
+          <div class="step-circle">4</div>
           <div class="step-label">Done</div>
         </div>
       </div>
 
-      <!-- GCash Payment Info -->
-      <div class="gcash-info">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div class="card-icon blue"><i class="fas fa-wallet"></i></div>
-          <div class="card-title" style="font-size:14px;">Send Payment via GCash</div>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Account Name</span>
-          <span class="info-value" id="gcashName">—</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">GCash Number</span>
-          <span class="info-value">
-            <span id="gcashNumber">—</span>
-            <button class="copy-btn" onclick="copyToClipboard('gcashNumber')" title="Copy">
-              <i class="fas fa-copy"></i>
-            </button>
-          </span>
-        </div>
-      </div>
-
-      <!-- Purchase Form -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon purple"><i class="fas fa-shopping-cart"></i></div>
-          <div class="card-title">Info</div>
+          <div class="card-icon purple"><i class="fas fa-user"></i></div>
+          <div class="card-title">Your Information</div>
         </div>
 
-        <form id="purchaseForm" onsubmit="return false;">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-input" id="inputName" placeholder="Juan Dela Cruz"
-                   maxlength="40" autocomplete="name" required>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="inputName" placeholder="Juan Dela Cruz"
+                 maxlength="40" autocomplete="name">
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Phone Number</label>
-            <input type="tel" class="form-input" id="inputPhone" placeholder="09171234567"
-                   maxlength="11" autocomplete="tel" required>
-            <div class="form-hint"><i class="fas fa-info-circle"></i> Must start with 09</div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="inputPhone" placeholder="09171234567"
+                 maxlength="11" autocomplete="tel">
+          <div class="form-hint"><i class="fas fa-info-circle"></i> Must start with 09</div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">GCash Reference Number</label>
-            <input type="text" class="form-input" id="inputGcashRef" placeholder="1234567890123"
-                   maxlength="13" required>
-            <div class="form-hint"><i class="fas fa-info-circle"></i> Found in your GCash receipt</div>
+        <div class="form-group">
+          <label class="form-label">Quantity</label>
+          <div class="quantity-control">
+            <button type="button" class="qty-btn" onclick="adjustQty(-100)">−</button>
+            <input type="number" class="form-input qty-input" id="inputQuantity"
+                   min="100" max="10000" value="100">
+            <button type="button" class="qty-btn" onclick="adjustQty(100)">+</button>
           </div>
+          <div class="form-hint" id="qtyHint">
+            <i class="fas fa-info-circle"></i> Min: 100 — Max: 10,000
+          </div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Quantity</label>
-            <div class="quantity-control">
-              <button type="button" class="qty-btn" onclick="adjustQty(-100)">−</button>
-              <input type="number" class="form-input qty-input" id="inputQuantity"
-                     min="100" max="10000" value="100">
-              <button type="button" class="qty-btn" onclick="adjustQty(100)">+</button>
-            </div>
-            <div class="form-hint" id="qtyHint">
-              <i class="fas fa-info-circle"></i> Min: 100 — Max: 10,000
-            </div>
+        <div class="price-summary">
+          <div class="price-row">
+            <span>Price per number</span>
+            <span id="pricePerNumber">₱1.00</span>
           </div>
+          <div class="price-row">
+            <span>Quantity</span>
+            <span id="summaryQty">100</span>
+          </div>
+          <div class="price-total">
+            <span class="label">Total</span>
+            <span class="amount" id="summaryTotal">₱100.00</span>
+          </div>
+        </div>
 
-          <div class="price-summary">
-            <div class="price-row">
-              <span>Price per number</span>
-              <span id="pricePerNumber">₱1.00</span>
-            </div>
-            <div class="price-row">
-              <span>Quantity</span>
-              <span id="summaryQty">100</span>
-            </div>
-            <div class="price-total">
-              <span class="label">Total</span>
-              <span class="amount" id="summaryTotal">₱100.00</span>
-            </div>
-          </div>
-
-          <div style="margin-top:24px;">
-            <button type="button" class="btn btn-primary" id="btnSubmit" onclick="submitPurchase()">
-              <i class="fas fa-paper-plane"></i>
-              <span>Submit Purchase</span>
-            </button>
-          </div>
-        </form>
+        <div style="margin-top:24px;">
+          <button type="button" class="btn btn-primary" onclick="goToStep2()">
+            <span>Continue to Payment</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════
-         STEP 3: RECEIPT
+         STEP 2: PAYMENT INFO
          ═══════════════════════════════════════════════════ -->
-    <div class="section" id="sectionReceipt">
+    <div class="section" id="sectionStep2">
+
+      <div class="steps">
+        <div class="step done" id="s2step1">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Info</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step active" id="s2step2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Pay</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="s2step3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Proof</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="s2step4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Done</div>
+        </div>
+      </div>
+
+      <!-- Amount to Pay -->
+      <div class="payment-amount-banner">
+        <div class="pay-label">Amount to Pay</div>
+        <div class="pay-amount" id="payAmount">₱100.00</div>
+        <div class="pay-qty" id="payQty">for 100 numbers</div>
+      </div>
+
+      <!-- GCash Info Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue"><i class="fas fa-wallet"></i></div>
+          <div class="card-title">Send Payment via GCash</div>
+        </div>
+
+        <div class="gcash-info" style="margin-bottom:0; border:none; padding:0; background:none;">
+          <div class="info-row">
+            <span class="info-label">Account Name</span>
+            <span class="info-value" id="gcashName2">—</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">GCash Number</span>
+            <span class="info-value">
+              <span id="gcashNumber2">—</span>
+              <button class="copy-btn" onclick="copyGcash()" title="Copy" id="copyGcashBtn">
+                <i class="fas fa-copy"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="payment-steps">
+          <div class="payment-step">
+            <div class="payment-step-num">1</div>
+            <div class="payment-step-text">Open your <strong>GCash app</strong> and tap <strong>Send Money</strong></div>
+          </div>
+          <div class="payment-step">
+            <div class="payment-step-num">2</div>
+            <div class="payment-step-text">Enter the <strong>GCash number</strong> above and amount of <strong id="payAmountStep">₱100.00</strong></div>
+          </div>
+          <div class="payment-step">
+            <div class="payment-step-num">3</div>
+            <div class="payment-step-text">Complete the payment and <strong>save the reference number</strong> from your receipt</div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="goToStep1()">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span>
+          </button>
+          <button type="button" class="btn btn-primary" onclick="goToStep3()">
+            <span>I've Paid</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         STEP 3: PROOF OF PAYMENT
+         ═══════════════════════════════════════════════════ -->
+    <div class="section" id="sectionStep3">
+
+      <div class="steps">
+        <div class="step done">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Info</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step done">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Pay</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step active">
+          <div class="step-circle">3</div>
+          <div class="step-label">Proof</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <div class="step-label">Done</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon amber"><i class="fas fa-receipt"></i></div>
+          <div class="card-title">Proof of Payment</div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.6;">
+          Enter the <strong style="color:var(--text-primary)">GCash Reference Number</strong> from your payment receipt to verify your transaction.
+        </p>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">GCash Reference Number</label>
+          <input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234 5678 90123"
+                 maxlength="13" style="font-size:18px; text-align:center; letter-spacing:2px; font-weight:600;">
+          <div class="form-hint"><i class="fas fa-info-circle"></i> 13-digit number found in your GCash receipt</div>
+        </div>
+
+        <!-- Summary -->
+        <div class="price-summary" style="margin-top:24px;">
+          <div class="price-row">
+            <span>Name</span>
+            <span id="step3Name" style="font-weight:600; color:var(--text-primary);">—</span>
+          </div>
+          <div class="price-row">
+            <span>Phone</span>
+            <span id="step3Phone" style="font-weight:600; color:var(--text-primary);">—</span>
+          </div>
+          <div class="price-row">
+            <span>Quantity</span>
+            <span id="step3Qty" style="font-weight:600; color:var(--text-primary);">—</span>
+          </div>
+          <div class="price-total">
+            <span class="label">Amount</span>
+            <span class="amount" id="step3Amount">₱100.00</span>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="goToStep2()">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span>
+          </button>
+          <button type="button" class="btn btn-success" id="btnSubmit" onclick="submitPurchase()">
+            <i class="fas fa-paper-plane"></i>
+            <span>Submit</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         STEP 4: RECEIPT / ENTRIES SUBMITTED
+         ═══════════════════════════════════════════════════ -->
+    <div class="section" id="sectionStep4">
+
+      <div class="steps">
+        <div class="step done">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Info</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step done">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Pay</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step done">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Proof</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step active">
+          <div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div>
+          <div class="step-label">Done</div>
+        </div>
+      </div>
+
       <div class="receipt-card">
         <div class="receipt-header">
           <div class="check-circle"><i class="fas fa-check"></i></div>
-          <h3>Purchase Submitted!</h3>
+          <h3>Entries Submitted!</h3>
           <p>Your entry is being reviewed</p>
         </div>
         <div class="receipt-body">
           <div class="receipt-row">
             <span class="r-label">Transaction ID</span>
-            <span class="r-value txid" id="receiptTxId">—</span>
+            <span class="r-value txid">
+              <span id="receiptTxId">—</span>
+              <button class="copy-btn-sm" onclick="copyReceiptField('receiptTxId', this)" title="Copy">
+                <i class="fas fa-copy"></i>
+              </button>
+            </span>
           </div>
           <div class="receipt-row">
             <span class="r-label">Name</span>
@@ -774,8 +1121,13 @@
             <span class="r-value" id="receiptPhone">—</span>
           </div>
           <div class="receipt-row">
-            <span class="r-label">GCash Ref</span>
-            <span class="r-value" id="receiptGcashRef">—</span>
+            <span class="r-label">GCash Ref#</span>
+            <span class="r-value ref">
+              <span id="receiptGcashRef">—</span>
+              <button class="copy-btn-sm" onclick="copyReceiptField('receiptGcashRef', this)" title="Copy">
+                <i class="fas fa-copy"></i>
+              </button>
+            </span>
           </div>
           <div class="receipt-row">
             <span class="r-label">Quantity</span>
@@ -802,11 +1154,11 @@
           <i class="fas fa-info-circle"></i>
           <p>Your numbers have been reserved and will be confirmed once payment is verified.
              Please save your <strong>Transaction ID</strong> for reference.
-             Numbers will <strong>not</strong> be displayed for security — they are safely stored in the system.</p>
+             Numbers are <strong>securely stored</strong> in the system.</p>
         </div>
       </div>
 
-      <button class="btn btn-secondary" onclick="resetForm()" style="margin-bottom:12px;">
+      <button class="btn btn-primary" onclick="resetForm()" style="margin-bottom:12px;">
         <i class="fas fa-plus-circle"></i>
         <span>New Purchase</span>
       </button>
@@ -824,9 +1176,7 @@
       </a>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════
-         ADMIN LOGIN SECTION
-         ═══════════════════════════════════════════════════ -->
+    <!-- Admin Login -->
     <div class="section admin-section" id="sectionAdmin">
       <div class="card">
         <div class="card-header">
@@ -861,38 +1211,30 @@
     // ═══════════════════════════════════════════════════════
     // ▶▶▶ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW ◀◀◀
     // ═══════════════════════════════════════════════════════
-    // After deploying your Google Apps Script as a web app,
-    // copy the URL and paste it between the quotes below.
-    //
-    // Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
+    const WEB_APP_URL = 'YOUR_WEB_APP_URL_HERE';
     // ═══════════════════════════════════════════════════════
 
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwNc8qJr-8LPZ--PAbNUpwyho_Rpr0LambNTMVe_YpvVSbS8HpaH3KWJdajZwZBtxR1/exec';
-
-    // ═══════════════════════════════════════════════════════
-
-    // ─── Config ───
     const API_BASE = WEB_APP_URL;
     let appSettings = {};
     let isSubmitting = false;
 
+    // Stored form data across steps
+    let formData = { name: '', phone: '', quantity: 100, gcashRef: '' };
+
     // ─── Init ───
     document.addEventListener('DOMContentLoaded', function() {
-      // Check if URL has been configured
-      if (API_BASE === 'YOUR_WEB_APP_URL_HERE' || !API_BASE) {
-        showToast('⚠️ Web App URL not configured. Please set WEB_APP_URL in the script.', 'error');
-        console.error('PISO PALARO: Please set the WEB_APP_URL constant to your Google Apps Script web app URL.');
+      if (API_BASE === 'https://script.google.com/macros/s/AKfycbwNc8qJr-8LPZ--PAbNUpwyho_Rpr0LambNTMVe_YpvVSbS8HpaH3KWJdajZwZBtxR1/exec' || !API_BASE) {
+        showToast('⚠️ Web App URL not configured. Set WEB_APP_URL in the script.', 'error');
+        console.error('PISO PALARO: Please set the WEB_APP_URL constant.');
         return;
       }
-
       loadPublicSettings();
       loadStats();
       setupQuantityListener();
-      // Auto-refresh stats every 30s
       setInterval(loadStats, 30000);
     });
 
-    // ─── API Helper ───
+    // ─── API ───
     async function apiCall(action, params = {}) {
       params.action = action;
       const url = API_BASE + '?' + new URLSearchParams(params).toString();
@@ -922,64 +1264,50 @@
       }
     }
 
-    // ─── Load Settings ───
+    // ─── Settings ───
     async function loadPublicSettings() {
       const res = await apiCall('publicSettings');
       if (!res.success) return;
-
       appSettings = res;
 
-      // Title
       document.getElementById('appTitle').textContent = res.lottery_name || 'PISO PALARO';
       document.title = res.lottery_name || 'PISO PALARO';
 
-      // GCash
-      document.getElementById('gcashName').textContent = res.gcash_name || '—';
-      document.getElementById('gcashNumber').textContent = res.gcash_number || '—';
+      // GCash info (Step 2)
+      document.getElementById('gcashName2').textContent = res.gcash_name || '—';
+      document.getElementById('gcashNumber2').textContent = res.gcash_number || '—';
 
-      // Price
       const price = res.price_per_number || 1;
       document.getElementById('pricePerNumber').textContent = '₱' + price.toFixed(2);
 
-      // Quantity limits
       const minQ = res.min_quantity || 100;
       const maxQ = res.max_quantity || 10000;
       const qtyInput = document.getElementById('inputQuantity');
-      qtyInput.min = minQ;
-      qtyInput.max = maxQ;
-      qtyInput.value = minQ;
+      qtyInput.min = minQ; qtyInput.max = maxQ; qtyInput.value = minQ;
       document.getElementById('qtyHint').innerHTML =
         '<i class="fas fa-info-circle"></i> Min: ' + formatNum(minQ) + ' — Max: ' + formatNum(maxQ);
-
       updatePriceSummary();
 
-      // Draw date
       if (res.draw_date) {
         document.getElementById('drawDateText').textContent = res.draw_date;
         document.getElementById('drawDateBanner').classList.add('visible');
       }
-
-      // Announcement
       if (res.announcement) {
         document.getElementById('announcementText').textContent = res.announcement;
         document.getElementById('announcementBanner').classList.add('visible');
       }
-
-      // Maintenance
       if (res.maintenance_mode) {
         document.getElementById('maintenanceOverlay').classList.add('active');
       }
     }
 
-    // ─── Load Stats ───
+    // ─── Stats ───
     async function loadStats() {
       const res = await apiCall('stats');
       if (!res.success) return;
-
       animateCounter('statSold', res.sold);
       animateCounter('statRemaining', res.remaining);
       animateCounter('statTotal', res.total);
-
       const pct = res.total > 0 ? ((res.sold / res.total) * 100) : 0;
       document.getElementById('progressFill').style.width = pct.toFixed(1) + '%';
       document.getElementById('progressPercent').textContent = pct.toFixed(1) + '%';
@@ -989,28 +1317,18 @@
       const el = document.getElementById(id);
       const current = parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0;
       if (current === target) { el.textContent = formatNum(target); return; }
-
-      const diff = target - current;
-      const steps = 30;
-      const increment = diff / steps;
+      const diff = target - current; const steps = 30; const increment = diff / steps;
       let step = 0;
-
       const interval = setInterval(() => {
         step++;
-        const val = Math.round(current + increment * step);
-        el.textContent = formatNum(val);
-        if (step >= steps) {
-          clearInterval(interval);
-          el.textContent = formatNum(target);
-        }
+        el.textContent = formatNum(Math.round(current + increment * step));
+        if (step >= steps) { clearInterval(interval); el.textContent = formatNum(target); }
       }, 20);
     }
 
-    function formatNum(n) {
-      return Number(n).toLocaleString();
-    }
+    function formatNum(n) { return Number(n).toLocaleString(); }
 
-    // ─── Quantity Controls ───
+    // ─── Quantity ───
     function setupQuantityListener() {
       document.getElementById('inputQuantity').addEventListener('input', updatePriceSummary);
     }
@@ -1027,84 +1345,133 @@
 
     function updatePriceSummary() {
       const qty = parseInt(document.getElementById('inputQuantity').value) || 0;
-      const price = (appSettings.price_per_number || 1);
+      const price = appSettings.price_per_number || 1;
       const total = qty * price;
-
       document.getElementById('summaryQty').textContent = formatNum(qty);
       document.getElementById('summaryTotal').textContent = '₱' + formatNum(total) + '.00';
     }
 
-    // ─── Copy to Clipboard ───
-    function copyToClipboard(elementId) {
+    // ─── Navigation ───
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Step 1 → Step 2
+    function goToStep2() {
+      const name = document.getElementById('inputName').value.trim();
+      const phone = document.getElementById('inputPhone').value.trim();
+      const quantity = parseInt(document.getElementById('inputQuantity').value);
+
+      let errors = [];
+      if (!name || name.length < 2) errors.push('Please enter your full name');
+      if (!/^09\d{9}$/.test(phone)) errors.push('Phone must be 11 digits starting with 09');
+      const minQ = appSettings.min_quantity || 100;
+      const maxQ = appSettings.max_quantity || 10000;
+      if (!quantity || quantity < minQ || quantity > maxQ)
+        errors.push('Quantity must be between ' + formatNum(minQ) + ' and ' + formatNum(maxQ));
+
+      if (errors.length > 0) { errors.forEach(e => showToast(e, 'error')); return; }
+
+      // Save
+      formData.name = name;
+      formData.phone = phone;
+      formData.quantity = quantity;
+
+      const price = appSettings.price_per_number || 1;
+      const total = quantity * price;
+
+      // Update Step 2 display
+      document.getElementById('payAmount').textContent = '₱' + formatNum(total) + '.00';
+      document.getElementById('payQty').textContent = 'for ' + formatNum(quantity) + ' numbers';
+      document.getElementById('payAmountStep').textContent = '₱' + formatNum(total) + '.00';
+
+      showSection('sectionStep2');
+    }
+
+    // Step 2 → Step 1
+    function goToStep1() {
+      showSection('sectionStep1');
+    }
+
+    // Step 2 → Step 3
+    function goToStep3() {
+      const price = appSettings.price_per_number || 1;
+      const total = formData.quantity * price;
+
+      document.getElementById('step3Name').textContent = formData.name;
+      document.getElementById('step3Phone').textContent = formData.phone;
+      document.getElementById('step3Qty').textContent = formatNum(formData.quantity) + ' numbers';
+      document.getElementById('step3Amount').textContent = '₱' + formatNum(total) + '.00';
+
+      showSection('sectionStep3');
+      // Focus the reference input
+      setTimeout(() => document.getElementById('inputGcashRef').focus(), 400);
+    }
+
+    // ─── Copy GCash Number ───
+    function copyGcash() {
+      const text = document.getElementById('gcashNumber2').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyGcashBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        showToast('GCash number copied!', 'success');
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+      }).catch(() => showToast('Could not copy', 'error'));
+    }
+
+    // ─── Copy Receipt Fields ───
+    function copyReceiptField(elementId, btn) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector(`[onclick="copyToClipboard('${elementId}')"]`);
         btn.classList.add('copied');
         btn.innerHTML = '<i class="fas fa-check"></i>';
         showToast('Copied to clipboard!', 'success');
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = '<i class="fas fa-copy"></i>';
-        }, 2000);
-      }).catch(() => {
-        showToast('Could not copy', 'error');
-      });
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+      }).catch(() => showToast('Could not copy', 'error'));
     }
 
     // ─── Submit Purchase ───
     async function submitPurchase() {
       if (isSubmitting) return;
 
-      // Validate
-      const name = document.getElementById('inputName').value.trim();
-      const phone = document.getElementById('inputPhone').value.trim();
       const gcashRef = document.getElementById('inputGcashRef').value.trim();
-      const quantity = parseInt(document.getElementById('inputQuantity').value);
 
-      let errors = [];
-
-      if (!name || name.length < 2) errors.push('Please enter your full name');
-      if (!/^09\d{9}$/.test(phone)) errors.push('Phone must be 11 digits starting with 09');
-      if (!gcashRef || !/^\d{1,13}$/.test(gcashRef)) errors.push('Enter a valid GCash reference number');
-
-      const minQ = appSettings.min_quantity || 100;
-      const maxQ = appSettings.max_quantity || 10000;
-      if (!quantity || quantity < minQ || quantity > maxQ) {
-        errors.push('Quantity must be between ' + formatNum(minQ) + ' and ' + formatNum(maxQ));
-      }
-
-      if (errors.length > 0) {
-        errors.forEach(e => showToast(e, 'error'));
+      if (!gcashRef || !/^\d{1,13}$/.test(gcashRef)) {
+        showToast('Enter a valid GCash reference number', 'error');
         return;
       }
 
-      // Confirm
-      const total = quantity * (appSettings.price_per_number || 1);
-      if (!confirm(
-        'Confirm Purchase\n\n' +
-        'Name: ' + name + '\n' +
-        'Phone: ' + phone + '\n' +
-        'GCash Ref: ' + gcashRef + '\n' +
-        'Quantity: ' + formatNum(quantity) + ' numbers\n' +
-        'Total: ₱' + formatNum(total) + '.00\n\n' +
-        'Proceed?'
-      )) return;
+      formData.gcashRef = gcashRef;
 
-      // Submit
+      const price = appSettings.price_per_number || 1;
+      const total = formData.quantity * price;
+
+      // Show generating overlay
       isSubmitting = true;
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
+      btn.innerHTML = '<div class="spinner"></div><span>Submitting...</span>';
 
+      showGeneratingOverlay();
+
+      // Actual API call
       const res = await apiPost('purchase', {
-        name: name,
-        phone: phone,
-        gcashRef: gcashRef,
-        quantity: quantity
+        name: formData.name,
+        phone: formData.phone,
+        gcashRef: formData.gcashRef,
+        quantity: formData.quantity
       });
 
+      // Let animation finish (minimum 3.5s)
+      await waitForGenerating();
+
+      hideGeneratingOverlay();
+
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Submit Purchase</span>';
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Submit</span>';
       isSubmitting = false;
 
       if (!res.success) {
@@ -1112,56 +1479,146 @@
         return;
       }
 
-      // Show receipt
+      // Fill receipt
       document.getElementById('receiptTxId').textContent = res.transactionId;
-      document.getElementById('receiptName').textContent = name;
-      document.getElementById('receiptPhone').textContent = phone;
-      document.getElementById('receiptGcashRef').textContent = gcashRef;
+      document.getElementById('receiptName').textContent = formData.name;
+      document.getElementById('receiptPhone').textContent = formData.phone;
+      document.getElementById('receiptGcashRef').textContent = formData.gcashRef;
       document.getElementById('receiptQty').textContent = formatNum(res.quantity) + ' numbers';
       document.getElementById('receiptAmount').textContent = '₱' + formatNum(res.amount) + '.00';
       document.getElementById('receiptDate').textContent = res.timestamp;
 
-      // Switch to receipt
-      showSection('sectionReceipt');
-      updateStepIndicator(3);
-      showToast('Purchase submitted successfully!', 'success');
+      // Show Step 4
+      showSection('sectionStep4');
 
-      // Refresh stats
+      // Confetti!
+      launchConfetti();
+
+      showToast('Entries submitted successfully! 🎉', 'success');
       loadStats();
     }
 
-    // ─── Section Navigation ───
-    function showSection(sectionId) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // ─── Generating Numbers Overlay ───
+    let genStartTime = 0;
+
+    function showGeneratingOverlay() {
+      genStartTime = Date.now();
+      const overlay = document.getElementById('generatingOverlay');
+      const numContainer = document.getElementById('genNumbers');
+      const progressFill = document.getElementById('genProgressFill');
+      const status = document.getElementById('genStatus');
+
+      numContainer.innerHTML = '';
+      progressFill.style.width = '0%';
+      status.textContent = 'Initializing...';
+      overlay.classList.add('active');
+
+      // Animate random numbers appearing
+      const statuses = [
+        'Connecting to server...',
+        'Verifying payment...',
+        'Generating random numbers...',
+        'Assigning your entries...',
+        'Securing your numbers...',
+        'Almost done...'
+      ];
+
+      let statusIndex = 0;
+      let numCount = 0;
+      const maxNums = 8;
+
+      const numInterval = setInterval(() => {
+        if (numCount >= maxNums) { clearInterval(numInterval); return; }
+
+        const num = document.createElement('div');
+        num.className = 'gen-num';
+        num.textContent = Math.floor(Math.random() * 90 + 10);
+        numContainer.appendChild(num);
+        numCount++;
+      }, 400);
+
+      const statusInterval = setInterval(() => {
+        if (statusIndex >= statuses.length) { clearInterval(statusInterval); return; }
+        status.textContent = statuses[statusIndex];
+        statusIndex++;
+      }, 600);
+
+      // Progress bar animation
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = progress + '%';
+        if (progress >= 90) clearInterval(progressInterval);
+      }, 500);
+
+      // Store intervals for cleanup
+      overlay._intervals = [numInterval, statusInterval, progressInterval];
     }
 
-    function updateStepIndicator(currentStep) {
-      for (let i = 1; i <= 3; i++) {
-        const step = document.getElementById('step' + i);
-        step.classList.remove('active', 'done');
-        if (i < currentStep) step.classList.add('done');
-        else if (i === currentStep) step.classList.add('active');
-      }
-      for (let i = 1; i <= 2; i++) {
-        const line = document.getElementById('stepLine' + i);
-        if (i < currentStep) line.classList.add('done');
-        else line.classList.remove('done');
-      }
+    function waitForGenerating() {
+      return new Promise(resolve => {
+        const elapsed = Date.now() - genStartTime;
+        const minTime = 3500; // minimum 3.5 seconds
+        const remaining = Math.max(0, minTime - elapsed);
+        setTimeout(resolve, remaining);
+      });
     }
 
+    function hideGeneratingOverlay() {
+      const overlay = document.getElementById('generatingOverlay');
+      const progressFill = document.getElementById('genProgressFill');
+      const status = document.getElementById('genStatus');
+
+      // Complete the progress
+      progressFill.style.width = '100%';
+      status.textContent = 'Complete! ✓';
+
+      // Clean up intervals
+      if (overlay._intervals) {
+        overlay._intervals.forEach(i => clearInterval(i));
+      }
+
+      setTimeout(() => {
+        overlay.classList.remove('active');
+      }, 500);
+    }
+
+    // ─── Confetti ───
+    function launchConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#6C3CE1', '#8B5CF6', '#F59E0B', '#10B981', '#EF4444', '#60A5FA', '#F472B6', '#34D399'];
+      const count = 80;
+
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = (Math.random() * 8 + 6) + 'px';
+        confetti.style.height = (Math.random() * 8 + 6) + 'px';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.animationDelay = (Math.random() * 1.5) + 's';
+        if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
+        container.appendChild(confetti);
+      }
+
+      // Clean up after animation
+      setTimeout(() => { container.innerHTML = ''; }, 5000);
+    }
+
+    // ─── Reset ───
     function resetForm() {
       document.getElementById('inputName').value = '';
       document.getElementById('inputPhone').value = '';
       document.getElementById('inputGcashRef').value = '';
       document.getElementById('inputQuantity').value = appSettings.min_quantity || 100;
+      formData = { name: '', phone: '', quantity: appSettings.min_quantity || 100, gcashRef: '' };
       updatePriceSummary();
-      updateStepIndicator(1);
-      showSection('sectionBuyerInfo');
+      showSection('sectionStep1');
     }
 
-    // ─── Admin Login ───
+    // ─── Admin ───
     function showAdminLogin() {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById('sectionAdmin').classList.add('active');
@@ -1169,18 +1626,13 @@
     }
 
     function hideAdminLogin() {
-      showSection('sectionBuyerInfo');
-      updateStepIndicator(1);
+      showSection('sectionStep1');
     }
 
     async function adminLogin() {
       const username = document.getElementById('adminUsername').value.trim();
       const password = document.getElementById('adminPassword').value;
-
-      if (!username || !password) {
-        showToast('Please enter credentials', 'error');
-        return;
-      }
+      if (!username || !password) { showToast('Please enter credentials', 'error'); return; }
 
       const btn = document.getElementById('btnAdminLogin');
       btn.disabled = true;
@@ -1191,36 +1643,24 @@
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Login</span>';
 
-      if (!res.success) {
-        showToast(res.error || 'Login failed', 'error');
-        return;
-      }
+      if (!res.success) { showToast(res.error || 'Login failed', 'error'); return; }
 
-      // Store token and show success
       sessionStorage.setItem('adminToken', res.token);
-      showToast('Login successful! Admin functions available via Google Sheets.', 'success');
-
-      // Clear password field
+      showToast('Login successful!', 'success');
       document.getElementById('adminPassword').value = '';
     }
 
-    // ─── Toast Notifications ───
+    // ─── Toast ───
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = 'toast ' + type;
-
       let icon = 'fa-info-circle';
       if (type === 'success') icon = 'fa-check-circle';
       else if (type === 'error') icon = 'fa-exclamation-circle';
-
       toast.innerHTML = '<i class="fas ' + icon + '"></i><span class="msg">' + escapeHtml(message) + '</span>';
       container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add('removing');
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
+      setTimeout(() => { toast.classList.add('removing'); setTimeout(() => toast.remove(), 300); }, 4000);
     }
 
     function escapeHtml(str) {
@@ -1230,4 +1670,4 @@
     }
   </script>
 </body>
-</html>
+</html> 
