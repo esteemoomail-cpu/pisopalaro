@@ -333,7 +333,6 @@
       <div class="gen-icon-wrapper"><i class="fas fa-dice"></i></div>
       <div class="gen-title">Generating Your Numbers</div>
       <div class="gen-subtitle">Please wait while we assign your lucky numbers...</div>
-      <div class="gen-numbers" id="genNumbers"></div>
       <div class="gen-progress"><div class="gen-progress-fill" id="genProgressFill"></div></div>
       <div class="gen-status" id="genStatus">Initializing...</div>
     </div>
@@ -857,33 +856,57 @@
     }
 
     async function submitPurchase() {
-      if(isSubmitting) return;
-      const ref=document.getElementById('inputGcashRef').value.trim();
-      if(!/^\d{13}$/.test(ref)){showToast('GCash ref must be exactly 13 digits','error');return;}
-      if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Go back.','error');return;}
-      formData.gcashRef=ref;
-      isSubmitting=true;
-      const btn=document.getElementById('btnSubmit');
-      btn.disabled=true; btn.innerHTML='<div class="spinner"></div><span>Submitting...</span>';
-      showGenOverlay();
-      const res=await apiPost('purchase',{name:formData.name,phone:formData.phone,gcashRef:formData.gcashRef,quantity:formData.quantity});
-      await waitGen(); hideGenOverlay();
-      btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';
-      isSubmitting=false;
-      if(!res.success){showToast(res.error||'Failed','error');return;}
+  if(isSubmitting) return;
+  var ref=document.getElementById('inputGcashRef').value.trim();
+  if(!/^\d{13}$/.test(ref)){showToast('GCash ref must be exactly 13 digits','error');return;}
+  if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Go back.','error');return;}
+  formData.gcashRef=ref;
+  isSubmitting=true;
+  var btn=document.getElementById('btnSubmit');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
 
-      document.getElementById('receiptName').textContent=censorName(formData.name);
-      document.getElementById('receiptPhone').textContent=censorPhone(formData.phone);
-      document.getElementById('receiptAmount').textContent='₱'+fmtN(res.amount)+'.00';
-      document.getElementById('receiptDate').textContent=res.timestamp;
-      document.getElementById('receiptTxId').textContent=res.transactionId;
-      document.getElementById('receiptGcashRef').textContent=formData.gcashRef;
-      showSection('sectionStep4');
-      launchConfetti();
-      showToast('Entries submitted! 🎉','success');
-      loadStats();
+  // Pre-check: verify GCash ref is not already used before proceeding
+  var checkRes = await apiPost('purchase', {
+    name: formData.name,
+    phone: formData.phone,
+    gcashRef: formData.gcashRef,
+    quantity: formData.quantity
+  });
+
+  // If GCash ref already used, stop immediately — no overlay
+  if (!checkRes.success) {
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';
+    isSubmitting=false;
+    showToast(checkRes.error||'Failed','error');
+    // Clear the ref field so user can enter a new one
+    if (checkRes.error && checkRes.error.toLowerCase().indexOf('gcash') !== -1) {
+      document.getElementById('inputGcashRef').value='';
+      document.getElementById('inputGcashRef').classList.add('error');
+      setTimeout(function(){ document.getElementById('inputGcashRef').classList.remove('error'); }, 3000);
+      document.getElementById('inputGcashRef').focus();
     }
+    return;
+  }
 
+  // Success — show overlay briefly for UX
+  showGenOverlay();
+  await waitGen(); 
+  hideGenOverlay();
+
+  btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';
+  isSubmitting=false;
+
+  document.getElementById('receiptName').textContent=censorName(formData.name);
+  document.getElementById('receiptPhone').textContent=censorPhone(formData.phone);
+  document.getElementById('receiptAmount').textContent='₱'+fmtN(checkRes.amount)+'.00';
+  document.getElementById('receiptDate').textContent=checkRes.timestamp;
+  document.getElementById('receiptTxId').textContent=checkRes.transactionId;
+  document.getElementById('receiptGcashRef').textContent=formData.gcashRef;
+  showSection('sectionStep4');
+  launchConfetti();
+  showToast('Entries submitted! 🎉','success');
+  loadStats();
+}
     function resetForm() {
       document.getElementById('inputName').value='';
       document.getElementById('inputPhone').value='';
@@ -895,20 +918,19 @@
 
     // ═══ GENERATING OVERLAY ═══
     let genStart=0;
-    function showGenOverlay() {
-      genStart=Date.now(); const o=document.getElementById('generatingOverlay');
-      document.getElementById('genNumbers').innerHTML='';
-      document.getElementById('genProgressFill').style.width='0%';
-      document.getElementById('genStatus').textContent='Initializing...';
-      o.classList.add('active');
-      const msgs=['Connecting...','Verifying payment...','Generating numbers...','Assigning entries...','Securing numbers...','Almost done...'];
-      let mi=0,ni=0;
-      const nIv=setInterval(()=>{if(ni>=8){clearInterval(nIv);return;}const d=document.createElement('div');d.className='gen-num';d.textContent=String(Math.floor(Math.random()*20000)).padStart(5,'0');document.getElementById('genNumbers').appendChild(d);ni++;},400);
-      const sIv=setInterval(()=>{if(mi>=msgs.length){clearInterval(sIv);return;}document.getElementById('genStatus').textContent=msgs[mi++];},600);
-      let p=0;
-      const pIv=setInterval(()=>{p+=Math.random()*15+5;if(p>90)p=90;document.getElementById('genProgressFill').style.width=p+'%';if(p>=90)clearInterval(pIv);},500);
-      o._iv=[nIv,sIv,pIv];
-    }
+function showGenOverlay() {
+  genStart=Date.now(); 
+  var o=document.getElementById('generatingOverlay');
+  document.getElementById('genProgressFill').style.width='0%';
+  document.getElementById('genStatus').textContent='Initializing...';
+  o.classList.add('active');
+  var msgs=['Connecting...','Verifying payment...','Generating numbers...','Assigning entries...','Securing numbers...','Almost done...'];
+  var mi=0;
+  var sIv=setInterval(function(){if(mi>=msgs.length){clearInterval(sIv);return;}document.getElementById('genStatus').textContent=msgs[mi++];},600);
+  var p=0;
+  var pIv=setInterval(function(){p+=Math.random()*15+5;if(p>90)p=90;document.getElementById('genProgressFill').style.width=p+'%';if(p>=90)clearInterval(pIv);},500);
+  o._iv=[sIv,pIv];
+}
     function waitGen(){return new Promise(r=>setTimeout(r,Math.max(0,3500-(Date.now()-genStart))));}
     function hideGenOverlay(){const o=document.getElementById('generatingOverlay');document.getElementById('genProgressFill').style.width='100%';document.getElementById('genStatus').textContent='Complete! ✓';if(o._iv)o._iv.forEach(i=>clearInterval(i));setTimeout(()=>o.classList.remove('active'),500);}
 
