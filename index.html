@@ -641,7 +641,7 @@
 
     async function saveSettings(){var btn=document.getElementById('btnSaveSettings');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Saving...</span>';var data={lottery_name:document.getElementById('setLotteryName').value,draw_date:document.getElementById('setDrawDate').value,announcement:document.getElementById('setAnnouncement').value,price_per_number:document.getElementById('setPricePerNumber').value,min_quantity:document.getElementById('setMinQuantity').value,max_quantity:document.getElementById('setMaxQuantity').value,gcash_name:document.getElementById('setGcashName').value,gcash_number:document.getElementById('setGcashNumber').value,maintenance_mode:document.getElementById('setMaintenance').checked?'true':'false'};var pw=document.getElementById('setNewPassword').value;if(pw)data.new_password=pw;var r=await apiPost('adminUpdateSettings',data);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i><span>Save Settings</span>';showToast(r.success?'Settings saved!':(r.error||'Failed'),r.success?'success':'error');}
 
-    /* ═══════════════════════════════════════════════════════════
+        /* ═══════════════════════════════════════════════════════════
        DRAW WINNER SYSTEM
        ═══════════════════════════════════════════════════════════ */
 
@@ -694,10 +694,14 @@
       await delay(2000); // Initial spin time
 
       for(var k=0;k<5;k++){
+        document.getElementById('drawStatus').textContent='Revealing digit '+(k+1)+' of 5...';
         await revealDigit(k,digits[k]);
         if(k<4){
-          document.getElementById('drawStatus').textContent='Revealing digit '+(k+2)+' of 5...';
-          await delay(5000);
+          // Countdown between digits
+          for(var cd=5;cd>0;cd--){
+            document.getElementById('drawStatus').textContent='Next digit in '+cd+'s...';
+            await delay(1000);
+          }
         }
       }
 
@@ -793,20 +797,41 @@
     }
 
     function renderDrawHistory(){
-      var list=document.getElementById('drawHistoryList');
+      var container=document.getElementById('drawHistoryList');
       var empty=document.getElementById('drawHistoryEmpty');
+
       if(drawHistory.length===0){
-        list.innerHTML = html;
-        list.appendChild(empty);
+        container.innerHTML='';
+        container.appendChild(empty);
         empty.style.display='';
         return;
       }
+
       empty.style.display='none';
+
       var html='';
-      drawHistory.forEach(function(d){
-        html+='<div class="draw-history-item"><div class="draw-history-left"><div class="draw-history-num">'+esc(d.number)+'</div><div><div class="draw-history-name">'+esc(d.name)+'</div><div class="draw-history-date">'+esc(d.timestamp)+'</div></div></div><div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</div></div>';
-      });
-      list.innerHTML=html;
+      for(var i=0;i<drawHistory.length;i++){
+        var d=drawHistory[i];
+        var drawNum=drawHistory.length-i;
+        html+='<div class="draw-history-item">'
+          +'<div class="draw-history-left">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--secondary);flex-shrink:0;">#'+drawNum+'</div>'
+            +'<div>'
+              +'<div class="draw-history-num">'+esc(d.number)+'</div>'
+              +'<div class="draw-history-name">'+esc(d.name)+'</div>'
+              +'<div class="draw-history-date">'+esc(d.timestamp)+'</div>'
+            +'</div>'
+          +'</div>'
+          +'<div style="text-align:right;">'
+            +'<div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</div>'
+            +'<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">'+esc(d.phone)+'</div>'
+          +'</div>'
+        +'</div>';
+      }
+
+      // Keep the empty div in DOM but hidden, put history before it
+      container.innerHTML=html;
+      container.appendChild(empty);
     }
 
     function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
