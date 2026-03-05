@@ -443,7 +443,7 @@
         <!-- Draw Winner Tab -->
         <div class="admin-tab" id="tabDraw" style="display:none;">
           <div class="card">
-            <div class="card-header"><div class="card-icon amber"><i class="fas fa-trophy"></i></div><div class="card-title">Winner Drawing</div></div>
+            <div class="card-header"><div class="card-icon amber"><i class="fas fa-trophy"></i></div><div class="card-title">Draw a Winner</div></div>
             <div class="draw-stage" id="drawStage">
               <div class="draw-title-text" id="drawTitleText">Ready to Draw</div>
               <div class="slot-container" id="slotContainer">
@@ -527,47 +527,80 @@
     var drawHistory=[];
     var isDrawing=false;
 
+    /* ═══ UTILITIES ═══ */
+    function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
+
     function censorName(name){if(!name)return'—';var parts=name.trim().split(/\s+/);if(parts.length===1)return parts[0].charAt(0)+'*'.repeat(Math.max(0,parts[0].length-1));return parts.map(function(p,i){return i===0?p:p.charAt(0)+'*'.repeat(Math.max(0,p.length-1));}).join(' ');}
     function censorPhone(phone){if(!phone||phone.length<4)return'****';return'*'.repeat(phone.length-4)+phone.slice(-4);}
+    function fmtN(n){return Number(n).toLocaleString();}
+    function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
 
-    document.addEventListener('DOMContentLoaded',function(){if(!API||API==='YOUR_WEB_APP_URL_HERE'){showToast('URL not configured','error');return;}var hash=window.location.hash.replace('#','');if(hash===ADMIN_SECRET)showAdminPanel();else showPublicView();});
+    function statusBadge(s){s=(s||'').toUpperCase();if(s==='APPROVED')return'<span class="status-badge approved"><i class="fas fa-check-circle"></i> Approved</span>';if(s==='DECLINED')return'<span class="status-badge declined"><i class="fas fa-times-circle"></i> Declined</span>';return'<span class="status-badge pending"><i class="fas fa-clock"></i> Pending</span>';}
+
+    function showToast(msg,type){type=type||'info';var c=document.getElementById('toastContainer');var t=document.createElement('div');t.className='toast '+type;var icon=type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle';t.innerHTML='<i class="fas '+icon+'"></i><span class="msg">'+esc(msg)+'</span>';c.appendChild(t);setTimeout(function(){t.classList.add('removing');setTimeout(function(){t.remove();},300);},4000);}
+
+    /* ═══ API ═══ */
+    async function apiGet(action,params){
+      params=params||{};
+      params.action=action;
+      if(adminToken)params.token=adminToken;
+      try{
+        var url=API+'?'+new URLSearchParams(params).toString();
+        console.log('[apiGet]',action,url);
+        var r=await fetch(url);
+        var d=await r.json();
+        console.log('[apiGet response]',action,d);
+        if(d.authFailed){handleAuthFailed();return{success:false};}
+        return d;
+      }catch(e){
+        console.error('[apiGet error]',action,e);
+        return{success:false,error:'Connection failed: '+e.message};
+      }
+    }
+
+    async function apiPost(action,data){
+      data=data||{};
+      data.action=action;
+      if(adminToken)data.token=adminToken;
+      try{
+        console.log('[apiPost]',action,data);
+        var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});
+        var d=await r.json();
+        console.log('[apiPost response]',action,d);
+        if(d.authFailed){handleAuthFailed();return{success:false};}
+        return d;
+      }catch(e){
+        console.error('[apiPost error]',action,e);
+        return{success:false,error:'Connection failed: '+e.message};
+      }
+    }
+
+    function handleAuthFailed(){adminToken=null;sessionStorage.removeItem('adminToken');showToast('Session expired','error');showAdminSection('adminLoginSection');}
+
+    /* ═══ INIT ═══ */
+    document.addEventListener('DOMContentLoaded',function(){
+      if(!API||API==='YOUR_WEB_APP_URL_HERE'){showToast('URL not configured','error');return;}
+      var hash=window.location.hash.replace('#','');
+      if(hash===ADMIN_SECRET)showAdminPanel();
+      else showPublicView();
+    });
     window.addEventListener('hashchange',function(){var hash=window.location.hash.replace('#','');if(hash===ADMIN_SECRET)showAdminPanel();else showPublicView();});
 
     function showPublicView(){document.getElementById('publicView').style.display='';document.getElementById('adminView').style.display='none';document.getElementById('appContainer').classList.remove('admin-mode');loadPublicSettings();loadStats();setupListeners();}
     function showAdminPanel(){document.getElementById('publicView').style.display='none';document.getElementById('adminView').style.display='';document.getElementById('appContainer').classList.add('admin-mode');document.getElementById('mainSiteLink').href=window.location.href.split('#')[0];adminToken=sessionStorage.getItem('adminToken');if(adminToken)checkAdminSession();else showAdminSection('adminLoginSection');}
 
-    async function apiGet(action,params){params=params||{};params.action=action;if(adminToken)params.token=adminToken;try{var r=await fetch(API+'?'+new URLSearchParams(params));var d=await r.json();if(d.authFailed){handleAuthFailed();return{success:false};}return d;}catch(e){return{success:false,error:'Connection failed'};}}
-    async function apiPost(action,data){data=data||{};data.action=action;if(adminToken)data.token=adminToken;try{var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});var d=await r.json();if(d.authFailed){handleAuthFailed();return{success:false};}return d;}catch(e){return{success:false,error:'Connection failed'};}}
-    function handleAuthFailed(){adminToken=null;sessionStorage.removeItem('adminToken');showToast('Session expired','error');showAdminSection('adminLoginSection');}
-
     var listenersReady=false;
     function setupListeners(){if(listenersReady)return;listenersReady=true;document.getElementById('inputQuantity').addEventListener('input',updatePriceSummary);document.getElementById('inputQuantity').addEventListener('blur',function(){var min=parseInt(this.min)||100,max=parseInt(this.max)||10000;var v=Math.round((parseInt(this.value)||min)/min)*min;this.value=Math.min(max,Math.max(min,v));updatePriceSummary();});document.getElementById('inputGcashRef').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').substring(0,13);});setInterval(loadStats,30000);}
 
+    /* ═══ PUBLIC ═══ */
     async function loadPublicSettings(){var r=await apiGet('publicSettings');if(!r.success)return;appSettings=r;document.getElementById('appTitle').textContent=r.lottery_name||'SWEETSPOT';document.title=r.lottery_name||'SWEETSPOT';document.getElementById('gcashName2').textContent=r.gcash_name||'—';document.getElementById('gcashNumber2').textContent=r.gcash_number||'—';document.getElementById('pricePerNumber').textContent='₱'+(r.price_per_number||1).toFixed(2);var minQ=r.min_quantity||100,maxQ=r.max_quantity||10000;var qi=document.getElementById('inputQuantity');qi.min=minQ;qi.max=maxQ;qi.value=minQ;qi.step=minQ;document.getElementById('qtyHint').innerHTML='<i class="fas fa-info-circle"></i> Min: '+fmtN(minQ)+' — Max: '+fmtN(maxQ);updatePriceSummary();if(r.draw_date){document.getElementById('drawDateText').textContent=formatDrawDate(r.draw_date);document.getElementById('drawDateBanner').classList.add('visible');}if(r.announcement){document.getElementById('announcementText').textContent=r.announcement;document.getElementById('announcementBanner').classList.add('visible');}if(r.maintenance_mode)document.getElementById('maintenanceOverlay').classList.add('active');}
 
-    function formatDrawDate(dateStr){
-      if(!dateStr)return'';
-      var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-      try{
-        // Handle YYYY-MM-DD format
-        if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)){
-          var parts=dateStr.split('-');
-          var y=parseInt(parts[0]),m=parseInt(parts[1])-1,d=parseInt(parts[2]);
-          return months[m]+' '+d+', '+y;
-        }
-        // Handle any Date-parseable string
-        var dt=new Date(dateStr);
-        if(!isNaN(dt.getTime())){
-          return months[dt.getMonth()]+' '+dt.getDate()+', '+dt.getFullYear();
-        }
-      }catch(e){}
-      return dateStr;
-    }
+    function formatDrawDate(dateStr){if(!dateStr)return'';var months=['January','February','March','April','May','June','July','August','September','October','November','December'];try{if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)){var parts=dateStr.split('-');return months[parseInt(parts[1])-1]+' '+parseInt(parts[2])+', '+parts[0];}var dt=new Date(dateStr);if(!isNaN(dt.getTime()))return months[dt.getMonth()]+' '+dt.getDate()+', '+dt.getFullYear();}catch(e){}return dateStr;}
 
     async function loadStats(){var r=await apiGet('stats');if(!r.success)return;var pct=r.total>0?(r.sold/r.total*100):0;document.getElementById('progressFill').style.width=pct.toFixed(1)+'%';document.getElementById('progressPercent').textContent=pct.toFixed(1)+'%';animateNum('statBuyers',r.uniqueBuyers||0);isSoldOut=r.remaining<=0;if(isSoldOut){document.getElementById('purchaseFlow').style.display='none';document.getElementById('soldoutBanner').classList.add('visible');}else{document.getElementById('purchaseFlow').style.display='';document.getElementById('soldoutBanner').classList.remove('visible');}}
 
     function animateNum(id,target){var el=document.getElementById(id);var cur=parseInt(el.textContent.replace(/\D/g,''))||0;if(cur===target){el.textContent=fmtN(target);return;}var step=0;var d=target-cur;var iv=setInterval(function(){step++;el.textContent=fmtN(Math.round(cur+d/30*step));if(step>=30){clearInterval(iv);el.textContent=fmtN(target);}},20);}
-    function fmtN(n){return Number(n).toLocaleString();}
+
     function showSection(id){document.querySelectorAll('#purchaseFlow .section').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
     function adjustQty(d){var inp=document.getElementById('inputQuantity');var min=parseInt(inp.min)||100,max=parseInt(inp.max)||10000;inp.value=Math.min(max,Math.max(min,(parseInt(inp.value)||min)+d));updatePriceSummary();}
     function updatePriceSummary(){var q=parseInt(document.getElementById('inputQuantity').value)||0;var p=appSettings.price_per_number||1;document.getElementById('summaryTotal').textContent='₱'+fmtN(q*p)+'.00';}
@@ -580,14 +613,11 @@
     function copyField(id,btn){navigator.clipboard.writeText(document.getElementById(id).textContent).then(function(){btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i>';},2000);});}
 
     async function submitPurchase(){
-      if(isSubmitting)return;
-      var ref=document.getElementById('inputGcashRef').value.trim();
+      if(isSubmitting)return;var ref=document.getElementById('inputGcashRef').value.trim();
       if(!/^\d{13}$/.test(ref)){showToast('GCash ref must be exactly 13 digits','error');return;}
       if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Go back.','error');return;}
-      formData.gcashRef=ref;
-      isSubmitting=true;
-      var btn=document.getElementById('btnSubmit');
-      btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
+      formData.gcashRef=ref;isSubmitting=true;
+      var btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
       var res=await apiPost('purchase',{name:formData.name,phone:formData.phone,gcashRef:formData.gcashRef,quantity:formData.quantity});
       if(!res.success){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;showToast(res.error||'Failed','error');if(res.error&&res.error.toLowerCase().indexOf('gcash')!==-1){document.getElementById('inputGcashRef').value='';document.getElementById('inputGcashRef').classList.add('error');setTimeout(function(){document.getElementById('inputGcashRef').classList.remove('error');},3000);document.getElementById('inputGcashRef').focus();}return;}
       showGenOverlay();await waitGen();hideGenOverlay();
@@ -598,21 +628,27 @@
 
     function resetForm(){document.getElementById('inputName').value='';document.getElementById('inputPhone').value='';document.getElementById('inputGcashRef').value='';document.getElementById('inputQuantity').value=appSettings.min_quantity||100;formData={name:'',phone:'',quantity:appSettings.min_quantity||100,gcashRef:''};updatePriceSummary();showSection('sectionStep1');}
 
+    /* ═══ GENERATING OVERLAY ═══ */
     var genStart=0;
     function showGenOverlay(){genStart=Date.now();var o=document.getElementById('generatingOverlay');document.getElementById('genProgressFill').style.width='0%';document.getElementById('genStatus').textContent='Initializing...';o.classList.add('active');var msgs=['Connecting...','Verifying payment...','Generating numbers...','Assigning entries...','Securing numbers...','Almost done...'];var mi=0;var sIv=setInterval(function(){if(mi>=msgs.length){clearInterval(sIv);return;}document.getElementById('genStatus').textContent=msgs[mi++];},600);var p=0;var pIv=setInterval(function(){p+=Math.random()*15+5;if(p>90)p=90;document.getElementById('genProgressFill').style.width=p+'%';if(p>=90)clearInterval(pIv);},500);o._iv=[sIv,pIv];}
     function waitGen(){return new Promise(function(r){setTimeout(r,Math.max(0,3500-(Date.now()-genStart)));});}
     function hideGenOverlay(){var o=document.getElementById('generatingOverlay');document.getElementById('genProgressFill').style.width='100%';document.getElementById('genStatus').textContent='Complete! ✓';if(o._iv)o._iv.forEach(function(i){clearInterval(i);});setTimeout(function(){o.classList.remove('active');},500);}
+
     function launchConfetti(){var c=document.getElementById('confettiContainer');var cols=['#6C3CE1','#8B5CF6','#F59E0B','#10B981','#EF4444','#60A5FA','#F472B6','#34D399'];for(var i=0;i<80;i++){var d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'%';d.style.backgroundColor=cols[Math.floor(Math.random()*cols.length)];d.style.width=(Math.random()*8+6)+'px';d.style.height=(Math.random()*8+6)+'px';d.style.animationDuration=(Math.random()*2+2)+'s';d.style.animationDelay=(Math.random()*1.5)+'s';if(Math.random()>0.5)d.style.borderRadius='50%';c.appendChild(d);}setTimeout(function(){c.innerHTML='';},5000);}
 
+    /* ═══ ADMIN AUTH ═══ */
     function showAdminSection(id){document.querySelectorAll('#adminView .section').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
     async function adminLogin(){var u=document.getElementById('adminUsername').value.trim(),p=document.getElementById('adminPassword').value;if(!u||!p){showToast('Enter credentials','error');return;}var btn=document.getElementById('btnAdminLogin');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Logging in...</span>';var res=await apiPost('adminLogin',{username:u,password:p});btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i><span>Login</span>';if(!res.success){showToast(res.error||'Failed','error');return;}adminToken=res.token;sessionStorage.setItem('adminToken',adminToken);document.getElementById('adminPassword').value='';showToast('Welcome back!','success');showAdminSection('adminDashSection');loadDashboard();}
     function adminLogout(){apiPost('adminLogout',{token:adminToken});adminToken=null;sessionStorage.removeItem('adminToken');showToast('Logged out','info');showAdminSection('adminLoginSection');}
     async function checkAdminSession(){var r=await apiGet('adminInit');if(!r.success){adminToken=null;sessionStorage.removeItem('adminToken');showAdminSection('adminLoginSection');return;}showAdminSection('adminDashSection');loadDashboard();}
 
+    /* ═══ ADMIN TABS ═══ */
     function switchAdminTab(tab){document.querySelectorAll('.admin-nav-btn').forEach(function(b){b.classList.remove('active');});document.querySelector('[data-tab="'+tab+'"]').classList.add('active');document.querySelectorAll('.admin-tab').forEach(function(t){t.style.display='none';});if(tab==='dashboard'){document.getElementById('tabDashboard').style.display='';loadDashboard();}else if(tab==='transactions'){document.getElementById('tabTransactions').style.display='';txPage=1;loadTransactions();}else if(tab==='numbers'){document.getElementById('tabNumbers').style.display='';soldPage=1;loadSoldNumbers();}else if(tab==='draw'){document.getElementById('tabDraw').style.display='';loadDrawHistory();}else if(tab==='search'){document.getElementById('tabSearch').style.display='';}else if(tab==='settings'){document.getElementById('tabSettings').style.display='';loadSettingsForm();}}
 
+    /* ═══ ADMIN DASHBOARD ═══ */
     async function loadDashboard(){var r=await apiGet('adminDashboard');if(!r.success)return;document.getElementById('asSold').textContent=fmtN(r.sold);document.getElementById('asRemaining').textContent=fmtN(r.remaining);document.getElementById('asRevenue').textContent='₱'+fmtN(r.totalRevenue);document.getElementById('asPending').textContent=fmtN(r.pendingTransactions);document.getElementById('asApproved').textContent=fmtN(r.approvedTransactions);document.getElementById('asBuyers').textContent=fmtN(r.uniqueBuyers);var badge=document.getElementById('pendingBadge');if(r.pendingTransactions>0){badge.textContent=r.pendingTransactions;badge.style.display='';}else badge.style.display='none';var body=document.getElementById('recentBody'),empty=document.getElementById('recentEmpty');body.innerHTML='';if(!r.recentActivity||r.recentActivity.length===0){empty.style.display='';return;}empty.style.display='none';r.recentActivity.forEach(function(tx){body.innerHTML+='<tr><td class="tx-id" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td style="font-size:11px">'+esc(tx.timestamp)+'</td></tr>';});}
 
+    /* ═══ ADMIN TRANSACTIONS ═══ */
     async function loadTransactions(){var r=await apiGet('adminTransactions',{page:txPage,perPage:20});if(!r.success)return;var body=document.getElementById('txBody'),empty=document.getElementById('txEmpty');body.innerHTML='';if(!r.transactions||r.transactions.length===0){empty.style.display='';document.getElementById('txPagination').innerHTML='';return;}empty.style.display='none';r.transactions.forEach(function(tx){body.innerHTML+='<tr><td class="tx-id" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+esc(tx.phone)+'</td><td style="font-family:monospace;font-size:11px">'+esc(tx.gcashRef)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td><div class="table-actions"><button onclick="viewTransaction(\''+esc(tx.transactionId)+'\')"><i class="fas fa-eye"></i></button>'+(tx.status==='PENDING'?'<button onclick="approveTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-check"></i></button><button class="danger" onclick="declineTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-times"></i></button>':'')+(tx.status!=='PENDING'?'<button class="danger" onclick="deleteTx(\''+esc(tx.transactionId)+'\',\''+tx.status+'\')"><i class="fas fa-trash"></i></button>':'')+'</div></td></tr>';});var pg=document.getElementById('txPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="txPage='+(r.page-1)+';loadTransactions()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="txPage='+(r.page+1)+';loadTransactions()"><i class="fas fa-chevron-right"></i></button>';}
 
     async function viewTransaction(txId){var r=await apiGet('adminGetTransaction',{transactionId:txId});if(!r.success){showToast(r.error||'Not found','error');return;}var tx=r.transaction;var nums=tx.soldNumbers||[];var numbersSection='';if(nums.length>0){numbersSection='<div style="margin-top:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">Numbers ('+fmtN(nums.length)+')</span></div><div class="numbers-grid">'+nums.map(function(n){return'<span class="num-tag">'+esc(n)+'</span>';}).join('')+'</div><div class="numbers-actions"><button class="btn btn-xs btn-secondary" onclick="copyAllNumbers()"><i class="fas fa-copy"></i> Copy All</button><button class="btn btn-xs btn-secondary" onclick="downloadNumbers(\''+esc(tx.transactionId)+'\')"><i class="fas fa-download"></i> Download CSV</button></div></div>';}document.getElementById('modalTitle').textContent='Transaction Details';document.getElementById('modalBody').innerHTML='<div style="display:grid;gap:0;"><div class="receipt-row"><span class="r-label">TX ID</span><span class="r-value txid">'+esc(tx.transactionId)+'</span></div><div class="receipt-row"><span class="r-label">Name</span><span class="r-value">'+esc(tx.name)+'</span></div><div class="receipt-row"><span class="r-label">Phone</span><span class="r-value">'+esc(tx.phone)+'</span></div><div class="receipt-row"><span class="r-label">GCash Ref</span><span class="r-value ref">'+esc(tx.gcashRef)+'</span></div><div class="receipt-row"><span class="r-label">Quantity</span><span class="r-value">'+fmtN(tx.quantity)+'</span></div><div class="receipt-row"><span class="r-label">Amount</span><span class="r-value amount">₱'+fmtN(tx.amount)+'</span></div><div class="receipt-row"><span class="r-label">Status</span><span class="r-value">'+statusBadge(tx.status)+'</span></div><div class="receipt-row"><span class="r-label">Date</span><span class="r-value">'+esc(tx.timestamp)+'</span></div><div class="receipt-row"><span class="r-label">Numbers in Registry</span><span class="r-value">'+fmtN(tx.soldCount||0)+'</span></div></div>'+numbersSection;window._modalNumbers=nums;window._modalTxId=tx.transactionId;window._modalTx=tx;var f='<button class="btn btn-sm btn-secondary" onclick="closeModal()">Close</button>';if(tx.status==='PENDING')f='<button class="btn btn-sm btn-success" onclick="closeModal();approveTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="closeModal();declineTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-times"></i> Decline</button>'+f;document.getElementById('modalFooter').innerHTML=f;document.getElementById('modalOverlay').classList.add('active');}
@@ -623,225 +659,246 @@
     async function approveTx(txId){if(!confirm('Approve?'))return;var r=await apiPost('adminApproveTransaction',{transactionId:txId});showToast(r.success?'Approved!':(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
     async function declineTx(txId){if(!confirm('Decline? Numbers will be freed.'))return;var r=await apiPost('adminDeclineTransaction',{transactionId:txId});showToast(r.success?'Declined. '+(r.freedNumbers||0)+' freed.':(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
     async function deleteTx(txId,status){if(status==='PENDING'){showToast('Decline first.','error');return;}var cp='';if(status==='APPROVED'){if(!confirm('⚠️ APPROVED. Deleting frees numbers. Continue?'))return;cp='DELETE_APPROVED';}else{if(!confirm('Delete permanently?'))return;}var r=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:cp});if(!r.success&&r.error==='CONFIRM_REQUIRED'){if(confirm(r.message)){var r2=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:r.confirmType});showToast(r2.success?r2.message:r2.error,r2.success?'success':'error');if(r2.success){loadTransactions();loadDashboard();}}return;}showToast(r.success?(r.message||'Deleted'):(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
-
     async function deleteAllTransactions(){if(!confirm('⚠️ DELETE ALL TRANSACTIONS\n\nThis will permanently delete ALL transactions and free ALL sold numbers.\n\nThis action CANNOT be undone.\n\nAre you sure?'))return;var typed=prompt('🔴 FINAL CONFIRMATION\n\nType "DELETE ALL" to confirm:','');if(!typed||typed.trim().toUpperCase()!=='DELETE ALL'){showToast('Cancelled.','info');return;}var btn=document.getElementById('btnDeleteAll');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Deleting...';var res=await apiPost('adminDeleteAllTransactions',{});if(!res.success&&res.error==='CONFIRM_REQUIRED'){res=await apiPost('adminDeleteAllTransactions',{confirm:res.confirmType});}btn.disabled=false;btn.innerHTML='<i class="fas fa-trash-alt"></i> Delete All';if(res.success){showToast(res.message,'success');loadTransactions();loadDashboard();}else{showToast(res.error||'Failed','error');}}
 
+    /* ═══ ADMIN NUMBERS ═══ */
     async function loadSoldNumbers(){var r=await apiGet('adminSoldNumbers',{page:soldPage,perPage:50});if(!r.success)return;var body=document.getElementById('soldBody'),empty=document.getElementById('soldEmpty');body.innerHTML='';if(!r.numbers||r.numbers.length===0){empty.style.display='';document.getElementById('soldPagination').innerHTML='';return;}empty.style.display='none';r.numbers.forEach(function(n){body.innerHTML+='<tr><td style="font-family:monospace;font-weight:700;color:var(--primary-light)">'+esc(n.number)+'</td><td class="tx-id" onclick="viewTransaction(\''+esc(n.transactionId)+'\')">'+esc(n.transactionId)+'</td><td>'+esc(n.name)+'</td><td>'+esc(n.phone)+'</td><td style="font-size:11px">'+esc(n.timestamp)+'</td></tr>';});var pg=document.getElementById('soldPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="soldPage='+(r.page-1)+';loadSoldNumbers()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="soldPage='+(r.page+1)+';loadSoldNumbers()"><i class="fas fa-chevron-right"></i></button>';}
 
     async function addNumber(){var num=document.getElementById('addNumInput').value.trim();var name=document.getElementById('addNumName').value.trim()||'Manual';var phone=document.getElementById('addNumPhone').value.trim();if(!num){showToast('Enter a number','error');return;}var r=await apiPost('adminAddNumber',{number:num,name:name,phone:phone});showToast(r.success?r.message:(r.error||'Failed'),r.success?'success':'error');if(r.success){document.getElementById('addNumInput').value='';document.getElementById('addNumName').value='';document.getElementById('addNumPhone').value='';loadSoldNumbers();}}
     async function removeNumber(){var num=document.getElementById('removeNumInput').value.trim();if(!num){showToast('Enter a number','error');return;}if(!confirm('Remove '+num+'?'))return;var r=await apiPost('adminRemoveNumber',{number:num});showToast(r.success?r.message:(r.error||'Failed'),r.success?'success':'error');if(r.success){document.getElementById('removeNumInput').value='';loadSoldNumbers();}}
 
+    /* ═══ ADMIN SEARCH ═══ */
     async function searchNumber(){var q=document.getElementById('searchNumInput').value.trim();if(!q){showToast('Enter a number','error');return;}var r=await apiGet('adminSearchNumber',{query:q});var c=document.getElementById('searchNumResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(!r.found||r.results.length===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-search" style="font-size:24px"></i><p>Number <strong>'+esc(r.query)+'</strong> not found (available)</p></div>';return;}c.innerHTML=r.results.map(function(n){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--primary-light);font-family:monospace">'+esc(n.number)+'</span></div><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" onclick="viewTransaction(\''+esc(n.transactionId)+'\')">'+esc(n.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(n.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(n.phone)+'</span></div><div class="sr-row"><span class="sr-label">Date</span><span class="sr-value">'+esc(n.timestamp)+'</span></div></div>';}).join('');}
 
     async function searchBuyer(){var q=document.getElementById('searchBuyerInput').value.trim();if(!q){showToast('Enter search term','error');return;}var r=await apiGet('adminSearchBuyer',{query:q});var c=document.getElementById('searchBuyerResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(r.total===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-user" style="font-size:24px"></i><p>No results for "'+esc(q)+'"</p></div>';return;}c.innerHTML='<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">'+r.total+' result(s)</p>'+r.results.map(function(tx){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;color:var(--primary-light);cursor:pointer" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(tx.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(tx.phone)+'</span></div><div class="sr-row"><span class="sr-label">GCash Ref</span><span class="sr-value">'+esc(tx.gcashRef)+'</span></div><div class="sr-row"><span class="sr-label">Qty / Amount</span><span class="sr-value">'+fmtN(tx.quantity)+' / ₱'+fmtN(tx.amount)+'</span></div><div class="sr-row"><span class="sr-label">Status</span><span class="sr-value">'+statusBadge(tx.status)+'</span></div></div>';}).join('');}
 
     async function searchDuplicates(){var btn=document.getElementById('btnDupCheck');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Checking...';var r=await apiGet('adminSearchDuplicates');btn.disabled=false;btn.innerHTML='<i class="fas fa-search"></i> Check for Duplicates';var c=document.getElementById('searchDupResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(r.uniqueDuplicatedNumbers===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-check-circle" style="font-size:24px;color:var(--accent)"></i><p style="color:var(--accent)">No duplicates found! ✓</p></div>';return;}c.innerHTML='<p style="font-size:12px;color:var(--danger);margin-bottom:12px">⚠️ '+r.uniqueDuplicatedNumbers+' duplicated number(s)</p>'+r.duplicates.map(function(d){return'<div class="search-result-card" style="border-color:rgba(239,68,68,0.3)"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--danger);font-family:monospace">'+esc(d.number)+' (×'+d.occurrences+')</span></div><div class="sr-row"><span class="sr-label">First TX</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(d.name)+'</span></div></div>';}).join('');}
 
+    /* ═══ ADMIN SETTINGS ═══ */
     async function loadSettingsForm(){var r=await apiGet('adminInit');if(!r.success)return;var s=r.settings;document.getElementById('setLotteryName').value=s.lottery_name||'';var dv=s.draw_date||'';if(dv&&!dv.match(/^\d{4}-\d{2}-\d{2}$/)){try{var pd=new Date(dv);if(!isNaN(pd))dv=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0');}catch(e){}}document.getElementById('setDrawDate').value=dv;document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setPricePerNumber').value=s.price_per_number||'1';document.getElementById('setMinQuantity').value=s.min_quantity||'100';document.getElementById('setMaxQuantity').value=s.max_quantity||'10000';document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNumber').value=s.gcash_number||'';document.getElementById('setMaintenance').checked=s.maintenance_mode==='true';document.getElementById('setNewPassword').value='';}
 
     async function saveSettings(){var btn=document.getElementById('btnSaveSettings');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Saving...</span>';var data={lottery_name:document.getElementById('setLotteryName').value,draw_date:document.getElementById('setDrawDate').value,announcement:document.getElementById('setAnnouncement').value,price_per_number:document.getElementById('setPricePerNumber').value,min_quantity:document.getElementById('setMinQuantity').value,max_quantity:document.getElementById('setMaxQuantity').value,gcash_name:document.getElementById('setGcashName').value,gcash_number:document.getElementById('setGcashNumber').value,maintenance_mode:document.getElementById('setMaintenance').checked?'true':'false'};var pw=document.getElementById('setNewPassword').value;if(pw)data.new_password=pw;var r=await apiPost('adminUpdateSettings',data);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i><span>Save Settings</span>';showToast(r.success?'Settings saved!':(r.error||'Failed'),r.success?'success':'error');}
 
-        /* ═══════════════════════════════════════════════════════════
-       DRAW WINNER SYSTEM
+    /* ═══════════════════════════════════════════════════════════
+       DRAW WINNER SYSTEM — Client-side RNG + Backend Lookup
        ═══════════════════════════════════════════════════════════ */
 
-    async function startDraw(){
-      if(isDrawing)return;
-      isDrawing=true;
+    function generateDrawNumber() {
+      var d0 = Math.floor(Math.random() * 2);
+      var d1 = Math.floor(Math.random() * 10);
+      var d2 = Math.floor(Math.random() * 10);
+      var d3 = Math.floor(Math.random() * 10);
+      var d4 = Math.floor(Math.random() * 10);
+      return [String(d0), String(d1), String(d2), String(d3), String(d4)];
+    }
 
-      var btn=document.getElementById('btnDrawWinner');
-      btn.disabled=true;
-      btn.innerHTML='<div class="spinner"></div><span>Drawing...</span>';
+    function startSlotAnimation(slotEl, isFirstDigit) {
+      var val = slotEl.querySelector('.slot-value');
+      slotEl._spinInterval = setInterval(function() {
+        val.textContent = isFirstDigit ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 10);
+      }, 80);
+    }
+
+    function stopSlotAnimation(slotEl) {
+      if (slotEl._spinInterval) {
+        clearInterval(slotEl._spinInterval);
+        slotEl._spinInterval = null;
+      }
+    }
+
+    function revealDigit(index, digit) {
+      return new Promise(function(resolve) {
+        var slot = document.getElementById('slot' + index);
+        stopSlotAnimation(slot);
+        var isFirst = (index === 0);
+        var count = 0;
+        var si = setInterval(function() {
+          slot.querySelector('.slot-value').textContent = isFirst ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 10);
+          count++;
+          if (count >= 8) {
+            clearInterval(si);
+            slot.classList.remove('spinning');
+            slot.classList.add('revealed');
+            slot.querySelector('.slot-value').textContent = digit;
+            resolve();
+          }
+        }, 150);
+      });
+    }
+
+    async function startDraw() {
+      console.log('[DRAW] startDraw called, isDrawing:', isDrawing);
+      if (isDrawing) return;
+      isDrawing = true;
+
+      var btn = document.getElementById('btnDrawWinner');
+      console.log('[DRAW] btn found:', !!btn);
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div><span>Drawing...</span>';
 
       document.getElementById('winnerReveal').classList.remove('visible');
-      document.getElementById('btnDrawAgain').style.display='none';
-      document.getElementById('drawTitleText').textContent='Drawing Winner...';
-      document.getElementById('drawStatus').textContent='Fetching random winner from sold numbers...';
+      document.getElementById('btnDrawAgain').style.display = 'none';
+      document.getElementById('drawTitleText').textContent = 'Drawing Winner...';
+      document.getElementById('drawStatus').textContent = 'Generating random number...';
 
       // Reset slots
-      for(var i=0;i<5;i++){
-        var slot=document.getElementById('slot'+i);
-        slot.className='slot-digit';
-        slot.querySelector('.slot-value').textContent='?';
+      for (var i = 0; i < 5; i++) {
+        var s = document.getElementById('slot' + i);
+        stopSlotAnimation(s);
+        s.className = 'slot-digit';
+        s.style.opacity = '';
+        s.querySelector('.slot-value').textContent = '?';
       }
 
-      // Call backend to get random winner
-      var res=await apiGet('adminDrawWinner');
+      // Generate random number
+      var digits = generateDrawNumber();
+      var drawnNumber = digits.join('');
+      console.log('[DRAW] Generated number:', drawnNumber);
 
-      if(!res.success){
-        showToast(res.error||'Draw failed','error');
-        btn.disabled=false;
-        btn.innerHTML='<i class="fas fa-dice"></i><span>Draw a Winner</span>';
-        document.getElementById('drawTitleText').textContent='Ready to Draw';
-        document.getElementById('drawStatus').textContent='Click the button below to draw a winner';
-        isDrawing=false;
-        return;
+      // Start spinning
+      for (var j = 0; j < 5; j++) {
+        var se = document.getElementById('slot' + j);
+        se.classList.add('spinning');
+        startSlotAnimation(se, j === 0);
       }
 
-      var winningNumber=res.number;
-      var digits=winningNumber.split('');
+      document.getElementById('drawStatus').textContent = 'Shuffling numbers...';
+      await delay(2000);
 
-      // Start all slots spinning
-      for(var j=0;j<5;j++){
-        var slotEl=document.getElementById('slot'+j);
-        slotEl.classList.add('spinning');
-        startSlotAnimation(slotEl);
-      }
-
-      document.getElementById('drawStatus').textContent='Shuffling numbers...';
-
-      // Reveal each digit one by one with 5 second delays
-      await delay(2000); // Initial spin time
-
-      for(var k=0;k<5;k++){
-        document.getElementById('drawStatus').textContent='Revealing digit '+(k+1)+' of 5...';
-        await revealDigit(k,digits[k]);
-        if(k<4){
-          // Countdown between digits
-          for(var cd=5;cd>0;cd--){
-            document.getElementById('drawStatus').textContent='Next digit in '+cd+'s...';
+      // Reveal digits one by one
+      for (var k = 0; k < 5; k++) {
+        document.getElementById('drawStatus').textContent = 'Revealing digit ' + (k + 1) + ' of 5...';
+        await revealDigit(k, digits[k]);
+        if (k < 4) {
+          for (var cd = 5; cd > 0; cd--) {
+            document.getElementById('drawStatus').textContent = 'Next digit in ' + cd + 's...';
             await delay(1000);
           }
         }
       }
 
-      // All digits revealed — show winner
-      document.getElementById('drawStatus').textContent='';
-      document.getElementById('drawTitleText').textContent='🎉 Winner Found!';
+      // Check number against backend
+      document.getElementById('drawStatus').textContent = 'Checking number ' + drawnNumber + '...';
+      document.getElementById('drawTitleText').textContent = 'Checking...';
+      await delay(1500);
 
-      await delay(800);
+      console.log('[DRAW] Calling adminDrawWinner with number:', drawnNumber);
+      var res = await apiGet('adminDrawWinner', { number: drawnNumber });
+      console.log('[DRAW] Response:', JSON.stringify(res));
 
-      // Show winner card
-      document.getElementById('winnerNumber').textContent=winningNumber;
-      document.getElementById('winnerName').textContent=res.name||'—';
-      document.getElementById('winnerPhone').textContent=res.phone||'—';
-      document.getElementById('winnerTxId').textContent='TX: '+(res.transactionId||'—');
-      document.getElementById('winnerReveal').classList.add('visible');
-
-      btn.style.display='none';
-      document.getElementById('btnDrawAgain').style.display='';
-
-      // Launch confetti
-      launchConfetti();
-
-      // Add to history
-      drawHistory.unshift({
-        number:winningNumber,
-        name:res.name||'—',
-        phone:res.phone||'—',
-        transactionId:res.transactionId||'—',
-        timestamp:new Date().toLocaleString()
-      });
-      renderDrawHistory();
-
-      isDrawing=false;
-    }
-
-    function startSlotAnimation(slotEl){
-      var val=slotEl.querySelector('.slot-value');
-      slotEl._spinInterval=setInterval(function(){
-        val.textContent=Math.floor(Math.random()*10);
-      },80);
-    }
-
-    function stopSlotAnimation(slotEl){
-      if(slotEl._spinInterval){
-        clearInterval(slotEl._spinInterval);
-        slotEl._spinInterval=null;
-      }
-    }
-
-    function revealDigit(index,digit){
-      return new Promise(function(resolve){
-        var slot=document.getElementById('slot'+index);
-
-        // Slow down the spinning before reveal
-        stopSlotAnimation(slot);
-
-        var slowCount=0;
-        var slowInterval=setInterval(function(){
-          slot.querySelector('.slot-value').textContent=Math.floor(Math.random()*10);
-          slowCount++;
-          if(slowCount>=8){
-            clearInterval(slowInterval);
-            // Final reveal
-            slot.classList.remove('spinning');
-            slot.classList.add('revealed');
-            slot.querySelector('.slot-value').textContent=digit;
-            resolve();
-          }
-        },150);
-      });
-    }
-
-    function resetDraw(){
-      isDrawing=false;
-      var btn=document.getElementById('btnDrawWinner');
-      btn.style.display='';
-      btn.disabled=false;
-      btn.innerHTML='<i class="fas fa-dice"></i><span>Draw a Winner</span>';
-      document.getElementById('btnDrawAgain').style.display='none';
-      document.getElementById('winnerReveal').classList.remove('visible');
-      document.getElementById('drawTitleText').textContent='Ready to Draw';
-      document.getElementById('drawStatus').textContent='Click the button below to draw a winner';
-      for(var i=0;i<5;i++){
-        var slot=document.getElementById('slot'+i);
-        stopSlotAnimation(slot);
-        slot.className='slot-digit';
-        slot.querySelector('.slot-value').textContent='?';
-      }
-    }
-
-    function loadDrawHistory(){
-      renderDrawHistory();
-    }
-
-    function renderDrawHistory(){
-      var container=document.getElementById('drawHistoryList');
-      var empty=document.getElementById('drawHistoryEmpty');
-
-      if(drawHistory.length===0){
-        container.innerHTML='';
-        container.appendChild(empty);
-        empty.style.display='';
+      if (!res.success) {
+        showToast(res.error || 'Lookup failed', 'error');
+        document.getElementById('drawTitleText').textContent = 'Error';
+        document.getElementById('drawStatus').textContent = res.error || 'Something went wrong.';
+        btn.style.display = 'none';
+        document.getElementById('btnDrawAgain').style.display = '';
+        isDrawing = false;
         return;
       }
 
-      empty.style.display='none';
+      if (res.matched) {
+        // WINNER
+        console.log('[DRAW] WINNER FOUND:', res.name, res.number);
+        document.getElementById('drawStatus').textContent = '';
+        document.getElementById('drawTitleText').textContent = '🎉 Winner Found!';
+        await delay(500);
 
-      var html='';
-      for(var i=0;i<drawHistory.length;i++){
-        var d=drawHistory[i];
-        var drawNum=drawHistory.length-i;
-        html+='<div class="draw-history-item">'
-          +'<div class="draw-history-left">'
-            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--secondary);flex-shrink:0;">#'+drawNum+'</div>'
-            +'<div>'
-              +'<div class="draw-history-num">'+esc(d.number)+'</div>'
-              +'<div class="draw-history-name">'+esc(d.name)+'</div>'
-              +'<div class="draw-history-date">'+esc(d.timestamp)+'</div>'
-            +'</div>'
-          +'</div>'
-          +'<div style="text-align:right;">'
-            +'<div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</div>'
-            +'<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">'+esc(d.phone)+'</div>'
-          +'</div>'
-        +'</div>';
+        for (var w = 0; w < 5; w++) {
+          document.getElementById('slot' + w).classList.add('revealed');
+        }
+
+        document.getElementById('winnerNumber').textContent = res.number;
+        document.getElementById('winnerName').textContent = res.name || '—';
+        document.getElementById('winnerPhone').textContent = res.phone || '—';
+        document.getElementById('winnerTxId').textContent = 'TX: ' + (res.transactionId || '—');
+        document.getElementById('winnerReveal').classList.add('visible');
+
+        btn.style.display = 'none';
+        document.getElementById('btnDrawAgain').style.display = '';
+        launchConfetti();
+
+        drawHistory.unshift({
+          number: res.number, name: res.name || '—', phone: res.phone || '—',
+          transactionId: res.transactionId || '—',
+          timestamp: res.drawnAt || new Date().toLocaleString(), matched: true
+        });
+        renderDrawHistory();
+        showToast('🏆 Winner: ' + (res.name || res.number), 'success');
+
+      } else {
+        // NO MATCH
+        console.log('[DRAW] No match for:', drawnNumber);
+        document.getElementById('drawTitleText').textContent = 'No Match';
+        document.getElementById('drawStatus').textContent = drawnNumber + ' is not a sold number. Draw again!';
+
+        for (var nm = 0; nm < 5; nm++) {
+          document.getElementById('slot' + nm).style.opacity = '0.4';
+        }
+
+        btn.style.display = 'none';
+        document.getElementById('btnDrawAgain').style.display = '';
+
+        drawHistory.unshift({
+          number: drawnNumber, name: '—', phone: '—', transactionId: '—',
+          timestamp: new Date().toLocaleString(), matched: false
+        });
+        renderDrawHistory();
+        showToast(drawnNumber + ' — No match. Try again!', 'info');
       }
 
-      // Keep the empty div in DOM but hidden, put history before it
-      container.innerHTML=html;
+      isDrawing = false;
+    }
+
+    function resetDraw() {
+      console.log('[DRAW] resetDraw called');
+      isDrawing = false;
+      var btn = document.getElementById('btnDrawWinner');
+      btn.style.display = '';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-dice"></i><span>Draw a Winner</span>';
+      document.getElementById('btnDrawAgain').style.display = 'none';
+      document.getElementById('winnerReveal').classList.remove('visible');
+      document.getElementById('drawTitleText').textContent = 'Ready to Draw';
+      document.getElementById('drawStatus').textContent = 'Click the button below to draw a winner';
+      for (var i = 0; i < 5; i++) {
+        var slot = document.getElementById('slot' + i);
+        stopSlotAnimation(slot);
+        slot.className = 'slot-digit';
+        slot.style.opacity = '';
+        slot.querySelector('.slot-value').textContent = '?';
+      }
+    }
+
+    function loadDrawHistory() { renderDrawHistory(); }
+
+    function renderDrawHistory() {
+      var container = document.getElementById('drawHistoryList');
+      var empty = document.getElementById('drawHistoryEmpty');
+      if (drawHistory.length === 0) {
+        container.innerHTML = '';
+        container.appendChild(empty);
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+      var html = '';
+      for (var i = 0; i < drawHistory.length; i++) {
+        var d = drawHistory[i];
+        var isMatch = d.matched !== false;
+        var icon = isMatch ? '<i class="fas fa-trophy" style="color:var(--secondary);font-size:14px"></i>' : '<i class="fas fa-times-circle" style="color:var(--danger);font-size:14px"></i>';
+        var label = isMatch ? '<span style="font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase">Winner</span>' : '<span style="font-size:10px;color:var(--danger);font-weight:600;text-transform:uppercase">No Match</span>';
+        var nameD = isMatch ? esc(d.name) : '<span style="color:var(--text-muted)">Not sold</span>';
+        var numC = isMatch ? 'var(--secondary)' : 'var(--text-muted)';
+        var bg = isMatch ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.1)';
+        html += '<div class="draw-history-item"><div class="draw-history-left"><div style="width:32px;height:32px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+icon+'</div><div><div style="display:flex;align-items:center;gap:8px"><span class="draw-history-num" style="color:'+numC+'">'+esc(d.number)+'</span>'+label+'</div><div class="draw-history-name">'+nameD+'</div><div class="draw-history-date">'+esc(d.timestamp)+'</div></div></div><div style="text-align:right">'+(isMatch?'<div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+esc(d.phone)+'</div>':'')+'</div></div>';
+      }
+      container.innerHTML = html;
       container.appendChild(empty);
     }
 
-    function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
-
+    /* ═══ MODAL ═══ */
     function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
     document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
-
-    function statusBadge(s){s=(s||'').toUpperCase();if(s==='APPROVED')return'<span class="status-badge approved"><i class="fas fa-check-circle"></i> Approved</span>';if(s==='DECLINED')return'<span class="status-badge declined"><i class="fas fa-times-circle"></i> Declined</span>';return'<span class="status-badge pending"><i class="fas fa-clock"></i> Pending</span>';}
-    function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
-    function showToast(msg,type){type=type||'info';var c=document.getElementById('toastContainer');var t=document.createElement('div');t.className='toast '+type;var icon=type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle';t.innerHTML='<i class="fas '+icon+'"></i><span class="msg">'+esc(msg)+'</span>';c.appendChild(t);setTimeout(function(){t.classList.add('removing');setTimeout(function(){t.remove();},300);},4000);}
-  </script>
+</script>
 </body>
 </html>
