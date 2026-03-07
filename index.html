@@ -306,6 +306,7 @@
     @media(max-width:380px) { .app-container{padding:12px 12px 32px} .app-title{font-size:24px} .price-total .amount{font-size:20px} .payment-amount-banner .pay-amount{font-size:28px} .slot-digit{width:48px;height:68px;font-size:28px} .winner-number{font-size:36px;letter-spacing:4px} }
     @media(max-width:600px) { .admin-stats{grid-template-columns:1fr 1fr} .slot-digit{width:52px;height:72px;font-size:32px} }
   </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <div class="bg-effects"><div class="bg-orb"></div><div class="bg-orb"></div><div class="bg-orb"></div></div>
@@ -370,16 +371,63 @@
             <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="goToStep1()"><i class="fas fa-arrow-left"></i><span>Back</span></button><button type="button" class="btn btn-primary" onclick="goToStep3()"><span>I've Paid</span><i class="fas fa-arrow-right"></i></button></div>
           </div>
         </div>
-        <div class="section" id="sectionStep3">
-          <div class="steps"><div class="step done"><div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div><div class="step-label">Info</div></div><div class="step-line done"></div><div class="step done"><div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div><div class="step-label">Pay</div></div><div class="step-line done"></div><div class="step active"><div class="step-circle">3</div><div class="step-label">Proof</div></div><div class="step-line"></div><div class="step"><div class="step-circle">4</div><div class="step-label">Done</div></div></div>
-          <div class="card">
-            <div class="card-header"><div class="card-icon amber"><i class="fas fa-receipt"></i></div><div class="card-title">Proof of Payment</div></div>
-            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">Enter the <strong style="color:var(--text-primary)">GCash Reference Number</strong> from your receipt.</p>
-            <div class="form-group" style="margin-bottom:0;"><label class="form-label">GCash Reference Number</label><input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234567890123" maxlength="13" inputmode="numeric" style="font-size:18px;text-align:center;letter-spacing:2px;font-weight:600;"><div class="form-hint"><i class="fas fa-info-circle"></i> 13-digit number from your GCash receipt</div></div>
-            <div class="price-summary" style="margin-top:24px;"><div class="price-row"><span>Name</span><span id="step3Name" style="font-weight:600;color:var(--text-primary)">—</span></div><div class="price-row"><span>Phone</span><span id="step3Phone" style="font-weight:600;color:var(--text-primary)">—</span></div><div class="price-total"><span class="label">Amount</span><span class="amount" id="step3Amount">₱100.00</span></div></div>
-            <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="goToStep2()"><i class="fas fa-arrow-left"></i><span>Back</span></button><button type="button" class="btn btn-success" id="btnSubmit" onclick="submitPurchase()"><i class="fas fa-paper-plane"></i><span>Submit</span></button></div>
-          </div>
+       <div class="section" id="sectionStep3">
+  <div class="steps">
+    <div class="step done"><div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div><div class="step-label">Info</div></div>
+    <div class="step-line done"></div>
+    <div class="step done"><div class="step-circle"><i class="fas fa-check" style="font-size:12px"></i></div><div class="step-label">Pay</div></div>
+    <div class="step-line done"></div>
+    <div class="step active"><div class="step-circle">3</div><div class="step-label">Proof</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-circle">4</div><div class="step-label">Done</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon amber"><i class="fas fa-receipt"></i></div>
+      <div class="card-title">Proof of Payment</div>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">
+      Enter the <strong style="color:var(--text-primary)">GCash Reference Number</strong> from your receipt.
+    </p>
+    <div class="form-group" style="margin-bottom:0;">
+      <label class="form-label">GCash Reference Number</label>
+      <input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234567890123" maxlength="13" inputmode="numeric" style="font-size:18px;text-align:center;letter-spacing:2px;font-weight:600;">
+      <div class="form-hint"><i class="fas fa-info-circle"></i> 13-digit number from your GCash receipt</div>
+    </div>
+    <div class="price-summary" style="margin-top:24px;">
+      <div class="price-row"><span>Name</span><span id="step3Name" style="font-weight:600;color:var(--text-primary)">—</span></div>
+      <div class="price-row"><span>Phone</span><span id="step3Phone" style="font-weight:600;color:var(--text-primary)">—</span></div>
+      <div class="price-total"><span class="label">Amount</span><span class="amount" id="step3Amount">₱100.00</span></div>
+    </div>
+
+    <!-- ═══ reCAPTCHA WIDGET ═══ -->
+    <div style="margin-top:20px;">
+      <label class="form-label">Verify you're human</label>
+      <div id="recaptchaContainer" style="display:flex;justify-content:center;">
+        <div class="g-recaptcha"
+             data-sitekey="6Ld_X4IsAAAAAPVbEOclGLZcQuNviyw9iNniBqSc"
+             data-theme="dark"
+             data-callback="onCaptchaSuccess"
+             data-expired-callback="onCaptchaExpired"
+             data-error-callback="onCaptchaError"
+             id="recaptchaWidget">
         </div>
+      </div>
+      <div class="form-hint" id="captchaHint" style="justify-content:center;margin-top:8px;">
+        <i class="fas fa-shield-alt"></i> Complete the captcha to submit
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-secondary" onclick="goToStep2()">
+        <i class="fas fa-arrow-left"></i><span>Back</span>
+      </button>
+      <button type="button" class="btn btn-success" id="btnSubmit" onclick="submitPurchase()" disabled>
+        <i class="fas fa-paper-plane"></i><span>Submit</span>
+      </button>
+    </div>
+  </div>
+</div>
         <div class="section" id="sectionStep4">
           <div class="receipt-card">
             <div class="receipt-header"><div class="check-circle"><i class="fas fa-check"></i></div><h3>Entries Submitted!</h3><p>Your entry is being reviewed</p></div>
@@ -520,7 +568,32 @@
       </div>
     </div>
   </div>
-
+  /* ═══ reCAPTCHA STYLES ═══ */
+.g-recaptcha {
+  transform-origin: center;
+  transition: var(--transition);
+}
+#recaptchaContainer {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.captcha-verified {
+  color: var(--accent) !important;
+}
+.captcha-error {
+  color: var(--danger) !important;
+}
+@media (max-width: 380px) {
+  .g-recaptcha {
+    transform: scale(0.85);
+    transform-origin: center;
+  }
+  #recaptchaContainer {
+    min-height: 66px;
+  }
+}
   <script>
     var WEB_APP_URL='https://script.google.com/macros/s/AKfycbxaTgKnjM4gwSRhM01sCtRErQtzYnhIauwuEFKlkwdlhDO1trYP7b885oBz5yW6kwXicQ/exec';
     var ADMIN_SECRET='ssadmin';
@@ -533,6 +606,53 @@
     var txPage=1,soldPage=1;
     var drawHistory=[];
     var isDrawing=false;
+    var captchaToken=null;
+    var captchaWidgetId=null;
+
+    /* ═══ reCAPTCHA CALLBACKS ═══ */
+    function onCaptchaSuccess(token) {
+      captchaToken = token;
+      document.getElementById('btnSubmit').disabled = false;
+      var hint = document.getElementById('captchaHint');
+      hint.className = 'form-hint captcha-verified';
+      hint.innerHTML = '<i class="fas fa-check-circle"></i> Verified! You can now submit';
+      console.log('[reCAPTCHA] Verified successfully');
+    }
+
+    function onCaptchaExpired() {
+      captchaToken = null;
+      document.getElementById('btnSubmit').disabled = true;
+      var hint = document.getElementById('captchaHint');
+      hint.className = 'form-hint captcha-error';
+      hint.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Captcha expired — please verify again';
+      showToast('Captcha expired. Please verify again.', 'error');
+      console.log('[reCAPTCHA] Token expired');
+    }
+
+    function onCaptchaError() {
+      captchaToken = null;
+      document.getElementById('btnSubmit').disabled = true;
+      var hint = document.getElementById('captchaHint');
+      hint.className = 'form-hint captcha-error';
+      hint.innerHTML = '<i class="fas fa-exclamation-circle"></i> Captcha error — check your connection';
+      showToast('Captcha error. Check your internet connection.', 'error');
+      console.log('[reCAPTCHA] Error occurred');
+    }
+
+    function resetCaptcha() {
+      captchaToken = null;
+      document.getElementById('btnSubmit').disabled = true;
+      var hint = document.getElementById('captchaHint');
+      hint.className = 'form-hint';
+      hint.innerHTML = '<i class="fas fa-shield-alt"></i> Complete the captcha to submit';
+      try {
+        if (typeof grecaptcha !== 'undefined') {
+          grecaptcha.reset();
+        }
+      } catch (e) {
+        console.log('[reCAPTCHA] Reset error:', e);
+      }
+    }
 
     /* ═══ UTILITIES ═══ */
     function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
@@ -688,7 +808,6 @@
         return;
       }
 
-      // Check availability from server
       var btn=document.getElementById('btnContinue');
       btn.disabled=true;
       btn.innerHTML='<div class="spinner"></div><span>Checking availability...</span>';
@@ -717,7 +836,6 @@
           return;
         }
 
-        // Enough available — proceed
         btn.disabled=false;
         btn.innerHTML='<span>Continue to Payment</span><i class="fas fa-arrow-right"></i>';
 
@@ -738,23 +856,98 @@
       }
     }
 
-    function goToStep3(){var total=formData.quantity*(appSettings.price_per_number||1);document.getElementById('step3Name').textContent=(formData.name);document.getElementById('step3Phone').textContent=(formData.phone);document.getElementById('step3Amount').textContent='₱'+fmtN(total)+'.00';document.getElementById('inputGcashRef').value='';showSection('sectionStep3');setTimeout(function(){document.getElementById('inputGcashRef').focus();},400);}
+    function goToStep3(){
+      var total=formData.quantity*(appSettings.price_per_number||1);
+      document.getElementById('step3Name').textContent=(formData.name);
+      document.getElementById('step3Phone').textContent=(formData.phone);
+      document.getElementById('step3Amount').textContent='₱'+fmtN(total)+'.00';
+      document.getElementById('inputGcashRef').value='';
+      resetCaptcha();
+      showSection('sectionStep3');
+      setTimeout(function(){document.getElementById('inputGcashRef').focus();},400);
+    }
+
+    function goToStep2FromStep3(){
+      resetCaptcha();
+      showSection('sectionStep2');
+    }
 
     function copyGcash(){var t=document.getElementById('gcashNumber2').textContent;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('copyGcashBtn');b.classList.add('copied');b.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){b.classList.remove('copied');b.innerHTML='<i class="fas fa-copy"></i>';},2000);});}
     function copyField(id,btn){navigator.clipboard.writeText(document.getElementById(id).textContent).then(function(){btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i>';},2000);});}
 
     async function submitPurchase(){
-      if(isSubmitting)return;var ref=document.getElementById('inputGcashRef').value.trim();
+      if(isSubmitting)return;
+
+      var ref=document.getElementById('inputGcashRef').value.trim();
       if(!/^\d{13}$/.test(ref)){showToast('GCash ref must be exactly 13 digits','error');return;}
       if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Go back.','error');return;}
-      formData.gcashRef=ref;isSubmitting=true;
-      var btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
-      var res=await apiPost('purchase',{name:formData.name,phone:formData.phone,gcashRef:formData.gcashRef,quantity:formData.quantity});
-      if(!res.success){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;showToast(res.error||'Failed','error');if(res.error&&res.error.toLowerCase().indexOf('gcash')!==-1){document.getElementById('inputGcashRef').value='';document.getElementById('inputGcashRef').classList.add('error');setTimeout(function(){document.getElementById('inputGcashRef').classList.remove('error');},3000);document.getElementById('inputGcashRef').focus();}return;}
+
+      /* ═══ CAPTCHA VALIDATION ═══ */
+      if(!captchaToken){
+        showToast('Please complete the captcha verification','error');
+        var hint=document.getElementById('captchaHint');
+        hint.className='form-hint captcha-error';
+        hint.innerHTML='<i class="fas fa-exclamation-triangle"></i> Please complete the captcha above';
+        return;
+      }
+
+      formData.gcashRef=ref;
+      isSubmitting=true;
+
+      var btn=document.getElementById('btnSubmit');
+      btn.disabled=true;
+      btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
+
+      var res=await apiPost('purchase',{
+        name:formData.name,
+        phone:formData.phone,
+        gcashRef:formData.gcashRef,
+        quantity:formData.quantity,
+        captchaToken:captchaToken
+      });
+
+      if(!res.success){
+        btn.disabled=false;
+        btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';
+        isSubmitting=false;
+
+        /* Reset captcha on failure so user must re-verify */
+        resetCaptcha();
+
+        showToast(res.error||'Failed','error');
+
+        if(res.error&&res.error.toLowerCase().indexOf('captcha')!==-1){
+          var hint=document.getElementById('captchaHint');
+          hint.className='form-hint captcha-error';
+          hint.innerHTML='<i class="fas fa-exclamation-circle"></i> Captcha verification failed — try again';
+        }
+
+        if(res.error&&res.error.toLowerCase().indexOf('gcash')!==-1){
+          document.getElementById('inputGcashRef').value='';
+          document.getElementById('inputGcashRef').classList.add('error');
+          setTimeout(function(){document.getElementById('inputGcashRef').classList.remove('error');},3000);
+          document.getElementById('inputGcashRef').focus();
+        }
+        return;
+      }
+
       showGenOverlay();await waitGen();hideGenOverlay();
-      btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;
-      document.getElementById('receiptName').textContent=censorName(formData.name);document.getElementById('receiptPhone').textContent=censorPhone(formData.phone);document.getElementById('receiptAmount').textContent='₱'+fmtN(res.amount)+'.00';document.getElementById('receiptDate').textContent=res.timestamp;document.getElementById('receiptTxId').textContent=res.transactionId;document.getElementById('receiptGcashRef').textContent=formData.gcashRef;
-      showSection('sectionStep4');launchConfetti();showToast('Entries submitted! 🎉','success');loadStats();
+
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';
+      isSubmitting=false;
+
+      document.getElementById('receiptName').textContent=censorName(formData.name);
+      document.getElementById('receiptPhone').textContent=censorPhone(formData.phone);
+      document.getElementById('receiptAmount').textContent='₱'+fmtN(res.amount)+'.00';
+      document.getElementById('receiptDate').textContent=res.timestamp;
+      document.getElementById('receiptTxId').textContent=res.transactionId;
+      document.getElementById('receiptGcashRef').textContent=formData.gcashRef;
+
+      showSection('sectionStep4');
+      launchConfetti();
+      showToast('Entries submitted! 🎉','success');
+      loadStats();
     }
 
     function resetForm(){
@@ -764,6 +957,7 @@
       document.getElementById('inputQuantity').value=appSettings.min_quantity||50;
       formData={name:'',phone:'',quantity:appSettings.min_quantity||50,gcashRef:''};
       updatePriceSummary();
+      resetCaptcha();
       if(isSoldOut){
         document.getElementById('purchaseFlow').style.display='none';
         document.getElementById('soldoutBanner').classList.add('visible');
@@ -824,7 +1018,7 @@
     async function saveSettings(){var btn=document.getElementById('btnSaveSettings');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Saving...</span>';var data={lottery_name:document.getElementById('setLotteryName').value,draw_date:document.getElementById('setDrawDate').value,announcement:document.getElementById('setAnnouncement').value,price_per_number:document.getElementById('setPricePerNumber').value,min_quantity:document.getElementById('setMinQuantity').value,max_quantity:document.getElementById('setMaxQuantity').value,gcash_name:document.getElementById('setGcashName').value,gcash_number:document.getElementById('setGcashNumber').value,maintenance_mode:document.getElementById('setMaintenance').checked?'true':'false'};var pw=document.getElementById('setNewPassword').value;if(pw)data.new_password=pw;var r=await apiPost('adminUpdateSettings',data);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i><span>Save Settings</span>';showToast(r.success?'Settings saved!':(r.error||'Failed'),r.success?'success':'error');}
 
     /* ═══════════════════════════════════════════════════════════
-       DRAW WINNER SYSTEM — Client-side RNG + Backend Lookup
+       DRAW WINNER SYSTEM
        ═══════════════════════════════════════════════════════════ */
 
     function generateDrawNumber() {
@@ -871,12 +1065,10 @@
     }
 
     async function startDraw() {
-      console.log('[DRAW] startDraw called, isDrawing:', isDrawing);
       if (isDrawing) return;
       isDrawing = true;
 
       var btn = document.getElementById('btnDrawWinner');
-      console.log('[DRAW] btn found:', !!btn);
       btn.disabled = true;
       btn.innerHTML = '<div class="spinner"></div><span>Drawing...</span>';
 
@@ -885,7 +1077,6 @@
       document.getElementById('drawTitleText').textContent = 'Drawing Winner...';
       document.getElementById('drawStatus').textContent = 'Generating random number...';
 
-      // Reset slots
       for (var i = 0; i < 5; i++) {
         var s = document.getElementById('slot' + i);
         stopSlotAnimation(s);
@@ -894,12 +1085,9 @@
         s.querySelector('.slot-value').textContent = '?';
       }
 
-      // Generate random number
       var digits = generateDrawNumber();
       var drawnNumber = digits.join('');
-      console.log('[DRAW] Generated number:', drawnNumber);
 
-      // Start spinning
       for (var j = 0; j < 5; j++) {
         var se = document.getElementById('slot' + j);
         se.classList.add('spinning');
@@ -909,7 +1097,6 @@
       document.getElementById('drawStatus').textContent = 'Shuffling numbers...';
       await delay(2000);
 
-      // Reveal digits one by one
       for (var k = 0; k < 5; k++) {
         document.getElementById('drawStatus').textContent = 'Revealing digit ' + (k + 1) + ' of 5...';
         await revealDigit(k, digits[k]);
@@ -921,14 +1108,11 @@
         }
       }
 
-      // Check number against backend
       document.getElementById('drawStatus').textContent = 'Checking number ' + drawnNumber + '...';
       document.getElementById('drawTitleText').textContent = 'Checking...';
       await delay(1500);
 
-      console.log('[DRAW] Calling adminDrawWinner with number:', drawnNumber);
       var res = await apiGet('adminDrawWinner', { number: drawnNumber });
-      console.log('[DRAW] Response:', JSON.stringify(res));
 
       if (!res.success) {
         showToast(res.error || 'Lookup failed', 'error');
@@ -941,8 +1125,6 @@
       }
 
       if (res.matched) {
-        // WINNER
-        console.log('[DRAW] WINNER FOUND:', res.name, res.number);
         document.getElementById('drawStatus').textContent = '';
         document.getElementById('drawTitleText').textContent = '🎉 Winner Found!';
         await delay(500);
@@ -970,8 +1152,6 @@
         showToast('🏆 Winner: ' + (res.name || res.number), 'success');
 
       } else {
-        // NO MATCH
-        console.log('[DRAW] No match for:', drawnNumber);
         document.getElementById('drawTitleText').textContent = 'No Match';
         document.getElementById('drawStatus').textContent = drawnNumber + ' is not a sold number. Draw again!';
 
@@ -994,7 +1174,6 @@
     }
 
     function resetDraw() {
-      console.log('[DRAW] resetDraw called');
       isDrawing = false;
       var btn = document.getElementById('btnDrawWinner');
       btn.style.display = '';
