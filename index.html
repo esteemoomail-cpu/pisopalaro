@@ -299,46 +299,6 @@
     .draw-history-name { font-size:13px; color:var(--text-primary); font-weight:600; }
     .draw-history-date { font-size:11px; color:var(--text-muted); }
 
-    /* ═══════════ RECAPTCHA STYLES ═══════════ */
-    .recaptcha-container {
-      margin: 20px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .recaptcha-container .recaptcha-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .recaptcha-container .recaptcha-error {
-      font-size: 11px;
-      color: var(--danger);
-      display: none;
-      align-items: center;
-      gap: 4px;
-    }
-    .recaptcha-container .recaptcha-error.visible {
-      display: flex;
-    }
-    .recaptcha-container .recaptcha-success {
-      font-size: 12px;
-      color: var(--accent);
-      display: none;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: var(--radius-xs);
-    }
-    .recaptcha-container .recaptcha-success.visible {
-      display: flex;
-    }
-
     @media(max-width:380px) { .app-container{padding:12px 12px 32px} .logo-container{width:140px;height:140px;border-radius:30px} .price-total .amount{font-size:20px} .payment-amount-banner .pay-amount{font-size:28px} .slot-digit{width:48px;height:68px;font-size:28px} .winner-number{font-size:36px;letter-spacing:4px} }
     @media(max-width:600px) { .admin-stats{grid-template-columns:1fr 1fr} .slot-digit{width:52px;height:72px;font-size:32px} }
   </style>
@@ -389,7 +349,7 @@
             <div class="card-header"><div class="card-icon purple"><i class="fas fa-user"></i></div><div class="card-title">Your Information</div></div>
             <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="inputName" placeholder="Juan Dela Cruz" maxlength="40" autocomplete="name"></div>
             <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="inputPhone" placeholder="09171234567" maxlength="11" autocomplete="tel"><div class="form-hint"><i class="fas fa-info-circle"></i> Must start with 09</div></div>
-            <div class="form-group"><label class="form-label">Quantity</label><div class="quantity-control"><button type="button" class="qty-btn" onclick="adjustQty(-1)">−</button><input type="number" class="form-input qty-input" id="inputQuantity" min="50" max="1000" value="50" step="1"><button type="button" class="qty-btn" onclick="adjustQty(1)">+</button></div><div class="form-hint" id="qtyHint"><i class="fas fa-info-circle"></i> Min: 50 — Max: 1,000</div></div>
+            <div class="form-group"><label class="form-label">Quantity</label><div class="quantity-control"><button type="button" class="qty-btn" onclick="adjustQty(-50)">−</button><input type="number" class="form-input qty-input" id="inputQuantity" min="50" max="1000" value="50" step="50"><button type="button" class="qty-btn" onclick="adjustQty(50)">+</button></div><div class="form-hint" id="qtyHint"><i class="fas fa-info-circle"></i> Min: 50 — Max: 1,000</div></div>
             <div class="price-summary"><div class="price-row"><span>Price per number</span><span id="pricePerNumber">₱1.00</span></div><div class="price-total"><span class="label">Total</span><span class="amount" id="summaryTotal">₱50.00</span></div></div>
             <div style="margin-top:24px;"><button type="button" class="btn btn-primary" id="btnContinue" onclick="goToStep2()"><span>Continue to Payment</span><i class="fas fa-arrow-right"></i></button></div>
           </div>
@@ -412,21 +372,6 @@
             <div class="form-group" style="margin-bottom:0;"><label class="form-label">GCash Reference Number</label><input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234567890123" maxlength="13" inputmode="numeric" style="font-size:18px;text-align:center;letter-spacing:2px;font-weight:600;"><div class="form-hint"><i class="fas fa-info-circle"></i> 13-digit number from your GCash receipt</div></div>
             <div class="price-summary" style="margin-top:24px;"><div class="price-row"><span>Name</span><span id="step3Name" style="font-weight:600;color:var(--text-primary)">—</span></div><div class="price-row"><span>Phone</span><span id="step3Phone" style="font-weight:600;color:var(--text-primary)">—</span></div><div class="price-total"><span class="label">Amount</span><span class="amount" id="step3Amount">₱100.00</span></div></div>
 
-            <!-- ═══════════ RECAPTCHA WIDGET ═══════════ -->
-            <div class="recaptcha-container">
-              <span class="recaptcha-label">Verify you're human</span>
-              <div id="recaptchaWidget"></div>
-              <div class="recaptcha-error" id="recaptchaError">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Please complete the CAPTCHA verification</span>
-              </div>
-              <div class="recaptcha-success" id="recaptchaSuccess">
-                <i class="fas fa-check-circle"></i>
-                <span>Verification complete!</span>
-              </div>
-            </div>
-            <!-- ═══════════ END RECAPTCHA ═══════════ -->
-
             <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="goToStep2()"><i class="fas fa-arrow-left"></i><span>Back</span></button><button type="button" class="btn btn-success" id="btnSubmit" onclick="submitPurchase()"><i class="fas fa-paper-plane"></i><span>Submit</span></button></div>
           </div>
         </div>
@@ -447,7 +392,7 @@
           <button class="btn btn-primary" onclick="resetForm()" style="margin-bottom:12px;"><i class="fas fa-plus-circle"></i><span>New Purchase</span></button>
         </div>
       </div>
-      <div class="app-footer"><p>© 2026 Sweetspot · All rights reserved<br>Numbers are randomly generated and securely stored</p></div>
+      <div class="app-footer"><p>© 2025 Sweetspot · All rights reserved<br>Numbers are randomly generated and securely stored</p></div>
     </div>
 
     <div id="adminView" style="display:none;">
@@ -477,7 +422,7 @@
 
         <!-- Dashboard Tab -->
         <div class="admin-tab active" id="tabDashboard">
-          <div class="admin-stats"><div class="admin-stat purple"><div class="as-value" id="asSold">0</div><div class="as-label">Numbers Sold</div></div><div class="admin-stat green"><div class="as-value" id="asRemaining">0</div><div class="as-label">Remaining</div></div><div class="admin-stat amber"><div class="as-value" id="asRevenue">₱0</div><div class="as-label">Revenue</div></div><div class="admin-stat red"><div class="as-value" id="asPending">0</div><div class="as-label">Pending</div></div><div class="admin-stat green"><div class="as-value" id="asApproved">0</div><div class="as-label">Approved</div></div><div class="admin-stat blue"><div class="as-value" id="asBuyers">0</div><div class="as-label">Buyers</div></div></div>
+          <div class="admin-stats"><div class="admin-stat purple"><div class="as-value" id="asSold">0</div><div class="as-label">Numbers Sold</div></div><div class="admin-stat green"><div class="as-value" id="asRemaining">0</div><div class="as-label">Remaining</div></div><div class="admin-stat amber"><div class="as-value" id="asRevenue">₱0</div><div class="as-label">Approved Revenue</div></div><div class="admin-stat red"><div class="as-value" id="asPending">0</div><div class="as-label">Pending</div></div><div class="admin-stat green"><div class="as-value" id="asApproved">0</div><div class="as-label">Approved</div></div><div class="admin-stat blue"><div class="as-value" id="asBuyers">0</div><div class="as-label">Buyers</div></div></div>
           <div class="card"><div class="card-header"><div class="card-icon purple"><i class="fas fa-clock"></i></div><div class="card-title">Recent Activity</div></div><div class="table-wrapper"><table class="admin-table"><thead><tr><th>TX ID</th><th>Name</th><th>Qty</th><th>Amount</th><th>Status</th><th>Time</th></tr></thead><tbody id="recentBody"></tbody></table></div><div class="empty-state" id="recentEmpty" style="display:none;"><i class="fas fa-inbox"></i><p>No transactions yet</p></div></div>
         </div>
 
@@ -567,68 +512,6 @@
     </div>
   </div>
 
-  <!-- ═══════════ RECAPTCHA API — EXPLICIT RENDER ═══════════ -->
-  <script type="text/javascript">
-    var recaptchaWidgetId = null;
-    var recaptchaReady = false;
-    var recaptchaToken = null;
-
-    var onRecaptchaLoad = function() {
-      recaptchaReady = true;
-      console.log('[reCAPTCHA] API loaded and ready');
-      renderRecaptchaIfNeeded();
-    };
-
-    function renderRecaptchaIfNeeded() {
-      if (!recaptchaReady) return;
-      if (recaptchaWidgetId !== null) return;
-      var container = document.getElementById('recaptchaWidget');
-      if (!container) return;
-      try {
-        recaptchaWidgetId = grecaptcha.render('recaptchaWidget', {
-          'sitekey': '6Ld_X4IsAAAAAPVbEOclGLZcQuNviyw9iNniBqSc',
-          'theme': 'dark',
-          'callback': onRecaptchaSuccess,
-          'expired-callback': onRecaptchaExpired,
-          'error-callback': onRecaptchaError
-        });
-        console.log('[reCAPTCHA] Widget rendered, ID:', recaptchaWidgetId);
-      } catch (e) {
-        console.error('[reCAPTCHA] Render error:', e);
-      }
-    }
-
-    function onRecaptchaSuccess(token) {
-      console.log('[reCAPTCHA] Verified successfully');
-      recaptchaToken = token;
-      document.getElementById('recaptchaError').classList.remove('visible');
-      document.getElementById('recaptchaSuccess').classList.add('visible');
-    }
-
-    function onRecaptchaExpired() {
-      console.log('[reCAPTCHA] Token expired');
-      recaptchaToken = null;
-      document.getElementById('recaptchaSuccess').classList.remove('visible');
-      showToast('CAPTCHA expired. Please verify again.', 'info');
-    }
-
-    function onRecaptchaError() {
-      console.error('[reCAPTCHA] Error occurred');
-      recaptchaToken = null;
-      document.getElementById('recaptchaSuccess').classList.remove('visible');
-    }
-
-    function resetRecaptcha() {
-      recaptchaToken = null;
-      document.getElementById('recaptchaError').classList.remove('visible');
-      document.getElementById('recaptchaSuccess').classList.remove('visible');
-      if (recaptchaWidgetId !== null && recaptchaReady) {
-        try { grecaptcha.reset(recaptchaWidgetId); } catch (e) {}
-      }
-    }
-  </script>
-  <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
-
   <script>
     var WEB_APP_URL='https://script.google.com/macros/s/AKfycbxaTgKnjM4gwSRhM01sCtRErQtzYnhIauwuEFKlkwdlhDO1trYP7b885oBz5yW6kwXicQ/exec';
     var ADMIN_SECRET='ssadmin';
@@ -641,6 +524,7 @@
     var txPage=1,soldPage=1;
     var drawHistory=[];
     var isDrawing=false;
+    var statsInterval=null;
 
     /* ═══ UTILITIES ═══ */
     function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
@@ -648,11 +532,29 @@
     function censorName(name){if(!name)return'—';var parts=name.trim().split(/\s+/);if(parts.length===1)return parts[0].charAt(0)+'*'.repeat(Math.max(0,parts[0].length-1));return parts.map(function(p,i){return i===0?p:p.charAt(0)+'*'.repeat(Math.max(0,p.length-1));}).join(' ');}
     function censorPhone(phone){if(!phone||phone.length<4)return'****';return'*'.repeat(phone.length-4)+phone.slice(-4);}
     function fmtN(n){return Number(n).toLocaleString();}
+
+    /* ═══ FIX #4: XSS-SAFE ESCAPING ═══ */
     function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+    function escAttr(s){return esc(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
 
     function statusBadge(s){s=(s||'').toUpperCase();if(s==='APPROVED')return'<span class="status-badge approved"><i class="fas fa-check-circle"></i> Approved</span>';if(s==='DECLINED')return'<span class="status-badge declined"><i class="fas fa-times-circle"></i> Declined</span>';return'<span class="status-badge pending"><i class="fas fa-clock"></i> Pending</span>';}
 
     function showToast(msg,type){type=type||'info';var c=document.getElementById('toastContainer');var t=document.createElement('div');t.className='toast '+type;var icon=type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle';t.innerHTML='<i class="fas '+icon+'"></i><span class="msg">'+esc(msg)+'</span>';c.appendChild(t);setTimeout(function(){t.classList.add('removing');setTimeout(function(){t.remove();},300);},4000);}
+
+    /* ═══ FIX: FRIENDLY ERROR MESSAGES ═══ */
+    function friendlyError(msg){
+      if(!msg)return'Something went wrong. Please try again.';
+      var s=String(msg).toLowerCase();
+      if(s.indexOf('sheet')!==-1&&s.indexOf('not found')!==-1)return'Service temporarily unavailable. Please try again later.';
+      if(s.indexOf('auth_failed')!==-1||s.indexOf('session expired')!==-1)return'Your session has expired. Please log in again.';
+      if(s.indexOf('lock')!==-1||s.indexOf('server busy')!==-1)return'Server is busy. Please wait a moment and try again.';
+      if(s.indexOf('connection failed')!==-1||s.indexOf('failed to fetch')!==-1||s.indexOf('networkerror')!==-1)return'Connection error. Please check your internet and try again.';
+      if(s.indexOf('timeout')!==-1)return'Request timed out. Please try again.';
+      if(s.indexOf('script')!==-1||s.indexOf('exception')!==-1||s.indexOf('internal')!==-1)return'An unexpected error occurred. Please try again later.';
+      if(s.indexOf('quota')!==-1||s.indexOf('limit')!==-1&&s.indexOf('rate')!==-1)return'Too many requests. Please wait a moment.';
+      if(s.indexOf('purchase failed')!==-1)return'Purchase could not be completed. Please try again.';
+      return msg;
+    }
 
     /* ═══ API ═══ */
     async function apiGet(action,params){
@@ -661,15 +563,12 @@
       if(adminToken)params.token=adminToken;
       try{
         var url=API+'?'+new URLSearchParams(params).toString();
-        console.log('[apiGet]',action,url);
         var r=await fetch(url);
         var d=await r.json();
-        console.log('[apiGet response]',action,d);
         if(d.authFailed){handleAuthFailed();return{success:false};}
         return d;
       }catch(e){
-        console.error('[apiGet error]',action,e);
-        return{success:false,error:'Connection failed: '+e.message};
+        return{success:false,error:friendlyError(e.message)};
       }
     }
 
@@ -678,31 +577,46 @@
       data.action=action;
       if(adminToken)data.token=adminToken;
       try{
-        console.log('[apiPost]',action,data);
         var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});
         var d=await r.json();
-        console.log('[apiPost response]',action,d);
         if(d.authFailed){handleAuthFailed();return{success:false};}
         return d;
       }catch(e){
-        console.error('[apiPost error]',action,e);
-        return{success:false,error:'Connection failed: '+e.message};
+        return{success:false,error:friendlyError(e.message)};
       }
     }
 
-    function handleAuthFailed(){adminToken=null;sessionStorage.removeItem('adminToken');showToast('Session expired','error');showAdminSection('adminLoginSection');}
+    function handleAuthFailed(){adminToken=null;sessionStorage.removeItem('adminToken');showToast('Session expired. Please log in again.','error');showAdminSection('adminLoginSection');}
 
     /* ═══ INIT ═══ */
     document.addEventListener('DOMContentLoaded',function(){
-      if(!API||API==='YOUR_WEB_APP_URL_HERE'){showToast('URL not configured','error');return;}
+      if(!API||API==='YOUR_WEB_APP_URL_HERE'){showToast('Service not configured.','error');return;}
       var hash=window.location.hash.replace('#','');
       if(hash===ADMIN_SECRET)showAdminPanel();
       else showPublicView();
     });
     window.addEventListener('hashchange',function(){var hash=window.location.hash.replace('#','');if(hash===ADMIN_SECRET)showAdminPanel();else showPublicView();});
 
-    function showPublicView(){document.getElementById('publicView').style.display='';document.getElementById('adminView').style.display='none';document.getElementById('appContainer').classList.remove('admin-mode');loadPublicSettings();loadStats();setupListeners();}
-    function showAdminPanel(){document.getElementById('publicView').style.display='none';document.getElementById('adminView').style.display='';document.getElementById('appContainer').classList.add('admin-mode');document.getElementById('mainSiteLink').href=window.location.href.split('#')[0];adminToken=sessionStorage.getItem('adminToken');if(adminToken)checkAdminSession();else showAdminSection('adminLoginSection');}
+    function showPublicView(){
+      document.getElementById('publicView').style.display='';
+      document.getElementById('adminView').style.display='none';
+      document.getElementById('appContainer').classList.remove('admin-mode');
+      loadPublicSettings();loadStats();setupListeners();
+      /* ═══ FIX #13: START POLLING ONLY FOR PUBLIC VIEW ═══ */
+      if(statsInterval)clearInterval(statsInterval);
+      statsInterval=setInterval(loadStats,30000);
+    }
+    function showAdminPanel(){
+      document.getElementById('publicView').style.display='none';
+      document.getElementById('adminView').style.display='';
+      document.getElementById('appContainer').classList.add('admin-mode');
+      document.getElementById('mainSiteLink').href=window.location.href.split('#')[0];
+      /* ═══ FIX #13: STOP PUBLIC POLLING IN ADMIN VIEW ═══ */
+      if(statsInterval){clearInterval(statsInterval);statsInterval=null;}
+      adminToken=sessionStorage.getItem('adminToken');
+      if(adminToken)checkAdminSession();
+      else showAdminSection('adminLoginSection');
+    }
 
     var listenersReady=false;
     function setupListeners(){
@@ -715,17 +629,20 @@
         var v=parseInt(this.value);
         if(isNaN(v)||v<min) v=min;
         if(v>max) v=max;
+        /* ═══ FIX #5: SNAP TO NEAREST 50 ═══ */
+        v=Math.round(v/50)*50;
+        if(v<min) v=min;
+        if(v>max) v=max;
         this.value=v;
         updatePriceSummary();
       });
       document.getElementById('inputGcashRef').addEventListener('input',function(){
         this.value=this.value.replace(/\D/g,'').substring(0,13);
       });
-      setInterval(loadStats,30000);
     }
 
     /* ═══ PUBLIC ═══ */
-    async function loadPublicSettings(){var r=await apiGet('publicSettings');if(!r.success)return;appSettings=r;document.title=r.lottery_name||'SWEETSPOT';document.getElementById('gcashName2').textContent=r.gcash_name||'—';document.getElementById('gcashNumber2').textContent=r.gcash_number||'—';document.getElementById('pricePerNumber').textContent='₱'+(r.price_per_number||1).toFixed(2);var minQ=r.min_quantity||50,maxQ=r.max_quantity||1000;var qi=document.getElementById('inputQuantity');qi.min=minQ;qi.max=maxQ;qi.value=minQ;qi.step=1;document.getElementById('qtyHint').innerHTML='<i class="fas fa-info-circle"></i> Min: '+fmtN(minQ)+' — Max: '+fmtN(maxQ);updatePriceSummary();if(r.draw_date){document.getElementById('drawDateText').textContent=formatDrawDate(r.draw_date);document.getElementById('drawDateBanner').classList.add('visible');}if(r.announcement){document.getElementById('announcementText').textContent=r.announcement;document.getElementById('announcementBanner').classList.add('visible');}if(r.maintenance_mode)document.getElementById('maintenanceOverlay').classList.add('active');}
+    async function loadPublicSettings(){var r=await apiGet('publicSettings');if(!r.success)return;appSettings=r;document.title=r.lottery_name||'SWEETSPOT';document.getElementById('gcashName2').textContent=r.gcash_name||'—';document.getElementById('gcashNumber2').textContent=r.gcash_number||'—';document.getElementById('pricePerNumber').textContent='₱'+(r.price_per_number||1).toFixed(2);var minQ=r.min_quantity||50,maxQ=r.max_quantity||1000;var qi=document.getElementById('inputQuantity');qi.min=minQ;qi.max=maxQ;qi.value=minQ;qi.step=50;document.getElementById('qtyHint').innerHTML='<i class="fas fa-info-circle"></i> Min: '+fmtN(minQ)+' — Max: '+fmtN(maxQ);updatePriceSummary();if(r.draw_date){document.getElementById('drawDateText').textContent=formatDrawDate(r.draw_date);document.getElementById('drawDateBanner').classList.add('visible');}if(r.announcement){document.getElementById('announcementText').textContent=r.announcement;document.getElementById('announcementBanner').classList.add('visible');}if(r.maintenance_mode)document.getElementById('maintenanceOverlay').classList.add('active');}
 
     function formatDrawDate(dateStr){if(!dateStr)return'';var months=['January','February','March','April','May','June','July','August','September','October','November','December'];try{if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr)){var parts=dateStr.split('-');return months[parseInt(parts[1])-1]+' '+parseInt(parts[2])+', '+parts[0];}var dt=new Date(dateStr);if(!isNaN(dt.getTime()))return months[dt.getMonth()]+' '+dt.getDate()+', '+dt.getFullYear();}catch(e){}return dateStr;}
 
@@ -738,8 +655,9 @@
       animateNum('statBuyers',r.uniqueBuyers||0);
       isSoldOut=r.remaining<=0;
       if(isSoldOut){
-        var onReceipt=document.getElementById('sectionStep4').classList.contains('active');
-        if(!onReceipt){
+        /* ═══ FIX #17: DON'T HIDE FLOW MID-TRANSACTION ═══ */
+        var inProgress=document.getElementById('sectionStep2').classList.contains('active')||document.getElementById('sectionStep3').classList.contains('active')||document.getElementById('sectionStep4').classList.contains('active');
+        if(!inProgress){
           document.getElementById('purchaseFlow').style.display='none';
           document.getElementById('soldoutBanner').classList.add('visible');
         }
@@ -749,16 +667,31 @@
       }
     }
 
-    function animateNum(id,target){var el=document.getElementById(id);var cur=parseInt(el.textContent.replace(/\D/g,''))||0;if(cur===target){el.textContent=fmtN(target);return;}var step=0;var d=target-cur;var iv=setInterval(function(){step++;el.textContent=fmtN(Math.round(cur+d/30*step));if(step>=30){clearInterval(iv);el.textContent=fmtN(target);}},20);}
+    /* ═══ FIX #10: PREVENT STACKING animateNum INTERVALS ═══ */
+    function animateNum(id,target){
+      var el=document.getElementById(id);
+      if(el._animInterval){clearInterval(el._animInterval);el._animInterval=null;}
+      var cur=parseInt(el.textContent.replace(/\D/g,''))||0;
+      if(cur===target){el.textContent=fmtN(target);return;}
+      var step=0;var d=target-cur;
+      el._animInterval=setInterval(function(){
+        step++;
+        el.textContent=fmtN(Math.round(cur+d/30*step));
+        if(step>=30){clearInterval(el._animInterval);el._animInterval=null;el.textContent=fmtN(target);}
+      },20);
+    }
 
     function showSection(id){document.querySelectorAll('#purchaseFlow .section').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 
+    /* ═══ FIX #5: QTY BUTTONS ±50 ═══ */
     function adjustQty(d){
       var inp=document.getElementById('inputQuantity');
-      var min=parseInt(inp.min)||20;
+      var min=parseInt(inp.min)||50;
       var max=parseInt(inp.max)||1000;
       var current=parseInt(inp.value)||min;
-      inp.value=Math.min(max,Math.max(min,current+d));
+      var newVal=current+d;
+      newVal=Math.round(newVal/50)*50;
+      inp.value=Math.min(max,Math.max(min,newVal));
       updatePriceSummary();
     }
 
@@ -767,7 +700,7 @@
     function goToStep1(){showSection('sectionStep1');}
 
     async function goToStep2(){
-      if(isSoldOut){showToast('Sold out!','error');return;}
+      if(isSoldOut){showToast('All numbers are sold out!','error');return;}
 
       var name=document.getElementById('inputName').value.trim();
       var phone=document.getElementById('inputPhone').value.trim();
@@ -813,13 +746,15 @@
             }else{
               showToast('Only '+fmtN(r.available)+' numbers remaining. Please reduce your quantity.','error');
               if(r.available>=minQ){
-                qtyInput.value=r.available;
+                var adjusted=Math.floor(r.available/50)*50;
+                if(adjusted<minQ) adjusted=minQ;
+                qtyInput.value=adjusted;
                 updatePriceSummary();
-                showToast('Quantity adjusted to '+fmtN(r.available),'info');
+                showToast('Quantity adjusted to '+fmtN(adjusted),'info');
               }
             }
           }else{
-            showToast(r.error||'Not enough numbers available','error');
+            showToast(friendlyError(r.error),'error');
           }
           return;
         }
@@ -850,35 +785,49 @@
       document.getElementById('step3Phone').textContent=(formData.phone);
       document.getElementById('step3Amount').textContent='₱'+fmtN(total)+'.00';
       document.getElementById('inputGcashRef').value='';
-
-      resetRecaptcha();
-
       showSection('sectionStep3');
-
-      setTimeout(function(){
-        renderRecaptchaIfNeeded();
-        document.getElementById('inputGcashRef').focus();
-      },400);
+      setTimeout(function(){document.getElementById('inputGcashRef').focus();},400);
     }
 
-    function copyGcash(){var t=document.getElementById('gcashNumber2').textContent;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('copyGcashBtn');b.classList.add('copied');b.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){b.classList.remove('copied');b.innerHTML='<i class="fas fa-copy"></i>';},2000);});}
-    function copyField(id,btn){navigator.clipboard.writeText(document.getElementById(id).textContent).then(function(){btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i>';},2000);});}
+    /* ═══ FIX #14: CLIPBOARD FALLBACK ═══ */
+    function copyToClipboard(text){
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise(function(resolve,reject){
+        try{
+          var ta=document.createElement('textarea');
+          ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';
+          document.body.appendChild(ta);ta.select();
+          document.execCommand('copy');document.body.removeChild(ta);
+          resolve();
+        }catch(e){reject(e);}
+      });
+    }
+
+    function copyGcash(){
+      var t=document.getElementById('gcashNumber2').textContent;
+      copyToClipboard(t).then(function(){
+        var b=document.getElementById('copyGcashBtn');
+        b.classList.add('copied');b.innerHTML='<i class="fas fa-check"></i>';
+        showToast('Copied!','success');
+        setTimeout(function(){b.classList.remove('copied');b.innerHTML='<i class="fas fa-copy"></i>';},2000);
+      }).catch(function(){showToast('Could not copy. Please copy manually.','error');});
+    }
+
+    function copyField(id,btn){
+      copyToClipboard(document.getElementById(id).textContent).then(function(){
+        btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i>';
+        showToast('Copied!','success');
+        setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i>';},2000);
+      }).catch(function(){showToast('Could not copy. Please copy manually.','error');});
+    }
 
     async function submitPurchase(){
       if(isSubmitting)return;
       var ref=document.getElementById('inputGcashRef').value.trim();
       if(!/^\d{13}$/.test(ref)){showToast('GCash ref must be exactly 13 digits','error');return;}
-      if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Go back.','error');return;}
-
-      if(!recaptchaToken){
-        document.getElementById('recaptchaError').classList.add('visible');
-        document.getElementById('recaptchaSuccess').classList.remove('visible');
-        showToast('Please complete the CAPTCHA verification','error');
-        var recapEl = document.getElementById('recaptchaWidget');
-        if(recapEl) recapEl.scrollIntoView({behavior:'smooth', block:'center'});
-        return;
-      }
-      document.getElementById('recaptchaError').classList.remove('visible');
+      if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Please go back and check your info.','error');return;}
 
       formData.gcashRef=ref;isSubmitting=true;
       var btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
@@ -887,25 +836,18 @@
         name:formData.name,
         phone:formData.phone,
         gcashRef:formData.gcashRef,
-        quantity:formData.quantity,
-        recaptchaToken:recaptchaToken
+        quantity:formData.quantity
       });
 
       if(!res.success){
         btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;
-        showToast(res.error||'Failed','error');
-
-        resetRecaptcha();
+        showToast(friendlyError(res.error),'error');
 
         if(res.error&&res.error.toLowerCase().indexOf('gcash')!==-1){
           document.getElementById('inputGcashRef').value='';
           document.getElementById('inputGcashRef').classList.add('error');
           setTimeout(function(){document.getElementById('inputGcashRef').classList.remove('error');},3000);
           document.getElementById('inputGcashRef').focus();
-        }
-        if(res.error&&res.error.toLowerCase().indexOf('captcha')!==-1){
-          var recapEl=document.getElementById('recaptchaWidget');
-          if(recapEl)recapEl.scrollIntoView({behavior:'smooth',block:'center'});
         }
         return;
       }
@@ -914,8 +856,6 @@
       btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;
       document.getElementById('receiptName').textContent=censorName(formData.name);document.getElementById('receiptPhone').textContent=censorPhone(formData.phone);document.getElementById('receiptAmount').textContent='₱'+fmtN(res.amount)+'.00';document.getElementById('receiptDate').textContent=res.timestamp;document.getElementById('receiptTxId').textContent=res.transactionId;document.getElementById('receiptGcashRef').textContent=formData.gcashRef;
       showSection('sectionStep4');launchConfetti();showToast('Entries submitted! 🎉','success');loadStats();
-
-      resetRecaptcha();
     }
 
     function resetForm(){
@@ -925,8 +865,6 @@
       document.getElementById('inputQuantity').value=appSettings.min_quantity||50;
       formData={name:'',phone:'',quantity:appSettings.min_quantity||50,gcashRef:''};
       updatePriceSummary();
-
-      resetRecaptcha();
 
       if(isSoldOut){
         document.getElementById('purchaseFlow').style.display='none';
@@ -946,7 +884,7 @@
 
     /* ═══ ADMIN AUTH ═══ */
     function showAdminSection(id){document.querySelectorAll('#adminView .section').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
-    async function adminLogin(){var u=document.getElementById('adminUsername').value.trim(),p=document.getElementById('adminPassword').value;if(!u||!p){showToast('Enter credentials','error');return;}var btn=document.getElementById('btnAdminLogin');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Logging in...</span>';var res=await apiPost('adminLogin',{username:u,password:p});btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i><span>Login</span>';if(!res.success){showToast(res.error||'Failed','error');return;}adminToken=res.token;sessionStorage.setItem('adminToken',adminToken);document.getElementById('adminPassword').value='';showToast('Welcome back!','success');showAdminSection('adminDashSection');loadDashboard();}
+    async function adminLogin(){var u=document.getElementById('adminUsername').value.trim(),p=document.getElementById('adminPassword').value;if(!u||!p){showToast('Enter credentials','error');return;}var btn=document.getElementById('btnAdminLogin');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Logging in...</span>';var res=await apiPost('adminLogin',{username:u,password:p});btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i><span>Login</span>';if(!res.success){showToast(friendlyError(res.error),'error');return;}adminToken=res.token;sessionStorage.setItem('adminToken',adminToken);document.getElementById('adminPassword').value='';showToast('Welcome back!','success');showAdminSection('adminDashSection');loadDashboard();}
     function adminLogout(){apiPost('adminLogout',{token:adminToken});adminToken=null;sessionStorage.removeItem('adminToken');showToast('Logged out','info');showAdminSection('adminLoginSection');}
     async function checkAdminSession(){var r=await apiGet('adminInit');if(!r.success){adminToken=null;sessionStorage.removeItem('adminToken');showAdminSection('adminLoginSection');return;}showAdminSection('adminDashSection');loadDashboard();}
 
@@ -954,56 +892,134 @@
     function switchAdminTab(tab){document.querySelectorAll('.admin-nav-btn').forEach(function(b){b.classList.remove('active');});document.querySelector('[data-tab="'+tab+'"]').classList.add('active');document.querySelectorAll('.admin-tab').forEach(function(t){t.style.display='none';});if(tab==='dashboard'){document.getElementById('tabDashboard').style.display='';loadDashboard();}else if(tab==='transactions'){document.getElementById('tabTransactions').style.display='';txPage=1;loadTransactions();}else if(tab==='numbers'){document.getElementById('tabNumbers').style.display='';soldPage=1;loadSoldNumbers();}else if(tab==='draw'){document.getElementById('tabDraw').style.display='';loadDrawHistory();}else if(tab==='search'){document.getElementById('tabSearch').style.display='';}else if(tab==='settings'){document.getElementById('tabSettings').style.display='';loadSettingsForm();}}
 
     /* ═══ ADMIN DASHBOARD ═══ */
-    async function loadDashboard(){var r=await apiGet('adminDashboard');if(!r.success)return;document.getElementById('asSold').textContent=fmtN(r.sold);document.getElementById('asRemaining').textContent=fmtN(r.remaining);document.getElementById('asRevenue').textContent='₱'+fmtN(r.totalRevenue);document.getElementById('asPending').textContent=fmtN(r.pendingTransactions);document.getElementById('asApproved').textContent=fmtN(r.approvedTransactions);document.getElementById('asBuyers').textContent=fmtN(r.uniqueBuyers);var badge=document.getElementById('pendingBadge');if(r.pendingTransactions>0){badge.textContent=r.pendingTransactions;badge.style.display='';}else badge.style.display='none';var body=document.getElementById('recentBody'),empty=document.getElementById('recentEmpty');body.innerHTML='';if(!r.recentActivity||r.recentActivity.length===0){empty.style.display='';return;}empty.style.display='none';r.recentActivity.forEach(function(tx){body.innerHTML+='<tr><td class="tx-id" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td style="font-size:11px">'+esc(tx.timestamp)+'</td></tr>';});}
+    async function loadDashboard(){var r=await apiGet('adminDashboard');if(!r.success)return;document.getElementById('asSold').textContent=fmtN(r.sold);document.getElementById('asRemaining').textContent=fmtN(r.remaining);document.getElementById('asRevenue').textContent='₱'+fmtN(r.totalRevenue);document.getElementById('asPending').textContent=fmtN(r.pendingTransactions);document.getElementById('asApproved').textContent=fmtN(r.approvedTransactions);document.getElementById('asBuyers').textContent=fmtN(r.uniqueBuyers);var badge=document.getElementById('pendingBadge');if(r.pendingTransactions>0){badge.textContent=r.pendingTransactions;badge.style.display='';}else badge.style.display='none';var body=document.getElementById('recentBody'),empty=document.getElementById('recentEmpty');body.innerHTML='';if(!r.recentActivity||r.recentActivity.length===0){empty.style.display='';return;}empty.style.display='none';r.recentActivity.forEach(function(tx){body.innerHTML+='<tr><td class="tx-id" data-txid="'+escAttr(tx.transactionId)+'">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td style="font-size:11px">'+esc(tx.timestamp)+'</td></tr>';});}
+
+    /* ═══ FIX #4: EVENT DELEGATION FOR TX CLICKS ═══ */
+    document.addEventListener('click',function(e){
+      var txEl=e.target.closest('[data-txid]');
+      if(txEl){
+        var txId=txEl.getAttribute('data-txid');
+        if(txId)viewTransaction(txId);
+      }
+    });
 
     /* ═══ ADMIN TRANSACTIONS ═══ */
-    async function loadTransactions(){var r=await apiGet('adminTransactions',{page:txPage,perPage:20});if(!r.success)return;var body=document.getElementById('txBody'),empty=document.getElementById('txEmpty');body.innerHTML='';if(!r.transactions||r.transactions.length===0){empty.style.display='';document.getElementById('txPagination').innerHTML='';return;}empty.style.display='none';r.transactions.forEach(function(tx){body.innerHTML+='<tr><td class="tx-id" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+esc(tx.phone)+'</td><td style="font-family:monospace;font-size:11px">'+esc(tx.gcashRef)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td><div class="table-actions"><button onclick="viewTransaction(\''+esc(tx.transactionId)+'\')"><i class="fas fa-eye"></i></button>'+(tx.status==='PENDING'?'<button onclick="approveTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-check"></i></button><button class="danger" onclick="declineTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-times"></i></button>':'')+(tx.status!=='PENDING'?'<button class="danger" onclick="deleteTx(\''+esc(tx.transactionId)+'\',\''+tx.status+'\')"><i class="fas fa-trash"></i></button>':'')+'</div></td></tr>';});var pg=document.getElementById('txPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="txPage='+(r.page-1)+';loadTransactions()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="txPage='+(r.page+1)+';loadTransactions()"><i class="fas fa-chevron-right"></i></button>';}
+    async function loadTransactions(){var r=await apiGet('adminTransactions',{page:txPage,perPage:20});if(!r.success)return;var body=document.getElementById('txBody'),empty=document.getElementById('txEmpty');body.innerHTML='';if(!r.transactions||r.transactions.length===0){empty.style.display='';document.getElementById('txPagination').innerHTML='';return;}empty.style.display='none';r.transactions.forEach(function(tx){var actions='<div class="table-actions"><button data-action="view" data-txid="'+escAttr(tx.transactionId)+'"><i class="fas fa-eye"></i></button>';if(tx.status==='PENDING'){actions+='<button data-action="approve" data-txid="'+escAttr(tx.transactionId)+'"><i class="fas fa-check"></i></button><button class="danger" data-action="decline" data-txid="'+escAttr(tx.transactionId)+'"><i class="fas fa-times"></i></button>';}if(tx.status!=='PENDING'){actions+='<button class="danger" data-action="delete" data-txid="'+escAttr(tx.transactionId)+'" data-status="'+escAttr(tx.status)+'"><i class="fas fa-trash"></i></button>';}actions+='</div>';body.innerHTML+='<tr><td class="tx-id" data-txid="'+escAttr(tx.transactionId)+'">'+esc(tx.transactionId)+'</td><td class="tx-name">'+esc(tx.name)+'</td><td>'+esc(tx.phone)+'</td><td style="font-family:monospace;font-size:11px">'+esc(tx.gcashRef)+'</td><td>'+fmtN(tx.quantity)+'</td><td class="tx-amount">₱'+fmtN(tx.amount)+'</td><td>'+statusBadge(tx.status)+'</td><td>'+actions+'</td></tr>';});var pg=document.getElementById('txPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="txPage='+(r.page-1)+';loadTransactions()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="txPage='+(r.page+1)+';loadTransactions()"><i class="fas fa-chevron-right"></i></button>';}
 
-    async function viewTransaction(txId){var r=await apiGet('adminGetTransaction',{transactionId:txId});if(!r.success){showToast(r.error||'Not found','error');return;}var tx=r.transaction;var nums=tx.soldNumbers||[];var numbersSection='';if(nums.length>0){numbersSection='<div style="margin-top:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">Numbers ('+fmtN(nums.length)+')</span></div><div class="numbers-grid">'+nums.map(function(n){return'<span class="num-tag">'+esc(n)+'</span>';}).join('')+'</div><div class="numbers-actions"><button class="btn btn-xs btn-secondary" onclick="copyAllNumbers()"><i class="fas fa-copy"></i> Copy All</button><button class="btn btn-xs btn-secondary" onclick="downloadNumbers(\''+esc(tx.transactionId)+'\')"><i class="fas fa-download"></i> Download CSV</button></div></div>';}document.getElementById('modalTitle').textContent='Transaction Details';document.getElementById('modalBody').innerHTML='<div style="display:grid;gap:0;"><div class="receipt-row"><span class="r-label">TX ID</span><span class="r-value txid">'+esc(tx.transactionId)+'</span></div><div class="receipt-row"><span class="r-label">Name</span><span class="r-value">'+esc(tx.name)+'</span></div><div class="receipt-row"><span class="r-label">Phone</span><span class="r-value">'+esc(tx.phone)+'</span></div><div class="receipt-row"><span class="r-label">GCash Ref</span><span class="r-value ref">'+esc(tx.gcashRef)+'</span></div><div class="receipt-row"><span class="r-label">Quantity</span><span class="r-value">'+fmtN(tx.quantity)+'</span></div><div class="receipt-row"><span class="r-label">Amount</span><span class="r-value amount">₱'+fmtN(tx.amount)+'</span></div><div class="receipt-row"><span class="r-label">Status</span><span class="r-value">'+statusBadge(tx.status)+'</span></div><div class="receipt-row"><span class="r-label">Date</span><span class="r-value">'+esc(tx.timestamp)+'</span></div><div class="receipt-row"><span class="r-label">Numbers in Registry</span><span class="r-value">'+fmtN(tx.soldCount||0)+'</span></div></div>'+numbersSection;window._modalNumbers=nums;window._modalTxId=tx.transactionId;window._modalTx=tx;var f='<button class="btn btn-sm btn-secondary" onclick="closeModal()">Close</button>';if(tx.status==='PENDING')f='<button class="btn btn-sm btn-success" onclick="closeModal();approveTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="closeModal();declineTx(\''+esc(tx.transactionId)+'\')"><i class="fas fa-times"></i> Decline</button>'+f;document.getElementById('modalFooter').innerHTML=f;document.getElementById('modalOverlay').classList.add('active');}
+    /* ═══ FIX #4: EVENT DELEGATION FOR TABLE ACTIONS ═══ */
+    document.addEventListener('click',function(e){
+      var btn=e.target.closest('[data-action]');
+      if(!btn)return;
+      var action=btn.getAttribute('data-action');
+      var txId=btn.getAttribute('data-txid');
+      if(!txId)return;
+      if(action==='view')viewTransaction(txId);
+      else if(action==='approve')approveTx(txId);
+      else if(action==='decline')declineTx(txId);
+      else if(action==='delete')deleteTx(txId,btn.getAttribute('data-status')||'');
+    });
 
-    function copyAllNumbers(){if(!window._modalNumbers||window._modalNumbers.length===0){showToast('No numbers','error');return;}var text=window._modalNumbers.join(', ');navigator.clipboard.writeText(text).then(function(){showToast('Copied '+fmtN(window._modalNumbers.length)+' numbers!','success');}).catch(function(){var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied '+fmtN(window._modalNumbers.length)+' numbers!','success');});}
-    function downloadNumbers(txId){if(!window._modalNumbers||window._modalNumbers.length===0){showToast('No numbers','error');return;}var tx=window._modalTx||{};var csv='Number,Transaction ID,Name,Phone\n';window._modalNumbers.forEach(function(n){csv+=n+','+(tx.transactionId||txId)+',"'+(tx.name||'')+'",'+(tx.phone||'')+'\n';});var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='sweetspot-'+txId+'-numbers.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast('Downloaded '+fmtN(window._modalNumbers.length)+' numbers','success');}
+    async function viewTransaction(txId){var r=await apiGet('adminGetTransaction',{transactionId:txId});if(!r.success){showToast(friendlyError(r.error),'error');return;}var tx=r.transaction;var nums=tx.soldNumbers||[];var numbersSection='';if(nums.length>0){numbersSection='<div style="margin-top:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">Numbers ('+fmtN(nums.length)+')</span></div><div class="numbers-grid">'+nums.map(function(n){return'<span class="num-tag">'+esc(n)+'</span>';}).join('')+'</div><div class="numbers-actions"><button class="btn btn-xs btn-secondary" onclick="copyAllNumbers()"><i class="fas fa-copy"></i> Copy All</button><button class="btn btn-xs btn-secondary" onclick="downloadNumbers()"><i class="fas fa-download"></i> Download CSV</button></div></div>';}document.getElementById('modalTitle').textContent='Transaction Details';document.getElementById('modalBody').innerHTML='<div style="display:grid;gap:0;"><div class="receipt-row"><span class="r-label">TX ID</span><span class="r-value txid">'+esc(tx.transactionId)+'</span></div><div class="receipt-row"><span class="r-label">Name</span><span class="r-value">'+esc(tx.name)+'</span></div><div class="receipt-row"><span class="r-label">Phone</span><span class="r-value">'+esc(tx.phone)+'</span></div><div class="receipt-row"><span class="r-label">GCash Ref</span><span class="r-value ref">'+esc(tx.gcashRef)+'</span></div><div class="receipt-row"><span class="r-label">Quantity</span><span class="r-value">'+fmtN(tx.quantity)+'</span></div><div class="receipt-row"><span class="r-label">Amount</span><span class="r-value amount">₱'+fmtN(tx.amount)+'</span></div><div class="receipt-row"><span class="r-label">Status</span><span class="r-value">'+statusBadge(tx.status)+'</span></div><div class="receipt-row"><span class="r-label">Date</span><span class="r-value">'+esc(tx.timestamp)+'</span></div><div class="receipt-row"><span class="r-label">Numbers in Registry</span><span class="r-value">'+fmtN(tx.soldCount||0)+'</span></div></div>'+numbersSection;window._modalNumbers=nums;window._modalTx=tx;var f='<button class="btn btn-sm btn-secondary" onclick="closeModal()">Close</button>';if(tx.status==='PENDING')f='<button class="btn btn-sm btn-success" onclick="closeModal();approveTx(\''+escAttr(tx.transactionId)+'\')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="closeModal();declineTx(\''+escAttr(tx.transactionId)+'\')"><i class="fas fa-times"></i> Decline</button>'+f;document.getElementById('modalFooter').innerHTML=f;document.getElementById('modalOverlay').classList.add('active');}
 
-    async function approveTx(txId){if(!confirm('Approve?'))return;var r=await apiPost('adminApproveTransaction',{transactionId:txId});showToast(r.success?'Approved!':(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
-    async function declineTx(txId){if(!confirm('Decline? Numbers will be freed.'))return;var r=await apiPost('adminDeclineTransaction',{transactionId:txId});showToast(r.success?'Declined. '+(r.freedNumbers||0)+' freed.':(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
-    async function deleteTx(txId,status){if(status==='PENDING'){showToast('Decline first.','error');return;}var cp='';if(status==='APPROVED'){if(!confirm('⚠️ APPROVED. Deleting frees numbers. Continue?'))return;cp='DELETE_APPROVED';}else{if(!confirm('Delete permanently?'))return;}var r=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:cp});if(!r.success&&r.error==='CONFIRM_REQUIRED'){if(confirm(r.message)){var r2=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:r.confirmType});showToast(r2.success?r2.message:r2.error,r2.success?'success':'error');if(r2.success){loadTransactions();loadDashboard();}}return;}showToast(r.success?(r.message||'Deleted'):(r.error||'Failed'),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
-    async function deleteAllTransactions(){if(!confirm('⚠️ DELETE ALL TRANSACTIONS\n\nThis will permanently delete ALL transactions and free ALL sold numbers.\n\nThis action CANNOT be undone.\n\nAre you sure?'))return;var typed=prompt('🔴 FINAL CONFIRMATION\n\nType "DELETE ALL" to confirm:','');if(!typed||typed.trim().toUpperCase()!=='DELETE ALL'){showToast('Cancelled.','info');return;}var btn=document.getElementById('btnDeleteAll');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Deleting...';var res=await apiPost('adminDeleteAllTransactions',{});if(!res.success&&res.error==='CONFIRM_REQUIRED'){res=await apiPost('adminDeleteAllTransactions',{confirm:res.confirmType});}btn.disabled=false;btn.innerHTML='<i class="fas fa-trash-alt"></i> Delete All';if(res.success){showToast(res.message,'success');loadTransactions();loadDashboard();}else{showToast(res.error||'Failed','error');}}
+    function copyAllNumbers(){if(!window._modalNumbers||window._modalNumbers.length===0){showToast('No numbers','error');return;}var text=window._modalNumbers.join(', ');copyToClipboard(text).then(function(){showToast('Copied '+fmtN(window._modalNumbers.length)+' numbers!','success');}).catch(function(){showToast('Could not copy. Please try manually.','error');});}
+
+    function downloadNumbers(){
+      if(!window._modalNumbers||window._modalNumbers.length===0){showToast('No numbers','error');return;}
+      var tx=window._modalTx||{};
+      var csv='Number,Transaction ID,Name,Phone\n';
+      window._modalNumbers.forEach(function(n){csv+=n+','+(tx.transactionId||'')+','+('"'+(tx.name||'')+'"')+','+(tx.phone||'')+'\n';});
+      var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='sweetspot-'+(tx.transactionId||'numbers')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast('Downloaded '+fmtN(window._modalNumbers.length)+' numbers','success');
+    }
+
+    async function approveTx(txId){if(!confirm('Approve this transaction?'))return;var r=await apiPost('adminApproveTransaction',{transactionId:txId});showToast(r.success?'Approved!':friendlyError(r.error),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
+    async function declineTx(txId){if(!confirm('Decline? Numbers will be freed.'))return;var r=await apiPost('adminDeclineTransaction',{transactionId:txId});showToast(r.success?'Declined. '+(r.freedNumbers||0)+' freed.':friendlyError(r.error),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
+    async function deleteTx(txId,status){if(status==='PENDING'){showToast('Decline first before deleting.','error');return;}var cp='';if(status==='APPROVED'){if(!confirm('⚠️ This is an APPROVED transaction. Deleting will free all associated numbers. Continue?'))return;cp='DELETE_APPROVED';}else{if(!confirm('Delete this transaction permanently?'))return;}var r=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:cp});if(!r.success&&r.error==='CONFIRM_REQUIRED'){if(confirm(r.message||'Are you sure?')){var r2=await apiPost('adminDeleteTransaction',{transactionId:txId,confirm:r.confirmType||'DELETE_APPROVED'});showToast(r2.success?(r2.message||'Deleted'):friendlyError(r2.error),r2.success?'success':'error');if(r2.success){loadTransactions();loadDashboard();}}return;}showToast(r.success?(r.message||'Deleted'):friendlyError(r.error),r.success?'success':'error');if(r.success){loadTransactions();loadDashboard();}}
+    async function deleteAllTransactions(){if(!confirm('⚠️ DELETE ALL TRANSACTIONS\n\nThis will permanently delete ALL transactions and free ALL sold numbers.\n\nThis action CANNOT be undone.\n\nAre you sure?'))return;var typed=prompt('🔴 FINAL CONFIRMATION\n\nType "DELETE ALL" to confirm:','');if(!typed||typed.trim().toUpperCase()!=='DELETE ALL'){showToast('Cancelled.','info');return;}var btn=document.getElementById('btnDeleteAll');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Deleting...';var res=await apiPost('adminDeleteAllTransactions',{});if(!res.success&&res.error==='CONFIRM_REQUIRED'){res=await apiPost('adminDeleteAllTransactions',{confirm:res.confirmType||'DELETE_ALL_CONFIRMED'});}btn.disabled=false;btn.innerHTML='<i class="fas fa-trash-alt"></i> Delete All';if(res.success){showToast(res.message||'All deleted.','success');loadTransactions();loadDashboard();}else{showToast(friendlyError(res.error),'error');}}
 
     /* ═══ ADMIN NUMBERS ═══ */
-    async function loadSoldNumbers(){var r=await apiGet('adminSoldNumbers',{page:soldPage,perPage:50});if(!r.success)return;var body=document.getElementById('soldBody'),empty=document.getElementById('soldEmpty');body.innerHTML='';if(!r.numbers||r.numbers.length===0){empty.style.display='';document.getElementById('soldPagination').innerHTML='';return;}empty.style.display='none';r.numbers.forEach(function(n){body.innerHTML+='<tr><td style="font-family:monospace;font-weight:700;color:var(--primary-light)">'+esc(n.number)+'</td><td class="tx-id" onclick="viewTransaction(\''+esc(n.transactionId)+'\')">'+esc(n.transactionId)+'</td><td>'+esc(n.name)+'</td><td>'+esc(n.phone)+'</td><td style="font-size:11px">'+esc(n.timestamp)+'</td></tr>';});var pg=document.getElementById('soldPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="soldPage='+(r.page-1)+';loadSoldNumbers()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="soldPage='+(r.page+1)+';loadSoldNumbers()"><i class="fas fa-chevron-right"></i></button>';}
+    async function loadSoldNumbers(){var r=await apiGet('adminSoldNumbers',{page:soldPage,perPage:50});if(!r.success)return;var body=document.getElementById('soldBody'),empty=document.getElementById('soldEmpty');body.innerHTML='';if(!r.numbers||r.numbers.length===0){empty.style.display='';document.getElementById('soldPagination').innerHTML='';return;}empty.style.display='none';r.numbers.forEach(function(n){body.innerHTML+='<tr><td style="font-family:monospace;font-weight:700;color:var(--primary-light)">'+esc(n.number)+'</td><td class="tx-id" data-txid="'+escAttr(n.transactionId)+'">'+esc(n.transactionId)+'</td><td>'+esc(n.name)+'</td><td>'+esc(n.phone)+'</td><td style="font-size:11px">'+esc(n.timestamp)+'</td></tr>';});var pg=document.getElementById('soldPagination');pg.innerHTML='<button '+(r.page<=1?'disabled':'')+' onclick="soldPage='+(r.page-1)+';loadSoldNumbers()"><i class="fas fa-chevron-left"></i></button><span>Page '+r.page+' of '+r.totalPages+'</span><button '+(r.page>=r.totalPages?'disabled':'')+' onclick="soldPage='+(r.page+1)+';loadSoldNumbers()"><i class="fas fa-chevron-right"></i></button>';}
 
-    async function addNumber(){var num=document.getElementById('addNumInput').value.trim();var name=document.getElementById('addNumName').value.trim()||'Manual';var phone=document.getElementById('addNumPhone').value.trim();if(!num){showToast('Enter a number','error');return;}var r=await apiPost('adminAddNumber',{number:num,name:name,phone:phone});showToast(r.success?r.message:(r.error||'Failed'),r.success?'success':'error');if(r.success){document.getElementById('addNumInput').value='';document.getElementById('addNumName').value='';document.getElementById('addNumPhone').value='';loadSoldNumbers();}}
-    async function removeNumber(){var num=document.getElementById('removeNumInput').value.trim();if(!num){showToast('Enter a number','error');return;}if(!confirm('Remove '+num+'?'))return;var r=await apiPost('adminRemoveNumber',{number:num});showToast(r.success?r.message:(r.error||'Failed'),r.success?'success':'error');if(r.success){document.getElementById('removeNumInput').value='';loadSoldNumbers();}}
+    /* ═══ FIX #18: LOADING STATES FOR ADMIN ACTIONS ═══ */
+    async function addNumber(){
+      var btn=event.target.closest('button');
+      var num=document.getElementById('addNumInput').value.trim();
+      var name=document.getElementById('addNumName').value.trim()||'Manual';
+      var phone=document.getElementById('addNumPhone').value.trim();
+      if(!num){showToast('Enter a number','error');return;}
+      btn.disabled=true;var origHTML=btn.innerHTML;btn.innerHTML='<div class="spinner"></div>';
+      var r=await apiPost('adminAddNumber',{number:num,name:name,phone:phone});
+      btn.disabled=false;btn.innerHTML=origHTML;
+      showToast(r.success?(r.message||'Added'):friendlyError(r.error),r.success?'success':'error');
+      if(r.success){document.getElementById('addNumInput').value='';document.getElementById('addNumName').value='';document.getElementById('addNumPhone').value='';loadSoldNumbers();}
+    }
+
+    async function removeNumber(){
+      var btn=event.target.closest('button');
+      var num=document.getElementById('removeNumInput').value.trim();
+      if(!num){showToast('Enter a number','error');return;}
+      if(!confirm('Remove number '+num+'?'))return;
+      btn.disabled=true;var origHTML=btn.innerHTML;btn.innerHTML='<div class="spinner"></div>';
+      var r=await apiPost('adminRemoveNumber',{number:num});
+      btn.disabled=false;btn.innerHTML=origHTML;
+      showToast(r.success?(r.message||'Removed'):friendlyError(r.error),r.success?'success':'error');
+      if(r.success){document.getElementById('removeNumInput').value='';loadSoldNumbers();}
+    }
 
     /* ═══ ADMIN SEARCH ═══ */
-    async function searchNumber(){var q=document.getElementById('searchNumInput').value.trim();if(!q){showToast('Enter a number','error');return;}var r=await apiGet('adminSearchNumber',{query:q});var c=document.getElementById('searchNumResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(!r.found||r.results.length===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-search" style="font-size:24px"></i><p>Number <strong>'+esc(r.query)+'</strong> not found (available)</p></div>';return;}c.innerHTML=r.results.map(function(n){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--primary-light);font-family:monospace">'+esc(n.number)+'</span></div><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" onclick="viewTransaction(\''+esc(n.transactionId)+'\')">'+esc(n.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(n.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(n.phone)+'</span></div><div class="sr-row"><span class="sr-label">Date</span><span class="sr-value">'+esc(n.timestamp)+'</span></div></div>';}).join('');}
+    async function searchNumber(){
+      var btn=event.target.closest('button');
+      var q=document.getElementById('searchNumInput').value.trim();
+      if(!q){showToast('Enter a number','error');return;}
+      btn.disabled=true;var origHTML=btn.innerHTML;btn.innerHTML='<div class="spinner"></div>';
+      var r=await apiGet('adminSearchNumber',{query:q});
+      btn.disabled=false;btn.innerHTML=origHTML;
+      var c=document.getElementById('searchNumResults');
+      if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Search failed</p>';return;}
+      if(!r.found||r.results.length===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-search" style="font-size:24px"></i><p>Number <strong>'+esc(r.query)+'</strong> not found (available)</p></div>';return;}
+      c.innerHTML=r.results.map(function(n){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--primary-light);font-family:monospace">'+esc(n.number)+'</span></div><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" data-txid="'+escAttr(n.transactionId)+'">'+esc(n.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(n.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(n.phone)+'</span></div><div class="sr-row"><span class="sr-label">Date</span><span class="sr-value">'+esc(n.timestamp)+'</span></div></div>';}).join('');
+    }
 
-    async function searchBuyer(){var q=document.getElementById('searchBuyerInput').value.trim();if(!q){showToast('Enter search term','error');return;}var r=await apiGet('adminSearchBuyer',{query:q});var c=document.getElementById('searchBuyerResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(r.total===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-user" style="font-size:24px"></i><p>No results for "'+esc(q)+'"</p></div>';return;}c.innerHTML='<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">'+r.total+' result(s)</p>'+r.results.map(function(tx){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;color:var(--primary-light);cursor:pointer" onclick="viewTransaction(\''+esc(tx.transactionId)+'\')">'+esc(tx.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(tx.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(tx.phone)+'</span></div><div class="sr-row"><span class="sr-label">GCash Ref</span><span class="sr-value">'+esc(tx.gcashRef)+'</span></div><div class="sr-row"><span class="sr-label">Qty / Amount</span><span class="sr-value">'+fmtN(tx.quantity)+' / ₱'+fmtN(tx.amount)+'</span></div><div class="sr-row"><span class="sr-label">Status</span><span class="sr-value">'+statusBadge(tx.status)+'</span></div></div>';}).join('');}
+    async function searchBuyer(){
+      var btn=event.target.closest('button');
+      var q=document.getElementById('searchBuyerInput').value.trim();
+      if(!q){showToast('Enter search term','error');return;}
+      btn.disabled=true;var origHTML=btn.innerHTML;btn.innerHTML='<div class="spinner"></div>';
+      var r=await apiGet('adminSearchBuyer',{query:q});
+      btn.disabled=false;btn.innerHTML=origHTML;
+      var c=document.getElementById('searchBuyerResults');
+      if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Search failed</p>';return;}
+      if(r.total===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-user" style="font-size:24px"></i><p>No results for "'+esc(q)+'"</p></div>';return;}
+      c.innerHTML='<p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">'+r.total+' result(s)</p>'+r.results.map(function(tx){return'<div class="search-result-card"><div class="sr-row"><span class="sr-label">TX ID</span><span class="sr-value" style="font-size:11px;color:var(--primary-light);cursor:pointer" data-txid="'+escAttr(tx.transactionId)+'">'+esc(tx.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(tx.name)+'</span></div><div class="sr-row"><span class="sr-label">Phone</span><span class="sr-value">'+esc(tx.phone)+'</span></div><div class="sr-row"><span class="sr-label">GCash Ref</span><span class="sr-value">'+esc(tx.gcashRef)+'</span></div><div class="sr-row"><span class="sr-label">Qty / Amount</span><span class="sr-value">'+fmtN(tx.quantity)+' / ₱'+fmtN(tx.amount)+'</span></div><div class="sr-row"><span class="sr-label">Status</span><span class="sr-value">'+statusBadge(tx.status)+'</span></div></div>';}).join('');
+    }
 
-    async function searchDuplicates(){var btn=document.getElementById('btnDupCheck');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Checking...';var r=await apiGet('adminSearchDuplicates');btn.disabled=false;btn.innerHTML='<i class="fas fa-search"></i> Check for Duplicates';var c=document.getElementById('searchDupResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Error</p>';return;}if(r.uniqueDuplicatedNumbers===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-check-circle" style="font-size:24px;color:var(--accent)"></i><p style="color:var(--accent)">No duplicates found! ✓</p></div>';return;}c.innerHTML='<p style="font-size:12px;color:var(--danger);margin-bottom:12px">⚠️ '+r.uniqueDuplicatedNumbers+' duplicated number(s)</p>'+r.duplicates.map(function(d){return'<div class="search-result-card" style="border-color:rgba(239,68,68,0.3)"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--danger);font-family:monospace">'+esc(d.number)+' (×'+d.occurrences+')</span></div><div class="sr-row"><span class="sr-label">First TX</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(d.name)+'</span></div></div>';}).join('');}
+    async function searchDuplicates(){var btn=document.getElementById('btnDupCheck');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Checking...';var r=await apiGet('adminSearchDuplicates');btn.disabled=false;btn.innerHTML='<i class="fas fa-search"></i> Check for Duplicates';var c=document.getElementById('searchDupResults');if(!r.success){c.innerHTML='<p style="color:var(--text-muted)">Check failed</p>';return;}if(r.uniqueDuplicatedNumbers===0){c.innerHTML='<div class="empty-state" style="padding:24px"><i class="fas fa-check-circle" style="font-size:24px;color:var(--accent)"></i><p style="color:var(--accent)">No duplicates found! ✓</p></div>';return;}c.innerHTML='<p style="font-size:12px;color:var(--danger);margin-bottom:12px">⚠️ '+r.uniqueDuplicatedNumbers+' duplicated number(s)</p>'+r.duplicates.map(function(d){return'<div class="search-result-card" style="border-color:rgba(239,68,68,0.3)"><div class="sr-row"><span class="sr-label">Number</span><span class="sr-value" style="color:var(--danger);font-family:monospace">'+esc(d.number)+' (×'+d.occurrences+')</span></div><div class="sr-row"><span class="sr-label">First TX</span><span class="sr-value" style="font-size:11px;cursor:pointer;color:var(--primary-light)" data-txid="'+escAttr(d.transactionId)+'">'+esc(d.transactionId)+'</span></div><div class="sr-row"><span class="sr-label">Name</span><span class="sr-value">'+esc(d.name)+'</span></div></div>';}).join('');}
 
     /* ═══ ADMIN SETTINGS ═══ */
-    async function loadSettingsForm(){var r=await apiGet('adminInit');if(!r.success)return;var s=r.settings;document.getElementById('setLotteryName').value=s.lottery_name||'';var dv=s.draw_date||'';if(dv&&!dv.match(/^\d{4}-\d{2}-\d{2}$/)){try{var pd=new Date(dv);if(!isNaN(pd))dv=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0');}catch(e){}}document.getElementById('setDrawDate').value=dv;document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setPricePerNumber').value=s.price_per_number||'1';document.getElementById('setMinQuantity').value=s.min_quantity||'20';document.getElementById('setMaxQuantity').value=s.max_quantity||'1000';document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNumber').value=s.gcash_number||'';document.getElementById('setMaintenance').checked=s.maintenance_mode==='true';document.getElementById('setNewPassword').value='';}
+    async function loadSettingsForm(){var r=await apiGet('adminInit');if(!r.success)return;var s=r.settings;document.getElementById('setLotteryName').value=s.lottery_name||'';var dv=s.draw_date||'';if(dv&&!dv.match(/^\d{4}-\d{2}-\d{2}$/)){try{var pd=new Date(dv);if(!isNaN(pd))dv=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0')+'-'+String(pd.getDate()).padStart(2,'0');}catch(e){}}document.getElementById('setDrawDate').value=dv;document.getElementById('setAnnouncement').value=s.announcement||'';document.getElementById('setPricePerNumber').value=s.price_per_number||'1';document.getElementById('setMinQuantity').value=s.min_quantity||'50';document.getElementById('setMaxQuantity').value=s.max_quantity||'1000';document.getElementById('setGcashName').value=s.gcash_name||'';document.getElementById('setGcashNumber').value=s.gcash_number||'';document.getElementById('setMaintenance').checked=s.maintenance_mode==='true';document.getElementById('setNewPassword').value='';}
 
-    async function saveSettings(){var btn=document.getElementById('btnSaveSettings');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Saving...</span>';var data={lottery_name:document.getElementById('setLotteryName').value,draw_date:document.getElementById('setDrawDate').value,announcement:document.getElementById('setAnnouncement').value,price_per_number:document.getElementById('setPricePerNumber').value,min_quantity:document.getElementById('setMinQuantity').value,max_quantity:document.getElementById('setMaxQuantity').value,gcash_name:document.getElementById('setGcashName').value,gcash_number:document.getElementById('setGcashNumber').value,maintenance_mode:document.getElementById('setMaintenance').checked?'true':'false'};var pw=document.getElementById('setNewPassword').value;if(pw)data.new_password=pw;var r=await apiPost('adminUpdateSettings',data);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i><span>Save Settings</span>';showToast(r.success?'Settings saved!':(r.error||'Failed'),r.success?'success':'error');}
+    async function saveSettings(){var btn=document.getElementById('btnSaveSettings');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Saving...</span>';var data={lottery_name:document.getElementById('setLotteryName').value,draw_date:document.getElementById('setDrawDate').value,announcement:document.getElementById('setAnnouncement').value,price_per_number:document.getElementById('setPricePerNumber').value,min_quantity:document.getElementById('setMinQuantity').value,max_quantity:document.getElementById('setMaxQuantity').value,gcash_name:document.getElementById('setGcashName').value,gcash_number:document.getElementById('setGcashNumber').value,maintenance_mode:document.getElementById('setMaintenance').checked?'true':'false'};var pw=document.getElementById('setNewPassword').value;if(pw)data.new_password=pw;var r=await apiPost('adminUpdateSettings',data);btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i><span>Save Settings</span>';showToast(r.success?'Settings saved!':friendlyError(r.error),r.success?'success':'error');}
 
     /* ═══════════════════════════════════════════════════════════
        DRAW WINNER SYSTEM
        ═══════════════════════════════════════════════════════════ */
 
+    /* ═══ FIX #8: USE crypto.getRandomValues FOR SECURE DRAW ═══ */
+    function secureRandom(max){
+      var arr=new Uint32Array(1);
+      crypto.getRandomValues(arr);
+      return arr[0]%max;
+    }
+
     function generateDrawNumber() {
-      var d0 = Math.floor(Math.random() * 2);
-      var d1 = Math.floor(Math.random() * 10);
-      var d2 = Math.floor(Math.random() * 10);
-      var d3 = Math.floor(Math.random() * 10);
-      var d4 = Math.floor(Math.random() * 10);
-      return [String(d0), String(d1), String(d2), String(d3), String(d4)];
+      var num=secureRandom(20000);
+      var s=String(num).padStart(5,'0');
+      return s.split('');
     }
 
     function startSlotAnimation(slotEl, isFirstDigit) {
       var val = slotEl.querySelector('.slot-value');
       slotEl._spinInterval = setInterval(function() {
-        val.textContent = isFirstDigit ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 10);
+        val.textContent = isFirstDigit ? secureRandom(2) : secureRandom(10);
       }, 80);
     }
 
@@ -1021,7 +1037,7 @@
         var isFirst = (index === 0);
         var count = 0;
         var si = setInterval(function() {
-          slot.querySelector('.slot-value').textContent = isFirst ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 10);
+          slot.querySelector('.slot-value').textContent = isFirst ? secureRandom(2) : secureRandom(10);
           count++;
           if (count >= 8) {
             clearInterval(si);
@@ -1085,9 +1101,11 @@
       var res = await apiGet('adminDrawWinner', { number: drawnNumber });
 
       if (!res.success) {
-        showToast(res.error || 'Lookup failed', 'error');
+        /* ═══ FIX #19: STOP ALL SLOT ANIMATIONS ON ERROR ═══ */
+        for (var si = 0; si < 5; si++) stopSlotAnimation(document.getElementById('slot' + si));
+        showToast(friendlyError(res.error), 'error');
         document.getElementById('drawTitleText').textContent = 'Error';
-        document.getElementById('drawStatus').textContent = res.error || 'Something went wrong.';
+        document.getElementById('drawStatus').textContent = 'Something went wrong. Please try again.';
         btn.style.display = 'none';
         document.getElementById('btnDrawAgain').style.display = '';
         isDrawing = false;
@@ -1118,6 +1136,7 @@
           transactionId: res.transactionId || '—',
           timestamp: res.drawnAt || new Date().toLocaleString(), matched: true
         });
+        saveDrawHistory();
         renderDrawHistory();
         showToast('🏆 Winner: ' + (res.name || res.number), 'success');
 
@@ -1136,6 +1155,7 @@
           number: drawnNumber, name: '—', phone: '—', transactionId: '—',
           timestamp: new Date().toLocaleString(), matched: false
         });
+        saveDrawHistory();
         renderDrawHistory();
         showToast(drawnNumber + ' — No match. Try again!', 'info');
       }
@@ -1162,7 +1182,21 @@
       }
     }
 
-    function loadDrawHistory() { renderDrawHistory(); }
+    /* ═══ FIX #9/#22: PERSIST DRAW HISTORY IN localStorage ═══ */
+    function saveDrawHistory(){
+      try{localStorage.setItem('sweetspot_draw_history',JSON.stringify(drawHistory.slice(0,100)));}catch(e){}
+    }
+    function loadDrawHistoryFromStorage(){
+      try{
+        var raw=localStorage.getItem('sweetspot_draw_history');
+        if(raw)drawHistory=JSON.parse(raw);
+      }catch(e){drawHistory=[];}
+    }
+
+    function loadDrawHistory(){
+      loadDrawHistoryFromStorage();
+      renderDrawHistory();
+    }
 
     function renderDrawHistory() {
       var container = document.getElementById('drawHistoryList');
@@ -1183,7 +1217,7 @@
         var nameD = isMatch ? esc(d.name) : '<span style="color:var(--text-muted)">Not sold</span>';
         var numC = isMatch ? 'var(--secondary)' : 'var(--text-muted)';
         var bg = isMatch ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.1)';
-        html += '<div class="draw-history-item"><div class="draw-history-left"><div style="width:32px;height:32px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+icon+'</div><div><div style="display:flex;align-items:center;gap:8px"><span class="draw-history-num" style="color:'+numC+'">'+esc(d.number)+'</span>'+label+'</div><div class="draw-history-name">'+nameD+'</div><div class="draw-history-date">'+esc(d.timestamp)+'</div></div></div><div style="text-align:right">'+(isMatch?'<div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" onclick="viewTransaction(\''+esc(d.transactionId)+'\')">'+esc(d.transactionId)+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+esc(d.phone)+'</div>':'')+'</div></div>';
+        html += '<div class="draw-history-item"><div class="draw-history-left"><div style="width:32px;height:32px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+icon+'</div><div><div style="display:flex;align-items:center;gap:8px"><span class="draw-history-num" style="color:'+numC+'">'+esc(d.number)+'</span>'+label+'</div><div class="draw-history-name">'+nameD+'</div><div class="draw-history-date">'+esc(d.timestamp)+'</div></div></div><div style="text-align:right">'+(isMatch?'<div style="font-size:11px;color:var(--text-muted);font-family:monospace;cursor:pointer" data-txid="'+escAttr(d.transactionId)+'">'+esc(d.transactionId)+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+esc(d.phone)+'</div>':'')+'</div></div>';
       }
       container.innerHTML = html;
       container.appendChild(empty);
@@ -1192,6 +1226,6 @@
     /* ═══ MODAL ═══ */
     function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
     document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
-</script>
+  </script>
 </body>
 </html>
