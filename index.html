@@ -299,7 +299,24 @@
     .draw-history-name { font-size:13px; color:var(--text-primary); font-weight:600; }
     .draw-history-date { font-size:11px; color:var(--text-muted); }
     .pool-info-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:99px; font-size:11px; font-weight:700; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.2); color:var(--primary-light); margin-left:8px; }
-
+        .quick-pick-section { margin-top: 14px; }
+    .quick-pick-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .quick-pick-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quick-pick-btn { padding: 10px 0; min-width: 72px; flex: 1; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-secondary); font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: var(--transition); text-align: center; position: relative; overflow: hidden; }
+    .quick-pick-btn:hover { border-color: var(--primary-light); color: var(--text-primary); background: var(--bg-card-hover); transform: translateY(-1px); }
+    .quick-pick-btn:active { transform: scale(0.96); }
+    .quick-pick-btn .qp-plus { font-size: 10px; color: var(--primary-light); font-weight: 600; display: block; line-height: 1; margin-bottom: 2px; }
+    .quick-pick-btn .qp-value { display: block; line-height: 1; }
+    .quick-pick-btn.qp-highlight { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.06); }
+    .quick-pick-btn.qp-highlight:hover { border-color: var(--secondary); background: rgba(245, 158, 11, 0.12); }
+    .quick-pick-btn.qp-highlight .qp-plus { color: var(--secondary); }
+    .quick-pick-btn.qp-added { border-color: var(--accent); background: rgba(16, 185, 129, 0.1); color: var(--accent); animation: qpPop 0.3s ease; }
+    @keyframes qpPop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    .quick-pick-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .quick-pick-reset, .quick-pick-max { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-xs); background: transparent; color: var(--text-muted); font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .quick-pick-reset:hover { border-color: var(--danger); color: var(--danger); }
+    .quick-pick-max:hover { border-color: var(--primary-light); color: var(--primary-light); }
+    .qty-current-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; background: rgba(108, 60, 225, 0.12); color: var(--primary-light); margin-left: 8px; vertical-align: middle; }
     @media(max-width:380px) { .app-container{padding:12px 12px 32px} .logo-container{width:140px;height:140px;border-radius:30px} .price-total .amount{font-size:20px} .payment-amount-banner .pay-amount{font-size:28px} .slot-digit{width:44px;height:62px;font-size:24px} .winner-number{font-size:32px;letter-spacing:4px} }
     @media(max-width:600px) { .admin-stats{grid-template-columns:1fr 1fr} .slot-digit{width:48px;height:68px;font-size:28px} }
   </style>
@@ -350,7 +367,7 @@
             <div class="card-header"><div class="card-icon purple"><i class="fas fa-user"></i></div><div class="card-title">Your Information</div></div>
             <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="inputName" placeholder="Juan Dela Cruz" maxlength="40" autocomplete="name"></div>
             <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="inputPhone" placeholder="09171234567" maxlength="11" autocomplete="tel"><div class="form-hint"><i class="fas fa-info-circle"></i> Must start with 09</div></div>
-            <div class="form-group"><label class="form-label">Quantity</label><div class="quantity-control"><button type="button" class="qty-btn" onclick="adjustQty(-50)">−</button><input type="number" class="form-input qty-input" id="inputQuantity" min="50" max="1000" value="50" step="50"><button type="button" class="qty-btn" onclick="adjustQty(50)">+</button></div><div class="form-hint" id="qtyHint"><i class="fas fa-info-circle"></i> Min: 50 — Max: 1,000</div></div>
+            <div class="form-group">               <label class="form-label">Quantity</label>               <div class="quantity-control">                 <button type="button" class="qty-btn" onclick="adjustQty(-50)">−</button>                 <input type="number" class="form-input qty-input" id="inputQuantity" min="50" max="1000" value="50" step="1">                 <button type="button" class="qty-btn" onclick="adjustQty(50)">+</button>               </div>               <div class="form-hint" id="qtyHint"><i class="fas fa-info-circle"></i> Min: 50 — Max: 1,000</div>               <div class="quick-pick-section" id="quickPickSection">                 <div class="quick-pick-label">Quick Add</div>                 <div class="quick-pick-grid" id="quickPickGrid"></div>               </div>               <div class="quick-pick-actions">                 <button type="button" class="quick-pick-reset" id="qtyResetBtn" onclick="resetQty()"><i class="fas fa-undo"></i> Reset to Min</button>                 <button type="button" class="quick-pick-max" id="qtyMaxBtn" onclick="setMaxQty()"><i class="fas fa-arrow-up"></i> Set Max</button>               </div>             </div>
             <div class="price-summary"><div class="price-row"><span>Price per number</span><span id="pricePerNumber">₱1.00</span></div><div class="price-total"><span class="label">Total</span><span class="amount" id="summaryTotal">₱50.00</span></div></div>
             <div style="margin-top:24px;"><button type="button" class="btn btn-primary" id="btnContinue" onclick="goToStep2()"><span>Continue to Payment</span><i class="fas fa-arrow-right"></i></button></div>
           </div>
@@ -688,7 +705,7 @@
       else showAdminSection('adminLoginSection');
     }
 
-    var listenersReady=false;
+        var listenersReady=false;
     function setupListeners(){
       if(listenersReady)return;
       listenersReady=true;
@@ -697,11 +714,14 @@
         var min=parseInt(this.min)||50;
         var max=parseInt(this.max)||1000;
         var v=parseInt(this.value);
-        if(isNaN(v)||v<min) v=min;
-        if(v>max) v=max;
-        v=Math.round(v/50)*50;
-        if(v<min) v=min;
-        if(v>max) v=max;
+        if(isNaN(v)||v<min){
+          v=min;
+          showToast('Minimum quantity is '+fmtN(min),'info');
+        }
+        if(v>max){
+          v=max;
+          showToast('Maximum quantity is '+fmtN(max),'info');
+        }
         this.value=v;
         updatePriceSummary();
       });
@@ -709,18 +729,29 @@
         this.value=this.value.replace(/\D/g,'').substring(0,13);
       });
 
-      /* Pool preview in settings */
+      /* Pool size input — live warning */
       var poolInput=document.getElementById('setTotalPool');
       if(poolInput){
         poolInput.addEventListener('input',function(){
           var preview=document.getElementById('poolPreview');
           if(preview) preview.textContent=poolPreviewText(this.value);
         });
+        poolInput.addEventListener('blur',function(){
+          var v=parseInt(this.value);
+          if(!isNaN(v)){
+            v=Math.round(v/10000)*10000;
+            if(v<10000)v=10000;
+            if(v>200000)v=200000;
+            this.value=v;
+            var preview=document.getElementById('poolPreview');
+            if(preview) preview.textContent=poolPreviewText(v);
+          }
+        });
       }
     }
 
     /* ═══ PUBLIC ═══ */
-    async function loadPublicSettings(){
+      async function loadPublicSettings(){
       var r=await apiGet('publicSettings');
       if(!r.success)return;
       appSettings=r;
@@ -734,9 +765,10 @@
       document.getElementById('pricePerNumber').textContent='₱'+(r.price_per_number||1).toFixed(2);
       var minQ=r.min_quantity||50,maxQ=r.max_quantity||1000;
       var qi=document.getElementById('inputQuantity');
-      qi.min=minQ;qi.max=maxQ;qi.value=minQ;qi.step=50;
+      qi.min=minQ;qi.max=maxQ;qi.value=minQ;qi.step=1;
       document.getElementById('qtyHint').innerHTML='<i class="fas fa-info-circle"></i> Min: '+fmtN(minQ)+' — Max: '+fmtN(maxQ);
       updatePriceSummary();
+      buildQuickPicks();
       if(r.draw_date){document.getElementById('drawDateText').textContent=formatDrawDate(r.draw_date);document.getElementById('drawDateBanner').classList.add('visible');}
       if(r.announcement){document.getElementById('announcementText').textContent=r.announcement;document.getElementById('announcementBanner').classList.add('visible');}
       if(r.maintenance_mode)document.getElementById('maintenanceOverlay').classList.add('active');
@@ -782,20 +814,117 @@
 
     function adjustQty(d){
       var inp=document.getElementById('inputQuantity');
-      var min=parseInt(inp.min)||50;
-      var max=parseInt(inp.max)||1000;
-      var current=parseInt(inp.value)||min;
+      var minQ=parseInt(inp.min)||50;
+      var maxQ=parseInt(inp.max)||1000;
+      var current=parseInt(inp.value)||minQ;
+
       var newVal=current+d;
-      newVal=Math.round(newVal/50)*50;
-      inp.value=Math.min(max,Math.max(min,newVal));
+      newVal=Math.min(maxQ,Math.max(minQ,newVal));
+
+      inp.value=newVal;
       updatePriceSummary();
     }
 
     function updatePriceSummary(){var q=parseInt(document.getElementById('inputQuantity').value)||0;var p=appSettings.price_per_number||1;document.getElementById('summaryTotal').textContent='₱'+fmtN(q*p)+'.00';}
+    function buildQuickPicks(){
+      var grid=document.getElementById('quickPickGrid');
+      if(!grid)return;
 
+      var minQ=appSettings.min_quantity||50;
+      var maxQ=appSettings.max_quantity||1000;
+      var pool=poolConfig.totalPool||20000;
+
+      /* Generate smart quick pick values based on pool and limits */
+      var picks=[];
+
+      if(pool<=10000){
+        picks=[50,100,200,500,1000];
+      }else if(pool<=20000){
+        picks=[50,100,250,500,1000,2000];
+      }else if(pool<=50000){
+        picks=[100,250,500,1000,2500,5000];
+      }else if(pool<=100000){
+        picks=[100,500,1000,2500,5000,10000];
+      }else{
+        picks=[500,1000,2500,5000,10000,25000];
+      }
+
+      /* Filter: only show picks that make sense within limits */
+      picks=picks.filter(function(v){
+        return v>=1&&v<=maxQ;
+      });
+
+      /* Ensure we always have the min value as first pick if not present */
+      if(picks.indexOf(minQ)===-1&&minQ>0){
+        picks.unshift(minQ);
+      }
+
+      /* Remove duplicates and sort */
+      picks=picks.filter(function(v,i,a){return a.indexOf(v)===i;});
+      picks.sort(function(a,b){return a-b;});
+
+      /* Limit to 6 buttons max */
+      if(picks.length>6) picks=picks.slice(0,6);
+
+      /* Build buttons */
+      grid.innerHTML='';
+      picks.forEach(function(val,idx){
+        var btn=document.createElement('button');
+        btn.type='button';
+        btn.className='quick-pick-btn'+(idx>=picks.length-2?' qp-highlight':'');
+        btn.innerHTML='<span class="qp-plus">+</span><span class="qp-value">'+fmtN(val)+'</span>';
+        btn.onclick=function(){quickAdd(val,btn);};
+        grid.appendChild(btn);
+      });
+    }
+
+    function quickAdd(amount,btnEl){
+      var inp=document.getElementById('inputQuantity');
+      var minQ=parseInt(inp.min)||50;
+      var maxQ=parseInt(inp.max)||1000;
+      var current=parseInt(inp.value)||minQ;
+
+      var newVal=current+amount;
+
+      if(newVal>maxQ){
+        if(current>=maxQ){
+          showToast('Already at maximum ('+fmtN(maxQ)+')','error');
+          return;
+        }
+        newVal=maxQ;
+        showToast('Capped at maximum: '+fmtN(maxQ),'info');
+      }
+
+      inp.value=newVal;
+      updatePriceSummary();
+
+      /* Visual feedback */
+      if(btnEl){
+        btnEl.classList.add('qp-added');
+        setTimeout(function(){btnEl.classList.remove('qp-added');},400);
+      }
+
+      showToast('+'+fmtN(amount)+' → Total: '+fmtN(newVal),'success');
+    }
+
+    function resetQty(){
+      var inp=document.getElementById('inputQuantity');
+      var minQ=parseInt(inp.min)||50;
+      inp.value=minQ;
+      updatePriceSummary();
+      showToast('Reset to '+fmtN(minQ),'info');
+    }
+
+    function setMaxQty(){
+      var inp=document.getElementById('inputQuantity');
+      var maxQ=parseInt(inp.max)||1000;
+      inp.value=maxQ;
+      updatePriceSummary();
+      showToast('Set to maximum: '+fmtN(maxQ),'success');
+    }
     function goToStep1(){showSection('sectionStep1');}
 
-    async function goToStep2(){
+      async function goToStep2(){
       if(isSoldOut){showToast('All numbers are sold out!','error');return;}
       var name=document.getElementById('inputName').value.trim();
       var phone=document.getElementById('inputPhone').value.trim();
@@ -828,7 +957,11 @@
             if(r.available===0){showToast('All numbers are sold out!','error');}
             else{
               showToast('Only '+fmtN(r.available)+' numbers remaining. Please reduce your quantity.','error');
-              if(r.available>=minQ){var adjusted=Math.floor(r.available/50)*50;if(adjusted<minQ)adjusted=minQ;qtyInput.value=adjusted;updatePriceSummary();showToast('Quantity adjusted to '+fmtN(adjusted),'info');}
+              if(r.available>=minQ){
+                qtyInput.value=r.available;
+                updatePriceSummary();
+                showToast('Quantity adjusted to '+fmtN(r.available),'info');
+              }
             }
           }else{showToast(friendlyError(r.error),'error');}
           return;
