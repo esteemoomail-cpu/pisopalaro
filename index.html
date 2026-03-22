@@ -355,12 +355,36 @@
     .gen-numbers-info { background: rgba(108,60,225,0.08); border: 1px solid rgba(108,60,225,0.15); border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 12px; }
     .gen-numbers-info p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
     .gen-numbers-info strong { color: var(--primary-light); }
-
+    /* WELCOME SPLASH SCREEN */
+    .welcome-splash { position: fixed; inset: 0; z-index: 3000; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.5s ease; }
+    .welcome-splash.hiding { animation: splashFadeOut 0.5s ease forwards; }
+    .welcome-inner { max-width: 480px; width: 100%; text-align: center; cursor: pointer; }
+    .welcome-image-container { width: 100%; border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; position: relative; box-shadow: var(--shadow-lg); border: 1px solid var(--border); transition: var(--transition); }
+    .welcome-image-container:hover { transform: translateY(-2px); box-shadow: 0 16px 64px rgba(108,60,225,0.3); border-color: var(--primary-light); }
+    .welcome-image-container:active { transform: scale(0.98); }
+    .welcome-image-container img { width: 100%; height: auto; display: block; min-height: 200px; object-fit: cover; background: var(--bg-card); }
+    .welcome-tap-hint { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; color: var(--text-muted); font-size: 14px; font-weight: 600; animation: welcomePulse 2s ease-in-out infinite; }
+    .welcome-tap-hint i { font-size: 18px; color: var(--primary-light); }
+    @keyframes welcomePulse { 0%,100%{opacity:0.6;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
+    @keyframes splashFadeOut { 0%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(1.05)} }
     @media(max-width:380px) { .app-container{padding:12px 12px 32px} .logo-container{width:140px;height:140px;border-radius:30px} .price-total .amount{font-size:20px} .payment-amount-banner .pay-amount{font-size:28px} .slot-digit{width:44px;height:62px;font-size:24px} .winner-number{font-size:32px;letter-spacing:4px} }
     @media(max-width:600px) { .admin-stats{grid-template-columns:1fr 1fr} .slot-digit{width:48px;height:68px;font-size:28px} }
   </style>
 </head>
 <body>
+  <!-- WELCOME SPLASH SCREEN -->
+<div class="welcome-splash" id="welcomeSplash" style="display:none;">
+  <div class="welcome-inner" onclick="dismissWelcome()">
+    <div class="welcome-image-container">
+      <!-- Change this image src later -->
+      <img src="https://via.placeholder.com/480x600/231D33/8B5CF6?text=SWEETSPOT%0ATap+to+Start" alt="Welcome to Sweetspot" id="welcomeImage">
+    </div>
+    <div class="welcome-tap-hint">
+      <i class="fas fa-hand-pointer"></i>
+      <span>Tap anywhere to continue</span>
+    </div>
+  </div>
+</div>
   <div class="bg-effects"><div class="bg-orb"></div><div class="bg-orb"></div><div class="bg-orb"></div></div>
   <div class="toast-container" id="toastContainer"></div>
   <div class="maintenance-overlay" id="maintenanceOverlay"><i class="fas fa-tools"></i><h2>Under Maintenance</h2><p>We're working on something amazing. Please check back soon!</p></div>
@@ -1304,7 +1328,38 @@
 
     function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
     document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
-
+    /* WELCOME SPLASH SCREEN - shows only on first visit */
+    function checkWelcomeSplash(){
+      try{
+        var seen=localStorage.getItem('sweetspot_welcome_seen');
+        if(!seen){
+          document.getElementById('welcomeSplash').style.display='flex';
+          // Hide main content while splash is showing
+          document.getElementById('appContainer').style.visibility='hidden';
+        }
+      }catch(e){
+        // If localStorage fails, just skip splash
+      }
+    }
+    function dismissWelcome(){
+      var splash=document.getElementById('welcomeSplash');
+      if(!splash)return;
+      splash.classList.add('hiding');
+      try{localStorage.setItem('sweetspot_welcome_seen','1');}catch(e){}
+      setTimeout(function(){
+        splash.style.display='none';
+        splash.remove();
+        document.getElementById('appContainer').style.visibility='';
+      },500);
+    }
+    // Check on load
+    document.addEventListener('DOMContentLoaded',function(){
+      var hash=window.location.hash.replace('#','');
+      // Only show splash on public view, not admin
+      if(hash!=='ssadmin'){
+        checkWelcomeSplash();
+      }
+    });
     buildSlots();
   </script>
 </body>
