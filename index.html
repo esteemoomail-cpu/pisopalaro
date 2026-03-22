@@ -1023,13 +1023,22 @@
   e.preventDefault();
   var isAndroid=/android/i.test(navigator.userAgent);
   var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var opened=false;
   if(isAndroid){
-    // Android intent to open GCash app, falls back to Play Store if not installed
-    window.location.href='intent://#Intent;scheme=gcash;package=com.globe.gcash.android;S.browser_fallback_url=https://play.google.com/store/apps/details?id=com.globe.gcash.android;end';
+    // Try multiple known GCash package/scheme combinations
+    var tryOpen=function(url,fallback,delayMs){
+      window.location.href=url;
+      if(fallback){setTimeout(function(){if(!document.hidden)window.location.href=fallback;},delayMs||2000);}
+    };
+    tryOpen(
+      'intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.globe.gcash.android;end',
+      'https://play.google.com/store/apps/details?id=com.globe.gcash.android',
+      2500
+    );
   }else if(isIOS){
     window.location.href='gcash://';
     setTimeout(function(){
-      window.open('https://apps.apple.com/ph/app/gcash/id520020791','_blank');
+      if(!document.hidden) window.open('https://apps.apple.com/ph/app/gcash/id520020791','_blank');
     },1500);
   }else{
     window.open('https://m.gcash.com','_blank');
