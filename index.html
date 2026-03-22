@@ -788,7 +788,7 @@
     var appSettings={};
     var isSubmitting=false;
     var isSoldOut=false;
-    var formData={name:'',phone:'',quantity:50,gcashRef:''};
+    var formData={name:'',phone:'',quantity:50,gcashRef:'',paymentMethod:'gcash'};
     var adminToken=null;
     var txPage=1,soldPage=1;
     var drawHistory=[];
@@ -1037,12 +1037,13 @@
     function copyField(id,btn){copyToClipboard(document.getElementById(id).textContent).then(function(){btn.classList.add('copied');btn.innerHTML='<i class="fas fa-check"></i>';showToast('Copied!','success');setTimeout(function(){btn.classList.remove('copied');btn.innerHTML='<i class="fas fa-copy"></i>';},2000);}).catch(function(){showToast('Could not copy. Please copy manually.','error');});}
 
     /* Payment app deep links */
-    function switchPaymentMethod(method){
-      document.querySelectorAll('.payment-method-tab').forEach(function(t){t.classList.remove('active');});
-      document.querySelector('[data-method="'+method+'"]').classList.add('active');
-      document.querySelectorAll('.payment-method-content').forEach(function(c){c.classList.remove('active');});
-      document.getElementById(method==='gcash'?'paymentGcash':'paymentMaya').classList.add('active');
-    }
+   function switchPaymentMethod(method){
+  document.querySelectorAll('.payment-method-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelector('[data-method="'+method+'"]').classList.add('active');
+  document.querySelectorAll('.payment-method-content').forEach(function(c){c.classList.remove('active');});
+  document.getElementById(method==='gcash'?'paymentGcash':'paymentMaya').classList.add('active');
+  formData.paymentMethod=method;
+}
     function openGcashApp(e){
   e.preventDefault();
   var isAndroid=/android/i.test(navigator.userAgent);
@@ -1086,7 +1087,7 @@
       if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Please go back and check your info.','error');return;}
       formData.gcashRef=ref;isSubmitting=true;
       var btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
-      var res=await apiPost('purchase',{name:formData.name,phone:formData.phone,gcashRef:formData.gcashRef,quantity:formData.quantity});
+      var res=await apiPost('purchase',{name:formData.name,phone:formData.phone,gcashRef:formData.gcashRef,quantity:formData.quantity,paymentMethod:formData.paymentMethod||'gcash'});
       if(!res.success){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i><span>Submit</span>';isSubmitting=false;showToast(friendlyError(res.error),'error');
         if(res.error&&res.error.toLowerCase().indexOf('gcash')!==-1){document.getElementById('inputGcashRef').value='';document.getElementById('inputGcashRef').classList.add('error');setTimeout(function(){document.getElementById('inputGcashRef').classList.remove('error');},3000);document.getElementById('inputGcashRef').focus();}return;}
       showGenOverlay();await waitGen();hideGenOverlay();
@@ -1102,7 +1103,7 @@
     function resetForm(){
       document.getElementById('inputName').value='';document.getElementById('inputPhone').value='';document.getElementById('inputGcashRef').value='';
       document.getElementById('inputQuantity').value=appSettings.min_quantity||50;
-      formData={name:'',phone:'',quantity:appSettings.min_quantity||50,gcashRef:''};updatePriceSummary();
+      formData={name:'',phone:'',quantity:appSettings.min_quantity||50,gcashRef:'',paymentMethod:'gcash'};updatePriceSummary();
       if(isSoldOut){document.getElementById('purchaseFlow').style.display='none';document.getElementById('soldoutBanner').classList.add('visible');}else{showSection('sectionStep1');}
     }
 
