@@ -577,7 +577,7 @@
           <div class="card">
             <div class="card-header"><div class="card-icon amber"><i class="fas fa-receipt"></i></div><div class="card-title">Proof of Payment</div></div>
             <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">Enter the <strong style="color:var(--text-primary)">GCash/Maya Reference Number</strong> from your receipt.</p>
-            <div class="form-group" style="margin-bottom:0;"><label class="form-label">Reference Number</label><input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234567890123" maxlength="13" inputmode="numeric" style="font-size:18px;text-align:center;letter-spacing:2px;font-weight:600;"><div class="form-hint"><i class="fas fa-info-circle"></i> 13-digit number from your GCash/Maya receipt</div></div>
+<div class="form-group" style="margin-bottom:0;"><label class="form-label">Reference Number</label><input type="text" class="form-input" id="inputGcashRef" placeholder="e.g. 1234567890123" maxlength="13" inputmode="numeric" style="font-size:18px;text-align:center;letter-spacing:2px;font-weight:600;"><div class="form-hint"><i class="fas fa-info-circle"></i> Up to 13 digits from your GCash/Maya receipt</div></div>
             <div class="price-summary" style="margin-top:24px;"><div class="price-row"><span>Name</span><span id="step3Name" style="font-weight:600;color:var(--text-primary)">-</span></div><div class="price-row"><span>Phone</span><span id="step3Phone" style="font-weight:600;color:var(--text-primary)">-</span></div><div class="price-total"><span class="label">Amount</span><span class="amount" id="step3Amount">&#8369;100.00</span></div></div>
             <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="goToStep2()"><i class="fas fa-arrow-left"></i><span>Back</span></button><button type="button" class="btn btn-success" id="btnSubmit" onclick="submitPurchase()"><i class="fas fa-paper-plane"></i><span>Submit</span></button></div>
           </div>
@@ -1020,10 +1020,20 @@
       document.getElementById(method==='gcash'?'paymentGcash':'paymentMaya').classList.add('active');
     }
     function openGcashApp(e){
-      e.preventDefault();var gcashNum=(appSettings.gcash_number||'').replace(/\D/g,'');
-      try{window.location.href='gcash://sendmoney?number='+gcashNum;setTimeout(function(){window.open('https://m.gcash.com','_blank');},2000);}catch(err){window.open('https://m.gcash.com','_blank');}
-      showToast('Opening GCash...','info');
-    }
+  e.preventDefault();
+  var gcashNum=(appSettings.gcash_number||'').replace(/\D/g,'');
+  var isAndroid=/android/i.test(navigator.userAgent);
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isAndroid){
+    window.location.href='intent://sendmoney#Intent;scheme=gcash;package=com.globe.gcash.android;end';
+  }else if(isIOS){
+    window.location.href='gcash://';
+    setTimeout(function(){window.open('https://apps.apple.com/ph/app/gcash/id520020791','_blank');},1500);
+  }else{
+    window.open('https://m.gcash.com','_blank');
+  }
+  showToast('Opening GCash...','info');
+}
     function openMayaApp(e){
       e.preventDefault();
       try{window.location.href='paymaya://sendmoney';setTimeout(function(){window.open('https://www.maya.ph','_blank');},2000);}catch(err){window.open('https://www.maya.ph','_blank');}
@@ -1037,7 +1047,7 @@
 
     async function submitPurchase(){
       if(isSubmitting)return;var ref=document.getElementById('inputGcashRef').value.trim();
-      if(!/^\d{13}$/.test(ref)){showToast('Reference must be exactly 13 digits','error');return;}
+      if(!/^\d{1,13}$/.test(ref)){showToast('Reference must be 1-13 digits','error');return;}
       if(!formData.name||formData.name.length<2||!/^09\d{9}$/.test(formData.phone)){showToast('Invalid data. Please go back and check your info.','error');return;}
       formData.gcashRef=ref;isSubmitting=true;
       var btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<div class="spinner"></div><span>Verifying...</span>';
