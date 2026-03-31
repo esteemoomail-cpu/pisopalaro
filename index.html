@@ -530,7 +530,7 @@
           <div class="reservation-timer-banner" id="reservationTimerBanner">
             <i class="fas fa-clock"></i>
             <span class="timer-text">Numbers reserved:</span>
-            <span class="timer-countdown" id="reservationTimerText">15:00</span>
+            <span class="timer-countdown" id="reservationTimerText">10:00</span>
           </div>
 
           <div class="payment-amount-banner"><div class="pay-label">Amount to Pay</div><div class="pay-amount" id="payAmount">&#8369;100.00</div><div class="pay-qty" id="payQty">for 100 numbers</div></div>
@@ -598,7 +598,7 @@
           <div class="reservation-timer-banner" id="reservationTimerBanner2">
             <i class="fas fa-clock"></i>
             <span class="timer-text">Complete before:</span>
-            <span class="timer-countdown" id="reservationTimerText2">15:00</span>
+            <span class="timer-countdown" id="reservationTimerText2">10:00</span>
           </div>
 
           <div class="card">
@@ -1128,7 +1128,7 @@ function updateRefHint(){
         document.getElementById('payAmountStep').textContent='\u20B1'+fmtN(total)+'.00';
         document.getElementById('payAmountStepMaya').textContent='\u20B1'+fmtN(total)+'.00';
         showSection('sectionStep2');
-        showToast('Numbers reserved for 15 minutes! Complete payment now.','success');
+        showToast('Numbers reserved for 10 minutes! Complete payment now.','success');
 
       }catch(e){
         btn.disabled=false;
